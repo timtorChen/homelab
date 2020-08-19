@@ -1,0 +1,32 @@
+# IMAGE: unofficial image
+
+image:
+  repository: timtor/wg-access-server
+
+web:
+  config:
+    adminUsername: {{ .Values.WIREGUARD_ADMIN_USERNAME }}
+    adminPassword: {{ .Values.WIREGUARD_ADMIN_PASSWORD }}
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts: 
+  - "wireguard.{{ .Values.hostname }}"
+
+wireguard:
+  config:
+    privateKey: {{ .Values.WIREGUARD_PRIVATE_KEY }}
+  service:
+    type: LoadBalancer
+    loadBalancerIP: {{ .Values.forwardedIP }}
+    annotations:
+      metallb.universe.tf/allow-shared-ip: {{ .Values.forwardedIP }}
+
+persistence:
+  enabled: true
+  storageClass: {{ .Values.nfsclient.storageClassName }}
+  size: {{ .Values.wireguard.storage }}
+
+resources:
+{{ toYaml .Values.wireguard.resources | indent 2 }}

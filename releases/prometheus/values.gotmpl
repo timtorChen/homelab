@@ -1,0 +1,19 @@
+kube-state-metrics:
+# the values of kube-state-metrics subchart
+  image:
+    repository: carlosedp/kube-state-metrics
+    tag: v1.9.6
+alertmanager:
+  persistentVolume:
+    enabled: true
+    storageClass: {{ .Values.nfsclient.storageClassName }}
+server:
+  persistentVolume:
+    enabled: true
+    storageClass: {{ .Values.nfsclient.storageClassName }}
+pushgateway:
+  persistentVolume:
+    enabled: true
+    storageClass: {{ .Values.nfsclient.storageClassName }}
+
+

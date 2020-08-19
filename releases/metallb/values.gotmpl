@@ -1,0 +1,10 @@
+configInline:
+  address-pools: 
+  - name: public
+    protocol: layer2
+    addresses:
+    - {{ .Values.metallb.publicAddresses }}
+  - name: internal
+    protocol: layer2
+    addresses:
+    - {{ .Values.metallb.localAddresses }}

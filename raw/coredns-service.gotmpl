@@ -1,0 +1,44 @@
+resources:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: coredns-tcp-service
+    namespace: system
+    labels:
+      app.kubernetes.io/name: coredns
+    annotations:
+      metallb.universe.tf/allow-shared-ip: coredns
+  spec:
+    ports:
+    - port: 53
+      targetPort: 53
+      protocol: TCP
+      name: dns-tcp
+    loadBalancerIP: {{ .Values.coredns.exportIP }}
+    selector:
+      app.kubernetes.io/name: coredns
+    type: LoadBalancer
+    sessionAffinity: None
+    externalTrafficPolicy: Local
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: coredns-udp-service
+    namespace: system
+    labels:
+      app.kubernetes.io/name: coredns
+    annotations:
+      metallb.universe.tf/allow-shared-ip: coredns
+  spec:
+    ports:
+    - port: 53
+      targetPort: 53
+      protocol: UDP
+      name: dns-udp
+    loadBalancerIP: {{ .Values.coredns.exportIP }}
+    selector:
+      app.kubernetes.io/name: coredns
+    type: LoadBalancer
+    sessionAffinity: None
+    externalTrafficPolicy: Local

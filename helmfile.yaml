@@ -1,0 +1,99 @@
+# helm plugin needed: helm-diff, helm-git, helm-secrets
+
+bases:
+- common/repositories.yaml
+
+environments:
+  default:
+    values:
+    - config.yaml
+    secrets:
+    - secrets.enc.yaml
+
+templates:
+  default: &default
+    chart: stable/{{ `{{ .Release.Name }}` }}
+    values:
+    # values file end with .gotmpl, will be rendered as a template
+    # values file end with .yaml, will be rendered verbatim
+    - releases/{{`{{ .Release.Name }}`}}/values.gotmpl
+  
+  system: &system
+    <<: *default
+    namespace: system
+
+  raw: &raw
+    chart: incubator/raw
+    version: ~0.2.3
+    values:
+    - raw/{{ `{{ .Release.Name }}` }}.gotmpl
+
+releases:
+- name: metallb
+  <<: *system
+  version: ~0.12.0
+
+- name: nginx-ingress
+  <<: *system
+  version: ~1.41.0
+
+- name: cert-manager
+  <<: *system
+  chart: jetstack/cert-manager
+  version: ~v0.16.1
+  
+- name: cert-manager-crd
+  <<: *raw
+  namespace: system
+
+# TODO: seperate confidential values
+- name: coredns
+  <<: *system
+  version: ~1.13.2
+
+- name: coredns-service
+  namespace: system
+  <<: *raw
+
+- name: nfs-client-provisioner
+  <<: *system
+  version: ~1.2.8
+
+- name: prometheus
+  <<: *system
+  version: ~11.10.0
+
+- name: grafana
+  <<: *system
+  version: ~5.5.0
+
+- name: openvpn
+  <<: *system
+  version: ~4.2.3
+
+- name: wg-access-server
+  <<: *system
+  chart: place1/wg-access-server
+  version: ~0.2.5
+
+# Chart: unofficial-chart
+# Image: support arm64 image, but inconsistent in tag
+- name: bitwarden-rs
+  <<: *default
+  chart: cdwv/bitwarden-k8s
+  version: ~0.1.5
+
+- name: nextcloud
+  <<: *default
+  chart: ./charts/nextcloud
+  version: ~1.12.0
+
+# pure yaml deployment for nextcloud-mariadb
+- name: mariadb
+  <<: *raw
+
+# Chart: unofficial chart
+- name: jellyfin
+  <<: *default
+  chart: brianmcarey/jellyfin
+  version: ~0.1.0

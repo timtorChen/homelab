@@ -1,0 +1,17 @@
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+  hosts:
+  - "jellyfin.{{ .Values.hostname }}"
+persistence:
+  config:
+    enabled: true
+    storageClass: {{ .Values.nfsclient.storageClassName }}
+  media:
+    enabled: false
+  extraExistingClaimMounts:
+{{toYaml .Values.jellyfin.existingClaimMounts | indent 4}}
+
+resources:
+{{ toYaml .Values.jellyfin.resources | indent 2 }}

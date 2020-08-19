@@ -1,0 +1,16 @@
+controller:
+  extraArgs:
+    default-ssl-certificate: {{ .Values.nginx.defaultCert }}
+  #* ISSUE: if loadBalancerIP is set, publishService should be `true`
+  #*        two config seems binding together and can be simplified.
+  publishService:
+    enabled: true
+  service:
+    loadBalancerIP: {{ .Values.forwardedIP }}
+    annotations:
+      metallb.universe.tf/allow-shared-ip: {{ .Values.forwardedIP }}
+  autoscaling:
+    enabled: true
+
+defaultBackend:
+  enabled: false

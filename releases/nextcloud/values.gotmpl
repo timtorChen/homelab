@@ -1,0 +1,48 @@
+image:
+  repository: nextcloud
+  tag: 17.0.0-apache
+
+nextcloud:
+  host: "nextcloud.{{ .Values.hostname }}"
+  username: {{ .Values.NEXTCLOUD_ADMIN_USERNAME }}
+  password: {{ .Values.NEXTCLOUD_ADMIN_PASSWORD }}
+  configs:
+    # force all static resources use https
+    https.config.php: |-
+      <?php
+      $CONFIG = array (
+        'overwriteprotocol' => 'https'
+      );
+
+    # if configs using mysql/mariadb,
+    # the defaultly using mb4 character set in database
+    character-set.config.php: |-
+      <?php
+      $CONFIG = array(
+        'mysql.utf8mb4' => true,
+      );
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size:  10G
+persistence:
+  enabled: true
+  storageClass: {{ .Values.nfsclient.storageClassName }}
+  accessMode: ReadWriteMany
+  size: {{ .Values.nextcloud.storage }}
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: mysql
+  host: {{ .Values.MARIADB_HOST }}
+  user: {{ .Values.MARIADB_USER }}
+  password: {{ .Values.MARIADB_PASSWORD }}
+  database: {{ .Values.MARIADB_DATABASE }}
+
+replicaCount: {{ .Values.nextcloud.replicaCount }}
+resources:
+{{ toYaml .Values.nextcloud.resources | indent 2 }}

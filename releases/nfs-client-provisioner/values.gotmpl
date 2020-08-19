@@ -1,0 +1,9 @@
+# Image: official supported, but need suffix `-arm`
+image:
+  repository: quay.io/external_storage/nfs-client-provisioner-arm
+nfs:
+  server: {{ .Values.nfsclient.nfsServer }}
+  path: {{ .Values.nfsclient.mountPath }}
+storageClass:
+  create: true
+  name: {{ .Values.nfsclient.storageClassName }}

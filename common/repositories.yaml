@@ -1,0 +1,15 @@
+repositories:
+- name: stable
+  url:  https://kubernetes-charts.storage.googleapis.com
+- name: incubator
+  url: http://storage.googleapis.com/kubernetes-charts-incubator
+- name: jetstack
+  url: https://charts.jetstack.io
+# Jellyfin git hosted chart
+- name: brianmcarey
+  url: git+https://github.com/brianmcarey/jellyfin-helm@?ref=master
+# Bitwarden-rs git hosted chart
+- name: cdwv
+  url: git+https://github.com/cdwv/bitwarden-k8s@?ref=master
+- name: place1
+  url: git+https://github.com/Place1/wg-access-server@deploy/helm?ref=master
