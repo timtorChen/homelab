@@ -21,7 +21,13 @@ templates:
   system: &system
     <<: *default
     namespace: system
-
+  
+  nginx: &nginx-ingress
+    <<: *default
+    namespace: system
+    chart: stable/nginx-ingress
+    version: ~1.41.0
+    
   raw: &raw
     chart: incubator/raw
     version: ~0.2.3
@@ -34,8 +40,10 @@ releases:
   version: ~0.12.0
 
 - name: nginx-ingress
-  <<: *system
-  version: ~1.41.0
+  <<: *nginx-ingress
+
+- name: nginx-ingress-personal-service
+  <<: *nginx-ingress
 
 - name: cert-manager
   <<: *system

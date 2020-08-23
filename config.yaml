@@ -13,8 +13,13 @@ certmanager:
     - "*.timtorchen.com"
 
 nginx:
-  exportIP: 192.168.255.200
   defaultCert: system/wildcard-certificate-secret
+  public: 
+    className: nginx
+    exportIP: 192.168.255.200
+  personal:
+    className: personal
+    exportIP: 192.168.255.202
 
 nfsclient:
   nfsServer: 192.168.255.150
@@ -43,9 +48,10 @@ coredns:
       192.168.255.150 master
   - filename: timtorchen.com.db
     contents: |
-      timtorchen.com.    IN  SOA  timtorchen.com timtorchen.gmail.com 2015082541 7200 3600 1209600 3600
-      timtorchen.com.    IN   A   192.168.255.200
-      *.timtorchen.com.  IN   A   192.168.255.200
+      timtorchen.com.          IN  SOA  timtorchen.com to.timtorchen.com 2015082541 7200 3600 1209600 3600
+      timtorchen.com.          IN   A   192.168.255.200
+      grafana.timtorchen.com.  IN   A   192.168.255.200
+      *.timtorchen.com.        IN   A   192.168.255.202
 
   replicaCount: 3
   resources:

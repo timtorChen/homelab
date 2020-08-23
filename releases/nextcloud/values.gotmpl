@@ -24,7 +24,7 @@ nextcloud:
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: {{ .Values.nginx.personal.className }}
     nginx.ingress.kubernetes.io/proxy-body-size:  10G
 persistence:
   enabled: true
