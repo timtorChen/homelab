@@ -9,6 +9,8 @@ controller:
     enabled: true
   service:
     loadBalancerIP: {{ .Values.nginx.personal.exportIP }}
+    annotations:
+      metallb.universe.tf/allow-shared-ip: {{ .Values.nginx.personal.exportIP }}
   autoscaling:
     enabled: true
 

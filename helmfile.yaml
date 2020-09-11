@@ -54,14 +54,10 @@ releases:
   <<: *raw
   namespace: system
 
-# TODO: seperate confidential values
-- name: coredns
+- name: pihole
   <<: *system
-  version: ~1.13.2
-
-- name: coredns-service
-  namespace: system
-  <<: *raw
+  chart: mojo2600/pihole
+  version: ~1.7.14
 
 - name: nfs-client-provisioner
   <<: *system

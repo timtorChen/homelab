@@ -1,0 +1,43 @@
+serviceTCP:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  loadBalancerIP: {{ .Values.pihole.exportIP }}
+  annotations:
+    metallb.universe.tf/allow-shared-ip: {{ .Values.pihole.exportIP }}
+
+serviceUDP:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  loadBalancerIP: {{ .Values.pihole.exportIP }}
+  annotations:
+    metallb.universe.tf/allow-shared-ip: {{ .Values.pihole.exportIP }}
+
+virtualHost: pihole.{{ .Values.hostname }}
+
+ingress:
+  enabled: true
+  hosts:
+  - pihole.{{ .Values.hostname }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.nginx.personal.className }}
+
+adminPassword: {{ .Values.PIHOLE_ADMIN_PASSWORD }}
+
+dnsmasq:
+  customDnsEntries:
+  - address=/grafana.{{ .Values.hostname }}/{{ .Values.nginx.public.exportIP }}
+  - address=/{{ .Values.hostname }}/{{ .Values.nginx.personal.exportIP }}
+
+DNS1: 1.1.1.1
+DNS2: 8.8.8.8
+
+adlists:
+{{ toYaml .Values.pihole.adlists | indent 2 }}
+
+resources:
+{{ toYaml .Values.pihole.resources | indent 2 }}
+
+persistentVolumeClaim:
+  enabled: true
+  storageClass: {{ .Values.nfsclient.storageClassName }}
+  size: {{ .Values.pihole.storage }}

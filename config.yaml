@@ -2,8 +2,16 @@ hostname: timtorchen.com
 forwardedIP: 192.168.255.200
 
 metallb:
-  publicAddresses: 192.168.255.200/32
-  localAddresses: 192.168.255.201-192.168.255.210
+  addressPools:
+  - name: public
+    protocol: layer2
+    addresses: 192.168.255.200/32
+  - name: localdns
+    protocol: layer2
+    addresses: 192.168.255.201/32
+  - name: internal
+    protocol: layer2
+    addresses: 192.168.255.202-192.168.255.210
 
 certmanager:
   wildcardCert:
@@ -26,38 +34,48 @@ nfsclient:
   mountPath: /mnt/ssd
   storageClassName: nfs-client
 
-coredns:
-  exportIP: 192.168.255.201
-  clusterIP: 10.43.0.10
-  extraRootPlugins:
-  # k3s current do not support customization of coredns
-  # Manually configure nodes and corresonding IPs
-  - name: hosts
-    parameters: /etc/coredns/node.hosts
-    configBlock: |-
-      reload 1s
-      fallthrough
-  # local domain configuration
-  - name: file
-    parameters: /etc/coredns/timtorchen.com.db timtorchen.com
-  
-  Files:
-  - filename: node.host
-    contents: |
-      192.168.255.101 client1
-      192.168.255.150 master
-  - filename: timtorchen.com.db
-    contents: |
-      timtorchen.com.          IN  SOA  timtorchen.com to.timtorchen.com 2015082541 7200 3600 1209600 3600
-      timtorchen.com.          IN   A   192.168.255.200
-      grafana.timtorchen.com.  IN   A   192.168.255.200
-      *.timtorchen.com.        IN   A   192.168.255.202
+pihole:
+  exportIP: 192.168.255.201  
+  adlists:
+  - https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts_without_controversies.txt
+  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts
+  - https://v.firebog.net/hosts/static/w3kbl.txt
+  - https://adaway.org/hosts.txt
+  - https://v.firebog.net/hosts/AdguardDNS.txt
+  - https://v.firebog.net/hosts/Admiral.txt
+  - https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
+  - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
+  - https://v.firebog.net/hosts/Easylist.txt
+  - https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext
+  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts
+  - https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts
+  - https://v.firebog.net/hosts/Easyprivacy.txt
+  - https://v.firebog.net/hosts/Prigent-Ads.txt
+  - https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-blocklist.txt
+  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts
+  - https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt
+  - https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt
+  - https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt
+  - https://osint.digitalside.it/Threat-Intel/lists/latestdomains.txt
+  - https://s3.amazonaws.com/lists.disconnect.me/simple_malvertising.txt
+  - https://mirror1.malwaredomains.com/files/justdomains
+  - https://v.firebog.net/hosts/Prigent-Crypto.txt
+  - https://mirror.cedia.org.ec/malwaredomains/immortal_domains.txt
+  - https://www.malwaredomainlist.com/hostslist/hosts.txt
+  - https://bitbucket.org/ethanr/dns-blacklists/raw/8575c9f96e5b4a1308f2f12394abd86d0927a4a0/bad_lists/Mandiant_APT1_Report_Appendix_D.txt
+  - https://phishing.army/download/phishing_army_blocklist_extended.txt
+  - https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-malware.txt
+  - https://v.firebog.net/hosts/Shalla-mal.txt
+  - https://raw.githubusercontent.com/Spam404/lists/master/main-blacklist.txt
+  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts
+  - https://urlhaus.abuse.ch/downloads/hostfile/
+  - https://zerodot1.gitlab.io/CoinBlockerLists/hosts_browser
 
-  replicaCount: 3
+  storage: 500Mi
   resources:
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 500Mi
     requests:
       cpu: 100m
       memory: 100Mi

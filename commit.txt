@@ -1,2 +1,2 @@
-🤫 Hide personal services behind the vpn
-- add a personal-service nginx-ingress-controller for local access
+🍓 Add Pihole 
+- add Pihole as local dns, and change manual managed coredns back to k3s embeded coredns
