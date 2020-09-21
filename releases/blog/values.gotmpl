@@ -1,0 +1,13 @@
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.nginx.public.className }}
+  hosts:
+    - host: "blog.{{ .Values.hostname }}"
+      paths: [ "/" ]
+
+serviceAccount:
+  create: false
+
+resources:
+{{ toYaml .Values.blog.resources | indent 2 }}

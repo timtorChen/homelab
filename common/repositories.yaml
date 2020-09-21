@@ -9,8 +9,10 @@ repositories:
 - name: brianmcarey
   url: git+https://github.com/brianmcarey/jellyfin-helm@?ref=master
 - name: cdwv
-  url: git+https://github.com/cdwv/bitwarden-k8s@?ref=master
+  url: git+https://github.com/cdwv/bitwarden-k8s@chart?ref=master
 - name: place1
   url: git+https://github.com/Place1/wg-access-server@deploy/helm?ref=master
 - name: mojo2600 
   url: git+https://github.com/MoJo2600/pihole-kubernetes@charts?ref=master
+- name: timtor
+  url: git+https://github.com/timtorchen/blog@deploy/chart?ref=master

@@ -1,4 +1,4 @@
-# helm plugin needed: helm-diff, helm-git, helm-secrets
+# Helm plugins needed: helm-diff, helm-git, helm-secrets
 
 bases:
 - common/repositories.yaml
@@ -100,4 +100,9 @@ releases:
 - name: jellyfin
   <<: *default
   chart: brianmcarey/jellyfin
+  version: ~0.1.0
+
+- name:  blog
+  <<: *default
+  chart: timtor/blog
   version: ~0.1.0
