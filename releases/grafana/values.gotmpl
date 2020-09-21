@@ -3,7 +3,7 @@ adminPassword: {{ .Values.GRAFANA_ADMIN_PASSWORD }}
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: {{ .Values.nginx.public.className }}
   hosts:
   - "grafana.{{ .Values.hostname }}"
 persistence:
@@ -11,3 +11,6 @@ persistence:
   # Normally, it is ought called storageClass
   storageClassName: {{ .Values.nfsclient.storageClassName }}
   size: {{ .Values.grafana.storage }}
+
+resources:
+{{ toYaml .Values.grafana.resources | indent 2 }}

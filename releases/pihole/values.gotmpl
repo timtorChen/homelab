@@ -25,6 +25,7 @@ adminPassword: {{ .Values.PIHOLE_ADMIN_PASSWORD }}
 
 dnsmasq:
   customDnsEntries:
+  - address=/blog.{{ .Values.hostname }}/{{ .Values.nginx.public.exportIP }}
   - address=/grafana.{{ .Values.hostname }}/{{ .Values.nginx.public.exportIP }}
   - address=/{{ .Values.hostname }}/{{ .Values.nginx.personal.exportIP }}
 
