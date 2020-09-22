@@ -1,0 +1,5 @@
+{
+    "terminal.integrated.env.linux": {
+        "VSCODE_WORKSPACE": "pi-cluster"
+    }
+}
