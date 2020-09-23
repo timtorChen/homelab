@@ -106,3 +106,8 @@ releases:
   <<: *default
   chart: timtor/blog
   version: ~0.1.0
+
+- name: blog-draft
+  <<: *default
+  chart: timtor/blog
+  version: ~0.1.0

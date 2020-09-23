@@ -148,6 +148,7 @@ grafana:
 
 blog:
   hostname: timtorchen.com
+  hostnameDraft: draft.timtorchen.com
   resources:
     limits:
       cpu: 100m
@@ -155,3 +156,4 @@ blog:
     requests:
       cpu: 100m
       memory: 100Mi
+

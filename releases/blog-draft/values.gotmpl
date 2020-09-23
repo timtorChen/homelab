@@ -1,0 +1,18 @@
+image:
+  repository: timtor/blog
+  pullPolicy: Always
+  tag: "dev"
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.public }}
+  hosts:
+    - host: {{ .Values.blog.hostnameDraft }}
+      paths: [ "/" ]
+
+serviceAccount:
+  create: false
+
+resources:
+{{ toYaml .Values.blog.resources | indent 2 }}
