@@ -39,10 +39,10 @@ releases:
   <<: *system
   version: ~0.12.0
 
-- name: nginx-ingress
+- name: public-ingress
   <<: *nginx-ingress
 
-- name: nginx-ingress-personal-service
+- name: personal-ingress
   <<: *nginx-ingress
 
 - name: cert-manager

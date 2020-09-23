@@ -1,16 +1,16 @@
 controller:
   extraArgs:
-    default-ssl-certificate: {{ .Values.nginx.defaultCert }}
-    ingress-class: {{ .Values.nginx.personal.className }}
+    default-ssl-certificate: {{ .Values.certificate.wildcardCert.fullname }}
+    ingress-class: {{ .Values.ingress.personalService }}
 
   #* ISSUE: if loadBalancerIP is set, publishService should be `true`
   #*        two config seems binding together and can be simplified.
   publishService:
     enabled: true
   service:
-    loadBalancerIP: {{ .Values.nginx.personal.exportIP }}
+    loadBalancerIP: {{ .Values.personalServiceIP }}
     annotations:
-      metallb.universe.tf/allow-shared-ip: {{ .Values.nginx.personal.exportIP }}
+      metallb.universe.tf/allow-shared-ip: {{ .Values.personalServiceIP }}
   autoscaling:
     enabled: true
 

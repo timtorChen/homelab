@@ -1,33 +1,21 @@
-hostname: timtorchen.com
-forwardedIP: 192.168.255.200
+clusterAddresses: 192.168.255.200-192.168.255.210
+publicIP: 192.168.255.200
+localdnsIP: 192.168.255.201
+personalServiceIP: 192.168.255.202
 
-metallb:
-  addressPools:
-  - name: public
-    protocol: layer2
-    addresses: 192.168.255.200/32
-  - name: localdns
-    protocol: layer2
-    addresses: 192.168.255.201/32
-  - name: internal
-    protocol: layer2
-    addresses: 192.168.255.202-192.168.255.210
+rootDomain: timtorchen.com
 
-certmanager:
+certificate:
   wildcardCert:
     name: wildcard-certificate-secret
+    fullname: system/wildcard-certificate-secret
     dnsNames:
     - "timtorchen.com"
     - "*.timtorchen.com"
 
-nginx:
-  defaultCert: system/wildcard-certificate-secret
-  public: 
-    className: nginx
-    exportIP: 192.168.255.200
-  personal:
-    className: personal
-    exportIP: 192.168.255.202
+ingress:
+  public: nginx
+  personalService: personal
 
 nfsclient:
   nfsServer: 192.168.255.150
@@ -35,42 +23,7 @@ nfsclient:
   storageClassName: nfs-client
 
 pihole:
-  exportIP: 192.168.255.201  
-  adlists:
-  - https://raw.githubusercontent.com/PolishFiltersTeam/KADhosts/master/KADhosts_without_controversies.txt
-  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts
-  - https://v.firebog.net/hosts/static/w3kbl.txt
-  - https://adaway.org/hosts.txt
-  - https://v.firebog.net/hosts/AdguardDNS.txt
-  - https://v.firebog.net/hosts/Admiral.txt
-  - https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
-  - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
-  - https://v.firebog.net/hosts/Easylist.txt
-  - https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext
-  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/UncheckyAds/hosts
-  - https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts
-  - https://v.firebog.net/hosts/Easyprivacy.txt
-  - https://v.firebog.net/hosts/Prigent-Ads.txt
-  - https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-blocklist.txt
-  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.2o7Net/hosts
-  - https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt
-  - https://hostfiles.frogeye.fr/firstparty-trackers-hosts.txt
-  - https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareHosts.txt
-  - https://osint.digitalside.it/Threat-Intel/lists/latestdomains.txt
-  - https://s3.amazonaws.com/lists.disconnect.me/simple_malvertising.txt
-  - https://mirror1.malwaredomains.com/files/justdomains
-  - https://v.firebog.net/hosts/Prigent-Crypto.txt
-  - https://mirror.cedia.org.ec/malwaredomains/immortal_domains.txt
-  - https://www.malwaredomainlist.com/hostslist/hosts.txt
-  - https://bitbucket.org/ethanr/dns-blacklists/raw/8575c9f96e5b4a1308f2f12394abd86d0927a4a0/bad_lists/Mandiant_APT1_Report_Appendix_D.txt
-  - https://phishing.army/download/phishing_army_blocklist_extended.txt
-  - https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-malware.txt
-  - https://v.firebog.net/hosts/Shalla-mal.txt
-  - https://raw.githubusercontent.com/Spam404/lists/master/main-blacklist.txt
-  - https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts
-  - https://urlhaus.abuse.ch/downloads/hostfile/
-  - https://zerodot1.gitlab.io/CoinBlockerLists/hosts_browser
-
+  hostname: pihole.timtorchen.com
   storage: 500Mi
   resources:
     limits:
@@ -81,6 +34,7 @@ pihole:
       memory: 100Mi
 
 wireguard:
+  hostname: wireguard.timtorchen.com
   storage: 100Mi
   resources:
     limits:
@@ -101,6 +55,7 @@ openvpn:
       memory: 100Mi
 
 nextcloud:
+  hostname: nextcloud.timtorchen.com
   replicaCount: 1
   storage: 100Gi
   resources:
@@ -122,6 +77,7 @@ mariadb:
       memory: 300Mi
 
 jellyfin:
+  hostname: jellyfin.timtorchen.com
   # media 
   existingClaimMounts:
   - name: nextcloud
@@ -138,6 +94,7 @@ jellyfin:
       memory: 500Mi
   
 bitwarden:
+  hostname: bitwarden.timtorchen.com
   storage: 100Mi
   resources:
     limits:
@@ -179,6 +136,7 @@ prometheus:
         memory: 30Mi
 
 grafana:
+  hostname: grafana.timtorchen.com
   storage: 100Mi
   resources:
     limits:
@@ -189,6 +147,7 @@ grafana:
       memory: 100Mi
 
 blog:
+  hostname: timtorchen.com
   resources:
     limits:
       cpu: 100m

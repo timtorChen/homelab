@@ -3,7 +3,7 @@ image:
   tag: 17.0.0-apache
 
 nextcloud:
-  host: "nextcloud.{{ .Values.hostname }}"
+  host: {{ .Values.nextcloud.hostname }}
   username: {{ .Values.NEXTCLOUD_ADMIN_USERNAME }}
   password: {{ .Values.NEXTCLOUD_ADMIN_PASSWORD }}
   configs:
@@ -24,7 +24,7 @@ nextcloud:
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.nginx.personal.className }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
     nginx.ingress.kubernetes.io/proxy-body-size:  10G
 persistence:
   enabled: true

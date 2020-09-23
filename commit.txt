@@ -1,2 +1,1 @@
-🍓 Add Pihole 
-- add Pihole as local dns, and change manual managed coredns back to k3s embeded coredns
+Rename config variables for cleaner structure

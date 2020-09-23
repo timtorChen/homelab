@@ -1,3 +1,6 @@
 configInline:
   address-pools: 
-  {{ toYaml .Values.metallb.addressPools | indent 2  }}
+  - name: default
+    protocol: layer2
+    addresses: 
+    - {{ .Values.clusterAddresses }}

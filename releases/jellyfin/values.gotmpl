@@ -1,9 +1,9 @@
 ingress:
   enabled: true
   annotations: 
-    kubernetes.io/ingress.class: {{ .Values.nginx.personal.className }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
   hosts:
-  - "jellyfin.{{ .Values.hostname }}"
+  - {{ .Values.jellyfin.hostname }}
 persistence:
   config:
     enabled: true

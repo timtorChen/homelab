@@ -7,21 +7,22 @@ web:
   config:
     adminUsername: {{ .Values.WIREGUARD_ADMIN_USERNAME }}
     adminPassword: {{ .Values.WIREGUARD_ADMIN_PASSWORD }}
+    
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.nginx.personal.className }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
   hosts: 
-  - "wireguard.{{ .Values.hostname }}"
+  - {{ .Values.wireguard.hostname }}
 
 wireguard:
   config:
     privateKey: {{ .Values.WIREGUARD_PRIVATE_KEY }}
   service:
     type: LoadBalancer
-    loadBalancerIP: {{ .Values.forwardedIP }}
+    loadBalancerIP: {{ .Values.publicIP }}
     annotations:
-      metallb.universe.tf/allow-shared-ip: {{ .Values.forwardedIP }}
+      metallb.universe.tf/allow-shared-ip: {{ .Values.publicIP }}
 
 persistence:
   enabled: true

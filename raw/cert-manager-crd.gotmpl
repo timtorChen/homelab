@@ -42,9 +42,9 @@ resources:
     namespace: system
     name: wildcard-certificate-staging
   spec:
-    secretName: {{ .Values.certmanager.wildcardCert.name }}-staging
+    secretName: {{ .Values.certificate.wildcardCert.name }}-staging
     dnsNames:
-    {{- toYaml  .Values.certmanager.wildcardCert.dnsNames | nindent 4 }}
+    {{- toYaml  .Values.certificate.wildcardCert.dnsNames | nindent 4 }}
     # refer to the Issuer or ClusterIssuer predefined
     issuerRef: 
       kind: Issuer
@@ -72,9 +72,9 @@ resources:
     namespace: system
     name: wildcard-certificate
   spec:
-    secretName: {{ .Values.certmanager.wildcardCert.name }}
+    secretName: {{ .Values.certificate.wildcardCert.name }}
     dnsNames:
-    {{- toYaml .Values.certmanager.wildcardCert.dnsNames | nindent 4 }}
+    {{- toYaml .Values.certificate.wildcardCert.dnsNames | nindent 4 }}
     issuerRef: 
       kind: Issuer
       name: cloudflare-dns01-issuer

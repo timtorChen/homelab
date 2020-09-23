@@ -5,14 +5,14 @@ env:
   SIGNUPS_ALLOWED: false
   INVITATIONS_ALLOWED: false
   ADMIN_TOKEN: {{ .Values.BITWARDEN_ADMIN_TOKEN }}
-  DOMAIN: https://bitwarden.{{ .Values.hostname }}
+  DOMAIN: https://{{ .Values.bitwarden.hostname }}
 persistence:
   enabled: true
   storageClass: {{ .Values.nfsclient.storageClassName }}
   size: {{ .Values.bitwarden.storage }}
 ingress:
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.nginx.personal.className }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
   hosts:
-  - "bitwarden.{{ .Values.hostname }}"
+  - {{ .Values.bitwarden.hostname }}
 

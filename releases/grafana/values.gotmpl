@@ -3,9 +3,9 @@ adminPassword: {{ .Values.GRAFANA_ADMIN_PASSWORD }}
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.nginx.public.className }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.public }}
   hosts:
-  - "grafana.{{ .Values.hostname }}"
+  - {{ .Values.grafana.hostname }}
 persistence:
   enabled: true
   # Normally, it is ought called storageClass
