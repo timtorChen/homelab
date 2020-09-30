@@ -2,17 +2,18 @@ repositories:
 - name: stable
   url:  https://kubernetes-charts.storage.googleapis.com
 - name: incubator
-  url: http://storage.googleapis.com/kubernetes-charts-incubator
+  url: https://storage.googleapis.com/kubernetes-charts-incubator
 - name: jetstack
   url: https://charts.jetstack.io
-# git hosted chrats
+- name: place1
+  url: https://place1.github.io/wg-access-server
+- name: timtor
+  url: https://timtorchen.github.io/blog
+- name: mojo2600
+  url: https://MoJo2600.github.io/pihole-kubernetes
+
+# non-versioned github hosted charts
 - name: brianmcarey
   url: git+https://github.com/brianmcarey/jellyfin-helm@?ref=master
 - name: cdwv
   url: git+https://github.com/cdwv/bitwarden-k8s@chart?ref=master
-- name: place1
-  url: git+https://github.com/Place1/wg-access-server@deploy/helm?ref=master
-- name: mojo2600 
-  url: git+https://github.com/MoJo2600/pihole-kubernetes@charts?ref=master
-- name: timtor
-  url: git+https://github.com/timtorchen/blog@deploy/chart?ref=master
