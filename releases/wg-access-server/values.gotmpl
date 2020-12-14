@@ -1,7 +1,11 @@
-# IMAGE: unofficial image
-
 image:
-  repository: timtor/wg-access-server
+  repository: place1/wg-access-server
+
+config:
+  externalHost: {{ .Values.PUBLIC_IP }}
+  vpn:
+    allowedIPs:
+    - 0.0.0.0/0
 
 web:
   config:

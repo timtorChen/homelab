@@ -51,13 +51,15 @@ releases:
   version: ~v0.16.1
   
 - name: cert-manager-crd
+  labels:
+    install: crd
   <<: *raw
   namespace: system
 
-- name: pihole
+- name: adguard-home
   <<: *system
-  chart: mojo2600/pihole
-  version: ~1.7.14
+  chart: k8s-at-home/adguard-home
+  version: ~2.2.0
 
 - name: nfs-client-provisioner
   <<: *system
@@ -78,10 +80,9 @@ releases:
 - name: wg-access-server
   <<: *system
   chart: place1/wg-access-server
-  version: ~0.2.5
+  version: ~0.3.0
 
 # Chart: unofficial-chart
-# Image: support arm64 image, but inconsistent in tag
 - name: bitwarden-rs
   <<: *default
   chart: cdwv/bitwarden-k8s

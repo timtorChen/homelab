@@ -1,1 +1,4 @@
-Rename config variables for cleaner structure
+🛡 Change pihole to adguard, and some updates
+- change pihole to adguard-home
+- change the node of NFS server 
+- update repos and services image version

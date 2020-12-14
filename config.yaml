@@ -18,12 +18,12 @@ ingress:
   personalService: personal
 
 nfsclient:
-  nfsServer: 192.168.255.150
-  mountPath: /mnt/ssd
+  nfsServer: 192.168.255.101
+  mountPath: /mnt/md0
   storageClassName: nfs-client
 
-pihole:
-  hostname: pihole.timtorchen.com
+adguard:
+  hostname: adguard.timtorchen.com
   storage: 500Mi
   resources:
     limits:
@@ -57,7 +57,7 @@ openvpn:
 nextcloud:
   hostname: nextcloud.timtorchen.com
   replicaCount: 1
-  storage: 100Gi
+  storage: 500Gi
   resources:
     limits:
       cpu: 2
