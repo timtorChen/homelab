@@ -1,0 +1,8 @@
+{
+  "ignorePaths": [
+    "helmfile/charts"
+  ],
+  "extends": [
+    "config:base"
+  ]
+}
