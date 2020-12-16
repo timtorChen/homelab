@@ -1,0 +1,19 @@
+image: 
+  repository: bitwardenrs/server
+  pullPolicy: IfNotPresent
+  tag: 1.17.0
+env:
+  SIGNUPS_ALLOWED: false
+  INVITATIONS_ALLOWED: false
+  ADMIN_TOKEN: {{ .Values.BITWARDEN_ADMIN_TOKEN }}
+  DOMAIN: https://{{ .Values.bitwarden.hostname }}
+persistence:
+  enabled: true
+  storageClass: {{ .Values.nfsclient.storageClassName }}
+  size: {{ .Values.bitwarden.storage }}
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
+  hosts:
+  - {{ .Values.bitwarden.hostname }}
+

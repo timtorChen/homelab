@@ -1,0 +1,8 @@
+roles:
+  - name: xanmanning.k3s
+    version: v2.0.1
+  - name: geerlingguy.docker
+    version: 2.9.0
+collections:
+  - name: community.sops
+    version: 0.1.0

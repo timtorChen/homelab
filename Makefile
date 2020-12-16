@@ -1,11 +1,12 @@
-.PHONY: dec enc git-done-commit
+.PHONY: install
+install:
+	pip install -r ./ansible/pip_reqs.txt
+	ansible-galaxy install -r ./ansible/galaxy_reqs.yml
 
-dec: 
-	sops -d secrets.enc.yaml > secrets.yaml
+.PHONY: cluster-repo-update 
+cluster-repo-update:
+	helmfile -f ./helmfile/helmfile.yaml repos
 
-enc: 
-	sops -e secrets.yaml > secrets.enc.yaml
-
-git-done-commit: enc
-	git add secrets.enc.yaml
+.PHONY: git-done
+git-done: 
 	git commit -F commit.txt
