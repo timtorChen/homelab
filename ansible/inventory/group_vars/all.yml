@@ -1,0 +1,13 @@
+ansible_user: ubuntu
+auth_public_key: https://github.com/timtorchen.keys
+auth_first_login_password: ubuntu
+
+docker_package_state: present
+docker_apt_arch: arm64
+docker_edition: 'ce'
+docker_install_compose: false
+
+k3s_state: installed
+k3s_release_version: v1.19.4+k3s1
+k3s_become_for_all: true
+k3s_control_node_address: 192.168.255.101

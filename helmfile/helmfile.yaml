@@ -1,32 +1,29 @@
 # Helm plugins needed: helm-diff, helm-git, helm-secrets
 
 bases:
-- common/repositories.yaml
+- common/repo.yaml
 
 environments:
   default:
     values:
     - config.yaml
     secrets:
-    - secrets.enc.yaml
+    - secrets.sops.yaml
 
 templates:
   default: &default
-    chart: stable/{{ `{{ .Release.Name }}` }}
     values:
     # values file end with .gotmpl, will be rendered as a template
     # values file end with .yaml, will be rendered verbatim
     - releases/{{`{{ .Release.Name }}`}}/values.gotmpl
   
-  system: &system
-    <<: *default
-    namespace: system
-  
   nginx: &nginx-ingress
     <<: *default
+    chart: nginx-ingress/ingress-nginx
+    version: ~3.15.2
     namespace: system
-    chart: stable/nginx-ingress
-    version: ~1.41.0
+    labels: 
+      type: ingress
     
   raw: &raw
     chart: incubator/raw
@@ -36,7 +33,9 @@ templates:
 
 releases:
 - name: metallb
-  <<: *system
+  <<: *default
+  namespace: system
+  chart: stable/metallb
   version: ~0.12.0
 
 - name: public-ingress
@@ -46,40 +45,51 @@ releases:
   <<: *nginx-ingress
 
 - name: cert-manager
-  <<: *system
-  chart: jetstack/cert-manager
+  <<: *default
+  namespace: system
+  chart: cert-manager/cert-manager
   version: ~v0.16.1
   
 - name: cert-manager-crd
-  labels:
-    install: crd
   <<: *raw
   namespace: system
+  labels:
+    type: crd
 
 - name: adguard-home
-  <<: *system
+  <<: *default
+  namespace: system
   chart: k8s-at-home/adguard-home
   version: ~2.2.0
 
 - name: nfs-client-provisioner
-  <<: *system
+  <<: *default
+  namespace: system
+  chart: stable/nfs-client-provisioner
   version: ~1.2.8
 
 - name: prometheus
-  <<: *system
+  <<: *default
+  namespace: system
+  chart: prometheus/prometheus
   version: ~11.10.0
 
 - name: grafana
-  <<: *system
+  <<: *default
+  namespace: system
+  chart: grafana/grafana
   version: ~5.5.0
 
 - name: openvpn
-  <<: *system
+  <<: *default
+  namespace: system
+  chart: stable/openvpn
   version: ~4.2.3
 
 - name: wg-access-server
-  <<: *system
-  chart: place1/wg-access-server
+  <<: *default
+  namespace: system
+  chart: wg-access-server/wg-access-server
   version: ~0.3.0
 
 # Chart: unofficial-chart

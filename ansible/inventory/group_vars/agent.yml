@@ -1,0 +1,3 @@
+k3s_agent:
+  docker: true
+  with-node-id: true

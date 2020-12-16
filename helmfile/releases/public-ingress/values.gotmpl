@@ -10,7 +10,7 @@ controller:
     annotations:
       metallb.universe.tf/allow-shared-ip: {{ .Values.publicIP }}
   autoscaling:
-    enabled: true
+    enabled: false
 
 defaultBackend:
   enabled: false

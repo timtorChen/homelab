@@ -1,2 +1,4 @@
-/secrets.yaml
-/decrypted~secrets.enc.yaml
+**/*secrets.yml
+**/*secrets.yaml
+**/.decrypted~secrets.sops.yml
+**/.decrypted~secrets.sops.yaml
