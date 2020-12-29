@@ -1,0 +1,16 @@
+
+settings:
+  superuserPassword: {{ .Values.POSTGRES_ROOT_PASSWORD }}
+
+userDatabase:
+  name: {{ .Values.POSTGRES_DATABASE }}
+  user: {{ .Values.POSTGRES_USER }}
+  password: {{ .Values.POSTGRES_PASSWORD }}
+
+
+storage:
+  className: {{ .Values.storageClass.cluster }}
+  requestedSize: {{ .Values.nextcloudPostgres.storage }}
+
+resources:
+{{toYaml .Values.nextcloudPostgres.resources | indent 2}}

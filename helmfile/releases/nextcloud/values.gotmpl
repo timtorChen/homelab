@@ -1,6 +1,7 @@
 image:
   repository: nextcloud
-  tag: 17.0.0-apache
+  tag: 20.0.4-apache
+  pullPolicy: IfNotPresent
 
 nextcloud:
   host: {{ .Values.nextcloud.hostname }}
@@ -13,36 +14,55 @@ nextcloud:
       $CONFIG = array (
         'overwriteprotocol' => 'https'
       );
+      
+  extraVolumes: 
+  - name: jellyfin-media
+    persistentVolumeClaim:
+      claimName: jellyfin-media
+  
+  extraVolumeMounts: 
+  - name: jellyfin-media
+    mountPath: /jellyfin-media
 
-    # if configs using mysql/mariadb,
-    # the defaultly using mb4 character set in database
-    character-set.config.php: |-
-      <?php
-      $CONFIG = array(
-        'mysql.utf8mb4' => true,
-      );
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
-    nginx.ingress.kubernetes.io/proxy-body-size:  10G
-persistence:
-  enabled: true
-  storageClass: {{ .Values.nfsclient.storageClassName }}
-  accessMode: ReadWriteMany
-  size: {{ .Values.nextcloud.storage }}
+  extraEnv:
+  - name: REDIS_HOST
+    value: nextcloud-redis
+  - name: REDIS_HOST_PORT
+    value: "6379"
 
 internalDatabase:
   enabled: false
 
 externalDatabase:
   enabled: true
-  type: mysql
-  host: {{ .Values.MARIADB_HOST }}
-  user: {{ .Values.MARIADB_USER }}
-  password: {{ .Values.MARIADB_PASSWORD }}
-  database: {{ .Values.MARIADB_DATABASE }}
+  type: postgresql
+  host: nextcloud-postgres
+  user: {{ .Values.POSTGRES_USER }}
+  password: {{ .Values.POSTGRES_PASSWORD }}
+  database: {{ .Values.POSTGRES_DATABASE }}
 
-replicaCount: {{ .Values.nextcloud.replicaCount }}
+ingress:
+  enabled: true
+  annotations:
+{{ toYaml .Values.ingress.internalAnnotations | indent 4 }}
+    nginx.ingress.kubernetes.io/proxy-body-size:  50G
+  hosts:
+  - host: {{ .Values.nextcloud.hostname }}
+    paths:
+    - path: /
+
+persistence:
+  enabled: true
+  storageClass: {{ .Values.storageClass.cluster }}
+  accessMode: ReadWriteOnce
+  size: {{ .Values.nextcloud.storage }}
+
+metrics:
+  enabled: true
+  https: true
+  image:
+    repository: timtor/nextcloud-exporter
+    tag: master
+
 resources:
 {{ toYaml .Values.nextcloud.resources | indent 2 }}

@@ -1,0 +1,30 @@
+- hosts: all
+  tags: [prep]
+  gather_facts: false
+  roles:
+    - role: roles/auth
+
+- hosts: all
+  tags: [prep]
+  roles:
+    - role: devsec.hardening.ssh_hardening
+      become: true
+    - role: roles/init
+      become: true
+
+- hosts: k3s_cluster
+  tags: [cluster]
+  roles:
+    - role: geerlingguy.docker
+      become: true
+    - role: roles/raspberrypi
+      become: true
+    - role: xanmanning.k3s
+
+- hosts: agent-storage-pi4
+  tags: [storage]
+  roles:
+    - role: rolehippie.mdadm
+      become: true
+    - role: geerlingguy.nfs
+      become: true

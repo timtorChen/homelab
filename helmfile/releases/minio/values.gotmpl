@@ -1,0 +1,35 @@
+# Minio instanct for longhorn backup 
+# schedule minio only on agentStorage node
+nodeSelector:
+{{toYaml .Values.label.agentStorage | indent 2}}
+
+# this node may poweroff for energy saving
+tolerations:
+{{toYaml .Values.taint.mayPoweroff | indent 2 }}
+
+# keep data in local 
+persistence:
+  enabled: true
+  storageClass: {{ .Values.storageClass.local }}
+
+replicas: 1
+
+defaultBucket:
+  enabled: true
+  name: longhorn-backup
+
+accessKey: {{ .Values.MINIO_ACCESS_KEY }}
+secretKey: {{ .Values.MINIO_SECRET_KEY }}
+
+ingress:
+  enabled: true
+  annotations: 
+{{ toYaml .Values.ingress.internalAnnotations | indent 4 }}
+  hosts:
+    - {{ .Values.minio.hostname }}
+    
+tls:
+  enabled: false
+
+resources:
+{{ toYaml .Values.minio.resources | indent 2 }}

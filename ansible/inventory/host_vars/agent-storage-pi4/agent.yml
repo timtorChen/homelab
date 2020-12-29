@@ -1,0 +1,4 @@
+k3s_agent:
+  docker: true
+  node-taint:
+  - "poweroff=true:NoSchedule"

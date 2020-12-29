@@ -1,7 +1,7 @@
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.public }}
+{{ toYaml .Values.ingress.publicAnnotations | indent 4}}
   hosts:
     - host: {{ .Values.blog.hostname }}
       paths: [ "/" ]

@@ -9,7 +9,7 @@
   delegate_to: localhost
   expect:
     command: sshpass -p {{ auth_first_login_password }} ssh {{ ansible_ssh_common_args }} {{ ansible_user }}@{{ ansible_host }}
-    timeout: 20
+    timeout: 60
     responses:
       "Current password:": "{{ auth_first_login_password }}"
       "New password:": "{{ ansible_password }}"

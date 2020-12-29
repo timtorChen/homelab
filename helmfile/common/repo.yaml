@@ -19,8 +19,22 @@ repositories:
   url: https://timtorchen.github.io/blog
 - name: k8s-at-home
   url: https://k8s-at-home.com/charts/
+- name: longhorn
+  url: https://charts.longhorn.io
+- name: minio
+  url: https://helm.min.io/
+- name: sigs-local-provisioner
+  url: git+https://github.com/kubernetes-sigs/sig-storage-local-static-provisioner@helm?ref=master
+- name: rancher-local-provisioner
+  url: git+https://github.com/rancher/local-path-provisioner@deploy?ref=master
+- name: nextcloud
+  url: https://nextcloud.github.io/helm/
+- name: groundhog2k 
+  url: https://groundhog2k.github.io/helm-charts/
+- name: kured
+  url: https://weaveworks.github.io/kured
 # non-versioned github hosted charts
 - name: brianmcarey
   url: git+https://github.com/brianmcarey/jellyfin-helm@?ref=master
-- name: cdwv
-  url: git+https://github.com/cdwv/bitwarden-k8s@chart?ref=master
+- name: nfs-client-provisioner
+  url: git+https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner@deploy/helm?ref=master

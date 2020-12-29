@@ -6,14 +6,15 @@ kube-state-metrics:
 alertmanager:
   persistentVolume:
     enabled: true
-    storageClass: {{ .Values.nfsclient.storageClassName }}
+    storageClass: {{ .Values.storageClass.cluster }}
 server:
   persistentVolume:
     enabled: true
-    storageClass: {{ .Values.nfsclient.storageClassName }}
+    storageClass: {{ .Values.storageClass.cluster }}
 pushgateway:
   persistentVolume:
     enabled: true
-    storageClass: {{ .Values.nfsclient.storageClassName }}
-
-
+    storageClass: {{ .Values.storageClass.cluster }}
+nodeExporter:
+  tolerations:
+{{toYaml .Values.taint.mayPoweroff | indent 4}}

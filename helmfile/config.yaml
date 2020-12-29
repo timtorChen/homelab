@@ -1,101 +1,124 @@
 clusterAddresses: 192.168.255.200-192.168.255.210
-publicIP: 192.168.255.200
-localdnsIP: 192.168.255.201
-personalServiceIP: 192.168.255.202
-
+forwardIP: 192.168.255.200
 rootDomain: timtorchen.com
 
+nfs:
+  server: 192.168.255.100
+  path: /mnt/md0
+
+label:
+  agentStorage:
+    kubernetes.io/hostname: agent-storage-pi4
+
+taint:
+  mayPoweroff:
+  - key: "poweroff"
+    effect: NoSchedule
+    value: "true"
+    operator: Equal
+
+storageClass:
+  cluster: longhorn
+  local: local-path
+  nfs: nfs-client
+
 certificate:
-  wildcardCert:
-    name: wildcard-certificate-secret
-    fullname: system/wildcard-certificate-secret
-    dnsNames:
-    - "timtorchen.com"
-    - "*.timtorchen.com"
+  staging: ingress-system/wildcard-certificate-secret-staging
+  production: ingress-system/wildcard-certificate-secret
+
+localProvisioner:
+  resources:
+    requests:
+      cpu: 0.1
+      memory: 100Mi
 
 ingress:
-  public: nginx
-  personalService: personal
+  publicAnnotations:
+    kubernetes.io/ingress.class: nginx
+  internalAnnotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
 
-nfsclient:
-  nfsServer: 192.168.255.101
-  mountPath: /mnt/md0
-  storageClassName: nfs-client
+longhorn:
+  hostname: longhorn.timtorchen.com
+  resources: {}
 
-adguard:
-  hostname: adguard.timtorchen.com
-  storage: 500Mi
-  resources:
-    limits:
+minio:
+  endpoint: minio.baremetal-system:9000
+  hostname: minio.timtorchen.com
+  resources: 
+    requests:
       cpu: 500m
       memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 100Mi
 
-wireguard:
-  hostname: wireguard.timtorchen.com
-  storage: 100Mi
-  resources:
-    limits:
-      cpu: 200m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 300Mi
+# adguard:
+#   hostname: adguard.timtorchen.com
+#   storage: 500Mi
+#   resources:
+#     limits:
+#       cpu: 500m
+#       memory: 500Mi
+#     requests:
+#       cpu: 100m
+#       memory: 100Mi
 
-openvpn:
-  storage: 10Mi
-  resources:
-    limits:
-      cpu: 0.5
-      memory: 100Mi
-    requests:
-      cpu: 0.5
-      memory: 100Mi
+# wireguard:
+#   hostname: wireguard.timtorchen.com
+#   storage: 100Mi
+#   resources:
+#     limits:
+#       cpu: 200m
+#       memory: 500Mi
+#     requests:
+#       cpu: 100m
+#       memory: 300Mi
+
+# openvpn:
+#   storage: 10Mi
+#   resources:
+#     limits:
+#       cpu: 0.5
+#       memory: 100Mi
+#     requests:
+#       cpu: 0.5
+#       memory: 100Mi
 
 nextcloud:
-  hostname: nextcloud.timtorchen.com
-  replicaCount: 1
-  storage: 500Gi
+  hostname: nc.timtorchen.com
+  storage: 250Gi
   resources:
-    limits:
-      cpu: 2
-      memory: 2Gi
     requests:
-      cpu: 1
+      cpu: 2
       memory: 1Gi
 
-mariadb:
+nextcloudPostgres:
   storage: 2Gi
   resources:
-    limits:
-      cpu: 0.5
-      memory: 500Mi
     requests:
-      cpu: 0.2
-      memory: 300Mi
+      cpu: 0.1
+      memory: 100Mi
+
+nextcloudRedis:
+  storage: 100Mi
+  resources:
+    requests:
+      cpu: 0.1
+      memory: 100Mi
 
 jellyfin:
   hostname: jellyfin.timtorchen.com
-  # media 
-  existingClaimMounts:
-  - name: nextcloud
-    mountPath: /nextcloud
-    existingClaim: nextcloud-nextcloud
-  # web static file, config, and database
-  storage: 1Gi
+  config:
+    storage: 1Gi
+  media:
+    storage: 50Gi
   resources:
-    limits:
-      cpu: 2
-      memory: 1Gi
     requests:
       cpu: 1
       memory: 500Mi
   
 bitwarden:
   hostname: bitwarden.timtorchen.com
-  storage: 100Mi
+  storage: 500Mi
   resources:
     limits:
       cpu: 100m

@@ -3,20 +3,29 @@ image:
   tag: 10.6.4
   pullPolicy: IfNotPresent
 
+# currently only support sqlite
+replicas: 1
+
 ingress:
   enabled: true
   annotations: 
-    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
+{{ toYaml .Values.ingress.internalAnnotations | indent 4}}
   hosts:
-  - {{ .Values.jellyfin.hostname }}
+  - host: {{ .Values.jellyfin.hostname }}
+    paths:
+    - path: /
+
 persistence:
   config:
     enabled: true
-    storageClass: {{ .Values.nfsclient.storageClassName }}
+    storageClass: {{ .Values.storageClass.cluster }}
+    size: {{ .Values.jellyfin.config.storage}}
+
   media:
-    enabled: false
-  extraExistingClaimMounts:
-{{toYaml .Values.jellyfin.existingClaimMounts | indent 4}}
+    enabled: true
+    storageClass: {{ .Values.storageClass.cluster }}
+    size: {{ .Values.jellyfin.media.storage}}
+    accessMode: ReadWriteMany
 
 resources:
 {{ toYaml .Values.jellyfin.resources | indent 2 }}

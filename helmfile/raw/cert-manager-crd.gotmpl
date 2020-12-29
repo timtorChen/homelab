@@ -6,17 +6,17 @@ resources:
 - apiVersion: v1
   kind: Secret
   metadata:
-    namespace: system
+    namespace: ingress-system
     name: cloudflare-apikey
   type: Opaque
   stringData:
     apikey: {{ .Values.CLOUDFLARE_APIKEY }}
 
 # staging Issuer
-- apiVersion: cert-manager.io/v1alpha2
+- apiVersion: cert-manager.io/v1
   kind: Issuer
   metadata:
-    namespace: system
+    namespace: ingress-system
     name: cloudflare-dns01-issuer-staging
   spec:
     # letsencrypt acme server
@@ -36,15 +36,16 @@ resources:
               key: apikey
 
 # staging Certificate
-- apiVersion: cert-manager.io/v1alpha2
+- apiVersion: cert-manager.io/v1
   kind: Certificate
   metadata:
-    namespace: system
+    namespace: ingress-system
     name: wildcard-certificate-staging
   spec:
-    secretName: {{ .Values.certificate.wildcardCert.name }}-staging
-    dnsNames:
-    {{- toYaml  .Values.certificate.wildcardCert.dnsNames | nindent 4 }}
+    secretName: wildcard-certificate-secret-staging
+    dnsNames: &dnsNames
+    - "{{ .Values.rootDomain }}"
+    - "{{ print "*." .Values.rootDomain }}"
     # refer to the Issuer or ClusterIssuer predefined
     issuerRef: 
       kind: Issuer
@@ -52,10 +53,10 @@ resources:
       group: cert-manager.io
 
 # production Issuer
-- apiVersion: cert-manager.io/v1alpha2
+- apiVersion: cert-manager.io/v1
   kind: Issuer
   metadata:
-    namespace: system
+    namespace: ingress-system
     name: cloudflare-dns01-issuer
   spec:
     acme:
@@ -66,15 +67,14 @@ resources:
       solvers: *solvers
 
 # production Certificate
-- apiVersion: cert-manager.io/v1alpha2
+- apiVersion: cert-manager.io/v1
   kind: Certificate
   metadata:
-    namespace: system
+    namespace: ingress-system
     name: wildcard-certificate
   spec:
-    secretName: {{ .Values.certificate.wildcardCert.name }}
-    dnsNames:
-    {{- toYaml .Values.certificate.wildcardCert.dnsNames | nindent 4 }}
+    secretName: wildcard-certificate-secret
+    dnsNames: *dnsNames
     issuerRef: 
       kind: Issuer
       name: cloudflare-dns01-issuer

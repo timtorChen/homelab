@@ -26,30 +26,6 @@ configAsCode:
       - tls://9.9.9.9
       - tls://1.1.1.1
       all_servers: true
-      rewrites:
-      # Personal services
-      ## adgaurd
-      - domain: {{ .Values.adguard.hostname }}
-        answer: {{ .Values.personalServiceIP }}
-      ## wireguard
-      - domain: {{ .Values.wireguard.hostname}}
-        answer: {{ .Values.personalServiceIP }}
-      ## nextcloud
-      - domain: {{ .Values.nextcloud.hostname}}
-        answer: {{ .Values.personalServiceIP }}
-      ## jellyfin
-      - domain: {{ .Values.jellyfin.hostname}}
-        answer: {{ .Values.personalServiceIP }}
-      ## bitwarden
-      - domain: {{ .Values.bitwarden.hostname}}
-        answer: {{ .Values.personalServiceIP }}
-      # Public services
-      ## gragana
-      - domain: {{ .Values.grafana.hostname }}
-        answer: {{ .Values.publicIP }}
-      ## rootDomain
-      - domain: {{ .Values.rootDomain }}
-        answer: {{ .Values.publicIP }}
     filters:
     - enabled: true
       name: AdGuard DNS filter
@@ -71,16 +47,20 @@ configAsCode:
     - '@@||gxx.line.naver.jp^$important'
     - '@@||gw.line.naver.jp^$important'
 
+# TCP DNS service
 serviceTCP:
   enabled: true
   type: LoadBalancer
+  externalTrafficPolicy: Local
   loadBalancerIP: {{ .Values.localdnsIP }}
   annotations:
     metallb.universe.tf/allow-shared-ip: {{ .Values.localdnsIP }}
-
+    
+# UDP DNS service
 serviceUDP:
   enabled: true
-  type: LoadBalancer    
+  type: LoadBalancer
+  externalTrafficPolicy: Local
   loadBalancerIP: {{ .Values.localdnsIP }}
   annotations: 
     metallb.universe.tf/allow-shared-ip: {{ .Values.localdnsIP }}
@@ -90,7 +70,7 @@ ingress:
   hosts:
   - {{ .Values.adguard.hostname }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
+{{ toYaml .Values.ingress.internalAnnotations | indent 4}}
 
 # initContainer with busybox
 volumePermissions:
@@ -104,8 +84,8 @@ persistence:
   config: 
     enabled: false
   work: 
-    enabled: true
-    storageClass: {{ .Values.nfsclient.storageClassName }}
+    enabled: false
+    storageClass: {{ .Values.storageClass.cluster }}
     size: {{ .Values.adguard.storage }}
 
 resources: 

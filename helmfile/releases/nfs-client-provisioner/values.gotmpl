@@ -1,9 +1,13 @@
 # Image: official supported, but need suffix `-arm`
 image:
   repository: quay.io/external_storage/nfs-client-provisioner-arm
+  tag: v3.1.0-k8s1.11
+
 nfs:
-  server: {{ .Values.nfsclient.nfsServer }}
-  path: {{ .Values.nfsclient.mountPath }}
+  server: {{ .Values.nfs.server }}
+  path: {{ .Values.nfs.path  }}
 storageClass:
   create: true
-  name: {{ .Values.nfsclient.storageClassName }}
+  name: {{ .Values.storageClass.nfs }}
+  archiveOnDelete: true
+  reclaimPolicy: Delete

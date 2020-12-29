@@ -4,3 +4,7 @@ configInline:
     protocol: layer2
     addresses: 
     - {{ .Values.clusterAddresses }}
+
+speaker:
+  tolerations:
+{{toYaml .Values.taint.mayPoweroff | indent 4 }}

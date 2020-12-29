@@ -1,0 +1,15 @@
+k3s_state: installed
+k3s_release_version: v1.19.5+k3s2
+k3s_become_for_all: true
+k3s_use_experimental: true
+k3s_skip_env_checks: true
+k3s_skip_validation: true
+
+k3s_manifest:
+  vip_address: 192.168.255.10
+  vip_interface: eth0
+
+k3s_server_manifests_templates:
+- "{{ playbook_dir }}/manifests/vip.j2"
+
+k3s_control_node_address: "{{ k3s_manifest.vip_address }}"

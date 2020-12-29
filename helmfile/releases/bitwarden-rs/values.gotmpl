@@ -1,19 +1,32 @@
+# TODO: create admin secretes in chart
 image: 
   repository: bitwardenrs/server
   pullPolicy: IfNotPresent
-  tag: 1.17.0
-env:
-  SIGNUPS_ALLOWED: false
-  INVITATIONS_ALLOWED: false
-  ADMIN_TOKEN: {{ .Values.BITWARDEN_ADMIN_TOKEN }}
-  DOMAIN: https://{{ .Values.bitwarden.hostname }}
+  tag: 1.18.0
+
+bitwardenrs:
+  domain: https://{{ .Values.bitwarden.hostname }}
+  signupsAllowed: true
+  admin: 
+    enabled: true
+    disableAdminToken: false
+    existingSecret:
+      enabled: true
+      name: bitwarden-rs-secrets
+      tokenKey: admin-token
+
 persistence:
   enabled: true
-  storageClass: {{ .Values.nfsclient.storageClassName }}
+  storageClass: {{ .Values.storageClass.cluster }}
   size: {{ .Values.bitwarden.storage }}
-ingress:
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.personalService }}
-  hosts:
-  - {{ .Values.bitwarden.hostname }}
 
+ingress:
+  enabled: true
+  annotations:
+{{ toYaml .Values.ingress.internalAnnotations | indent 4}}
+  hosts:
+  - host: {{ .Values.bitwarden.hostname }}
+    paths: ["/"]
+
+resources: 
+{{ toYaml .Values.bitwarden.resources | indent 2 }}
