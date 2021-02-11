@@ -1,31 +1,35 @@
 # Home cluster
 
-This repo is a collection of my homelab cluster. Node machines are Raspberry PI4 (arm64 architecture). Cluster is orchestrated with [k3s](https://github.com/rancher/k3s), and services are managed with [helmfile](https://github.com/roboll/helmfile).
+This repo is a collection of my homelab cluster. Node machines are 4 Raspberry PI4 (three 8G RAM version, and one 4G RAM version). Cluster is instanced with [k3s](https://github.com/rancher/k3s), and services are managed with [helmfile](https://github.com/roboll/helmfile). All secrets are gpg encrypted using [sops](https://github.com/mozilla/sops).
 
-## Services
 
-### k3s default service
+## Helm releases by namespace
+- kube-system (created while k3s instaced)
+  - coredns 
+  - kube-vip
 
-- kube-system
-  - coredns - cluster DNS
+- baremeal-system
+  - metabllb
+  - minio
+  - local-provisioner
+  - nfs-client-provisioner 
 
-### helm releases
+- longhorn-system
+  - longhorn 
 
-- system
-  - metabllb - load balancer for bare-metal cluster
-  - nginx-ingress-controller - ingress controller
-  - cert-manager - certificate request and renew manager
-  - openvpn - old but the most general VPN
-  - wireguard-access-server - wireguard VPN with a simple UI
-  - adguard-home - custom DNS and ad-blocker
-  - prometheus - service monitoring and alerting
-  - grafana - prometheus data visualization UI
+- ingress-system
+  - nginx-ingress-controller
+  - cert-manager
+ 
+- monitor-system 
+  - prometheus
+  - grafana
 
 - default
-  - bitwarden-rs - password manager
-  - jellyfin - media streaming server
-  - nextcloud - cloud server
-  - blog - my gatsby blog
+  - bitwarden-rs
+  - jellyfin
+  - nextcloud
+  - blog
 
 ## Thanks
 
