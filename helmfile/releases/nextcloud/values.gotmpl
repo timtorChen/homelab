@@ -7,6 +7,11 @@ nextcloud:
   host: {{ .Values.nextcloud.hostname }}
   username: {{ .Values.NEXTCLOUD_ADMIN_USERNAME }}
   password: {{ .Values.NEXTCLOUD_ADMIN_PASSWORD }}
+  phpConfigs:
+    upload.ini: |-
+      upload_max_filesize=10G
+      post_max_size=10G
+      memory_limit=4G
   configs:
     # force all static resources use https
     https.config.php: |-
