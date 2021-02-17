@@ -1,2 +1,2 @@
-**/.decrypted~secrets.sops.yml
-**/.decrypted~secrets.sops.yaml
+.decrypted~*
+plain~*

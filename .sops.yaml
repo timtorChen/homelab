@@ -1,3 +1,4 @@
 creation_rules:
--   pgp: F1801D0F038E98092972FDDBAE404DD02B551819
-    path_regex: secrets\.sops\.(yml|yaml)$
+-   pgp: E63E2F1B2C5A84E8286E2D23ABFED62BADD73CB4
+    path_regex: .*secret\.sops\.(yml|yaml)$
+    encrypted_regex: '^(data|stringData)$'

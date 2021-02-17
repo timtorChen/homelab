@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: monitor
+  name: prometheus
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: prometheus
+    chart: prometheus
+    version: 13.2.1
+  interval: 1h
+  values:
+    kube-state-metrics:
+      image:
+        repository: k8s.gcr.io/kube-state-metrics/kube-state-metrics
+        tag: v1.9.7
+      alertmanager:
+        persistentVolume:
+          enabled: true
+          storageClass: longhorn
+      server:
+        persistentVolume:
+          enabled: true
+          storageClass: longhorn
+      pushgateway:
+        persistentVolume:
+          enabled: true
+          storageClass: longhorn
+      nodeExporter:
+        tolerations:
+          - key: "poweroff"
+            effect: NoSchedule
+            value: "true"
+            operator: Equal
