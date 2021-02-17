@@ -1,0 +1,85 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: monitor
+  name: grafana
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: grafana
+    chart: grafana
+    version: 6.2.1
+  interval: 1h
+  values:
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+      hosts:
+        - grafana.timtorchen.com
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 100Mi
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+
+    admin:
+      existingSecret: grafana-secret
+      userKey: admin-user
+      passwordKey: admin-password
+
+    grafana.ini:
+      auth.anonymous:
+      enabled: true
+
+    dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: "default"
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            url: https://prometheus-server
+            access: proxy
+            isDefault: true
+
+    dashboards:
+      default:
+        home:
+          url: https://raw.githubusercontent.com/timtorchen/pi-cluster/main/monitor/dashboard/home.json
+        ingress-nginx:
+          gnetId: 9614
+          revsion: 1
+          datasource: Prometheus
+        longhorn:
+          gnetId: 13032
+          revision: 6
+          datasource: Prometheus
+        node:
+          gnetId: 8919
+          revision: 24
+          datasource: Prometheus
+        kube:
+          gnetId: 13105
+          revision: 5
+          datasource: Prometheus

@@ -1,0 +1,71 @@
+# Staging
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  namespace: ingress-system
+  name: wildcard-certificate-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: timtorchen@protonmail.com
+    privateKeySecretRef:
+      name: acme-account-private-key-staging
+    solvers: &solvers
+      - dns01:
+          cloudflare:
+            email: timtorchen@protonmail.com
+            apiKeySecretRef:
+              name: cloudflare-apikey
+              key: apikey
+--- 
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  namespace: ingress-system
+  name: wildcard-certificate-staging
+spec:
+  secretName: wildcard-certificate-secret-staging
+  dnsNames: &dnsNames
+  - timtorchen.com
+  - "*.timtorchen.com"
+  issuerRef: 
+    kind: Issuer
+    name: cloudflare-dns01-issuer-staging
+    group: cert-manager.io
+
+# Production
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  namespace: ingress-system
+  name: wildcard-certificate
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: timtorchen@protonmail.com
+    privateKeySecretRef:
+      name: acme-account-private-key
+    solvers:
+      - dns01:
+          cloudflare:
+            email: timtorchen@protonmail.com
+            apiKeySecretRef:
+              name: cloudflare-apikey
+              key: apikey
+--- 
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  namespace: ingress-system
+  name: wildcard-certificate
+spec:
+  secretName: wildcard-certificate-secrete
+  dnsNames:
+  - timtorchen.com
+  - "*.timtorchen.com"
+  issuerRef: 
+    kind: Issuer
+    name: cloudflare-dns01-issuer
+    group: cert-manager.io

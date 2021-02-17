@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-postgres
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud-postgres
+  template:
+    metadata:
+      labels:
+        app: nextcloud-postgres
+    spec:
+      containers:
+        - name: nextcloud-postgres
+          image: postgres:13.1
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+
+          env:
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pg"
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: md5
+
+          envFrom:
+            - secretRef:
+                name: nextcloud-postgres
+
+          volumeMounts:
+            - mountPath: /var/run
+              name: run
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
+            - mountPath: /docker-entrypoint-initdb.d/init-user-db.sh
+              subPath: init-user-db.sh
+              name: inituserdb
+
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -h localhost
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -h localhost
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 999
+            runAsNonRoot: true
+            runAsUser: 999
+
+          resources:
+            limits:
+              memory: "100m"
+              cpu: "100Mi"
+      volumes:
+        - name: inituserdb
+          configMap:
+            name: nextcloud-postgres-inituserdb
+            defaultMode: 0555
+        - name: nextcloud-postgres-data
+          persistentVolumeClaim:
+            claimName: nextcloud-postgres-data

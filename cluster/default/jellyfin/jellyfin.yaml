@@ -1,0 +1,47 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: jellyfin
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: k8s-at-home
+      chart: jellyfin
+      version: 5.0.0
+  interval: 1h
+
+  values:
+    image:
+      repository: jellyfin/jellyfin
+      tag: 10.6.4
+      pullPolicy: IfNotPresent
+
+    replicas: 1
+
+    ingress:
+      enabled: true
+      annotations:
+      hosts:
+      - host: jellyfin.timtorchen.com
+        paths: [/]
+    
+    persistence:
+      config:
+        enabled: true
+        storageClass: longhorn
+        size: 1Gi
+
+      media:
+        enabled: true
+        storageClass: longhorn
+        size: 50Gi
+        accessMode: ReadWriteMany
+
+    resources:
+      requests:
+        cpu: 1
+        memory: 500Mi

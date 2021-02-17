@@ -1,0 +1,52 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: longhorn-system
+  name: longhorn
+spec:
+  interval: 1h
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: longhorn
+      version: 0.12.1
+      chart: longhorn
+  values:
+    ingress:
+      enabled: true
+      host: longhorn.timtorchen.com
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
+
+    defaultSettings:
+      backupTarget: s3://longhorn-backup@home/
+      backupTargetCredentialSecret: minio-secret
+      defaultDataLocality: disabled
+      guaranteedEngineCPU: 0.25
+      defaultDataPath: /longhorn
+      defaultReplicaCount: 2
+      defaultLonghornStaticStorageClass: longhorn
+    
+    persistence:
+      defaultClass: true
+      defaultClassReplicaCount: 2
+      reclaimPolicy: Delete
+      recurringJobs:
+      enable: true
+      jobList: '[
+        { "name": "snap",
+          "task": "snapshot",
+          "cron": "0 */4 * * *",
+          "retain": 10 
+        },
+        {
+          "name":"backup", 
+          "task":"backup", 
+          "cron":"0 0 * * *", 
+          "retain": 5
+        }
+      ]'

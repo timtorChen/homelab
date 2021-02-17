@@ -1,0 +1,42 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: local-storage
+  name: minio
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: minio
+      chart: minio
+      version: 8.0.9
+  interval: 1h
+  values:
+    # Schedule minio only on storage node with HDD RAID attached
+    nodeSelector:
+      kubernetes.io/hostname: agent-storage-pi4
+    tolerations:
+      - key: "poweroff"
+        effect: NoSchedule
+        value: "true"
+        operator: Equal
+    persistence:
+      storageClass: local
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
+      hosts:
+        - minio.timtorchen.com
+    resources:
+      requests:
+        memory: 2Gi
+        
+    replicas: 1
+    existingSecret: minio-secret
+    buckets:
+      - name: longhorn-backup
