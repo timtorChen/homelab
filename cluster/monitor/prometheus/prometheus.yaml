@@ -19,21 +19,21 @@ spec:
       image:
         repository: carlosedp/kube-state-metrics
         tag: v1.9.6
-      alertmanager:
-        persistentVolume:
-          enabled: true
-          storageClass: longhorn
-      server:
-        persistentVolume:
-          enabled: true
-          storageClass: longhorn
-      pushgateway:
-        persistentVolume:
-          enabled: true
-          storageClass: longhorn
-      nodeExporter:
-        tolerations:
-          - key: "poweroff"
-            effect: NoSchedule
-            value: "true"
-            operator: Equal
+    alertmanager:
+      persistentVolume:
+        enabled: true
+        storageClass: longhorn
+    server:
+      persistentVolume:
+        enabled: true
+        storageClass: longhorn
+    pushgateway:
+      persistentVolume:
+        enabled: true
+        storageClass: longhorn
+    nodeExporter:
+      tolerations:
+        - key: "poweroff"
+          effect: NoSchedule
+          value: "true"
+          operator: Equal

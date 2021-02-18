@@ -38,20 +38,20 @@ spec:
 
     grafana.ini:
       auth.anonymous:
-      enabled: true
+        enabled: true
 
     dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-        - name: "default"
-          orgId: 1
-          folder: ""
-          type: file
-          disableDeletion: false
-          editable: true
-          options:
-            path: /var/lib/grafana/dashboards/default
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: "default"
+            orgId: 1
+            folder: ""
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
 
     datasources:
       datasources.yaml:
@@ -66,7 +66,7 @@ spec:
     dashboards:
       default:
         home:
-          url: https://raw.githubusercontent.com/timtorchen/pi-cluster/main/monitor/dashboard/home.json
+          url: https://raw.githubusercontent.com/timtorChen/pi-cluster/main/cluster/monitor/grafana/dashboard/home.json
         ingress-nginx:
           gnetId: 9614
           revsion: 1
