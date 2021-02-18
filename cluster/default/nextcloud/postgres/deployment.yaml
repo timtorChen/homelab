@@ -76,8 +76,8 @@ spec:
 
           resources:
             limits:
-              memory: "100m"
-              cpu: "100Mi"
+              cpu: "100m"
+              memory: "100Mi"
       volumes:
         - name: run
           emptyDir: {}
