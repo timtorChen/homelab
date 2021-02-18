@@ -4,7 +4,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   namespace: ingress-system
-  name: wildcard-certificate-staging
+  name: cloudflare-dns01-issuer-staging
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
@@ -40,7 +40,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   namespace: ingress-system
-  name: wildcard-certificate
+  name:  cloudflare-dns01-issuer
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
@@ -61,7 +61,7 @@ metadata:
   namespace: ingress-system
   name: wildcard-certificate
 spec:
-  secretName: wildcard-certificate-secrete
+  secretName: wildcard-certificate-secret
   dnsNames:
   - timtorchen.com
   - "*.timtorchen.com"
