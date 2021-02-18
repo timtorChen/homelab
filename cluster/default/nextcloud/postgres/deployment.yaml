@@ -39,7 +39,7 @@ spec:
             - mountPath: /tmp
               name: tmp
             - mountPath: /var/lib/postgresql/data
-              name: nextcloud-postgres-data
+              name: postgres-data
             - mountPath: /docker-entrypoint-initdb.d/init-user-db.sh
               subPath: init-user-db.sh
               name: inituserdb
@@ -89,6 +89,6 @@ spec:
           configMap:
             name: nextcloud-postgres-inituserdb
             defaultMode: 0555
-        - name: nextcloud-postgres-data
+        - name: postgres-data
           persistentVolumeClaim:
-            claimName: nextcloud-postgres-data
+            claimName: postgres-data
