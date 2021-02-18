@@ -59,7 +59,7 @@ spec:
         datasources:
           - name: Prometheus
             type: prometheus
-            url: https://prometheus-server
+            url: http://prometheus-server
             access: proxy
             isDefault: true
 
