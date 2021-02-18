@@ -9,7 +9,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         namespace: flux-system
-        name: k8s-at-home
+        name: nextcloud
       chart: nextcloud
       version: 2.5.4
   interval: 1h
