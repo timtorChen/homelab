@@ -66,7 +66,7 @@ spec:
     dashboards:
       default:
         home:
-          url: https://raw.githubusercontent.com/timtorChen/pi-cluster/main/cluster/monitor/grafana/dashboard/home.json
+          url: https://raw.githubusercontent.com/timtorChen/pi-cluster/main/cluster/monitor-system/grafana/dashboard/home.json
         ingress-nginx:
           gnetId: 9614
           revsion: 1
