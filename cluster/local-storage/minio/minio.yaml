@@ -40,3 +40,6 @@ spec:
     existingSecret: minio-secret
     buckets:
       - name: longhorn-backup
+        policy: none
+        purge: false
+        

@@ -23,7 +23,7 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  namespace: longhorn-system
+  namespace: flux-system
   name: longhorn
 spec:
   interval: 24h
