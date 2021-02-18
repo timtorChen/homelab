@@ -16,6 +16,8 @@ spec:
   interval: 1h
   values:
     controller:
+      extraArgs:
+        default-ssl-certificate: ingress-system/wildcard-certificate-secret
       publishService:
         enabled: true
       service:
