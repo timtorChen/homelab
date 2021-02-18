@@ -37,7 +37,7 @@ spec:
             - mountPath: /tmp
               name: tmp
             - mountPath: /var/lib/postgresql/data
-              name: postgres-data
+              name: nextcloud-postgres-data
             - mountPath: /docker-entrypoint-initdb.d/init-user-db.sh
               subPath: init-user-db.sh
               name: inituserdb
@@ -79,6 +79,10 @@ spec:
               memory: "100m"
               cpu: "100Mi"
       volumes:
+        - name: run
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
         - name: inituserdb
           configMap:
             name: nextcloud-postgres-inituserdb
