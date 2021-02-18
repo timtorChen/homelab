@@ -36,17 +36,17 @@ spec:
       defaultClassReplicaCount: 2
       reclaimPolicy: Delete
       recurringJobs:
-      enable: true
-      jobList: '[
-        { "name": "snap",
-          "task": "snapshot",
-          "cron": "0 */4 * * *",
-          "retain": 10 
-        },
-        {
-          "name":"backup", 
-          "task":"backup", 
-          "cron":"0 0 * * *", 
-          "retain": 5
-        }
-      ]'
+        enable: true
+        jobList: '[
+          { "name": "snap",
+            "task": "snapshot",
+            "cron": "0 */4 * * *",
+            "retain": 10 
+          },
+          {
+            "name":"backup", 
+            "task":"backup", 
+            "cron":"0 0 * * *", 
+            "retain": 5
+          }
+        ]'
