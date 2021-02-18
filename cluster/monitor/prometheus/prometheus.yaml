@@ -11,8 +11,8 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: prometheus
-    chart: prometheus
-    version: 13.2.1
+      chart: prometheus
+      version: 13.2.1
   interval: 1h
   values:
     kube-state-metrics:

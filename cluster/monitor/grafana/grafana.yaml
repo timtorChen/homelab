@@ -11,8 +11,8 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: grafana
-    chart: grafana
-    version: 6.2.1
+      chart: grafana
+      version: 6.2.1
   interval: 1h
   values:
     ingress:
