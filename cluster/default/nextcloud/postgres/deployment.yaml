@@ -11,6 +11,8 @@ spec:
       labels:
         app: nextcloud-postgres
     spec:
+      securityContext:
+        fsGroup: 999
       containers:
         - name: nextcloud-postgres
           image: postgres:13.1
