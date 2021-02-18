@@ -15,12 +15,12 @@ spec:
   interval: 1h
   values:
     settings:
-      superuserPassword: temporary-plaintext-password
+      superuserPassword: password
 
     userDatabase:
       name: nextcloud
       user: nextcloud
-      password: temporary-plaintext-password
+      password: password
 
     storage:
       className: longhorn
