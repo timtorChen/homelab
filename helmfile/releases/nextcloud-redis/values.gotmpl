@@ -1,6 +1,0 @@
-resources:
-{{ toYaml .Values.nextcloudRedis.resources | indent 2}}
-
-storage:
-  className: {{ .Values.storageClass.cluster }}
-  requestedSize: {{ .Values.nextcloudRedis.storage }}

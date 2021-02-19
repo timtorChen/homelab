@@ -1,9 +1,0 @@
-k3s_control_node: true
-k3s_etcd_datastore: true
-
-k3s_server:
-  docker: true
-  disable: 
-  - servicelb
-  - traefik
-  - local-storage
