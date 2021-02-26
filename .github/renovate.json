@@ -1,8 +1,5 @@
 {
-  "ignorePaths": [
-    "helmfile/charts"
-  ],
-  "extends": [
-    "config:base"
-  ]
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"]
+  }
 }
