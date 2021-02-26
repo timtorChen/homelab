@@ -90,6 +90,16 @@ spec:
   url: https://prometheus-community.github.io/helm-charts
   interval: 24h
 ---
+# banzaicloud
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: banzaicloud
+spec:
+  url: https://kubernetes-charts.banzaicloud.com
+  interval: 24h
+---
 # k8s-at-home
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
