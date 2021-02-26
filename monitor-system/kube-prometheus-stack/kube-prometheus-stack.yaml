@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: monitor-system
+  name: kube-prometheus-stack
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: prometheus
+      chart: kube-prometheus-stack
+      version: 13.10.0
+  interval: 1h
+  values:
+    grafana:
+      enabled: true
+      ingress:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        hosts:
+          - grafana-stack.timtorchen.com
+      admin:
+        existingSecret: grafana-secret
+        userKey: admin-user
+        passwordKey: admin-password
+
+    prometheus-node-exporter:
+      tolerations:
+        - key: "poweroff"
+          effect: NoSchedule
+          value: "true"
+          operator: Equal
+
+    kube-state-metrics:
+      image:
+        repository: k8s.gcr.io/kube-state-metrics/kube-state-metrics
+        tag: v1.9.8
+
+    prometheusOperator:
+      enabled: true
+
+    prometheus:
+      prometheusSpec:
+        replicas: 2
+        thanos:
+          image: raspbernetes/thanos
+          tag: v0.17.1
+          objectStorageConfig:
+            name: thanos-object-store
+            key: object-store.yaml
+        serviceMonitorSelectorNilUsesHelmValues: false
