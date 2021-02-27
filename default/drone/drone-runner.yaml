@@ -17,3 +17,7 @@ spec:
   values:
     extraSecretNamesForEnvFrom:
     - drone-secret
+    env:
+      DRONE_SERVER_HOST: drone.timtorchen.com
+      DRONE_SERVER_PROTO: https
+      DRONE_NAMESPACE_DEFAULT: default
