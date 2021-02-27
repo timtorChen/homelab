@@ -1,4 +1,5 @@
 creation_rules:
 -   pgp: E63E2F1B2C5A84E8286E2D23ABFED62BADD73CB4
-    path_regex: .*secret\.sops\.(yml|yaml)$
-    encrypted_regex: '^(data|stringData)$'
+    path_regex: .*secret\.(yml|yaml)$
+    # (?i) case insensive
+    encrypted_regex: '(?i)(^data$|^stringdata$|user|password|token)'
