@@ -1,0 +1,19 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: drone
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: drone
+      # renovate: registryUrl=https://charts.drone.io
+      chart: drone-runner-kube
+      version: 0.1.5
+  interval: 1h
+  values:
+    extraSecretNamesForEnvFrom:
+    - drone-secret
