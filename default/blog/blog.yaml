@@ -10,6 +10,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: blog
+      # renovate: registryUrl=https://timtorchen.github.io/blog
       chart: blog
       version: 0.1.0
   interval: 1h

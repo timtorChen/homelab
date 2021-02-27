@@ -10,6 +10,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: groundhog2k
+      # renovate: registryUrl=https://groundhog2k.github.io/helm-charts/
       chart: postgres
       version: 0.2.7
   interval: 1h

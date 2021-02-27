@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: banzaicloud
+      # renovate: registryUrl=https://kubernetes-charts.banzaicloud.com
       chart: thanos
       version: 0.4.2
   interval: 1h

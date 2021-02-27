@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: minio
+      # renovate: registryUrl=https://helm.min.io/
       chart: minio
       version: 8.0.9
   interval: 1h
@@ -41,6 +42,9 @@ spec:
     existingSecret: minio-secret
     buckets:
       - name: longhorn-backup
+        policy: none
+        purge: false
+      - name: thanos
         policy: none
         purge: false
         

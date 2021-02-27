@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: cert-manager
+      # renovate: registryUrl=https://charts.jetstack.io
       chart: cert-manager
       version: v1.1.0
   interval: 1h

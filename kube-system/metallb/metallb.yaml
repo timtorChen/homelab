@@ -13,6 +13,7 @@ spec:
         namespace: flux-system
         name: stable
       version: 0.12.1
+      # renovate: registryUrl=https://charts.helm.sh/stable
       chart: metallb
   values:
     controller:

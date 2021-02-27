@@ -10,6 +10,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: nextcloud
+      # renovate: registryUrl=https://nextcloud.github.io/helm/
       chart: nextcloud
       version: 2.5.4
   interval: 1h
@@ -37,7 +38,7 @@ spec:
 
     resources:
       requests:
-        cpu: 2
+        cpu: 1 # 2 seems too aggresive 
         memory: 1Gi
 
     nextcloud:
@@ -92,5 +93,7 @@ spec:
       enabled: true
       https: true
       image:
-        repository: timtor/nextcloud-exporter
-        tag: master
+        repository: xperimental/nextcloud-exporter
+        tag: 0.4.0-4-g2af5ccb
+      sercice:
+        annotations: {}

@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: ingress-nginx
+      # renovate: registryUrl=https://kubernetes.github.io/ingress-nginx
       chart: ingress-nginx
       version: 3.21.0
   interval: 1h

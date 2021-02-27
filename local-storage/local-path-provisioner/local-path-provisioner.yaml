@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: local-path-provisioner
+      # renovate: registryUrl=https://charts.containeroo.ch
       chart: local-path-provisioner
       version: 0.0.19
   interval: 1h

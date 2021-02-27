@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: grafana
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
       version: 6.2.1
   interval: 1h

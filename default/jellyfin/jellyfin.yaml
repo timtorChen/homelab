@@ -10,6 +10,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: k8s-at-home
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: jellyfin
       version: 5.0.0
   interval: 1h
