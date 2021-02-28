@@ -20,5 +20,6 @@ spec:
       repository: raspbernetes/thanos
       tag: v0.17.1
     objstoreSecretOverride: thanos-object-store
-
-
+    query:
+      replicaLabels:
+        - prometheus_replica
