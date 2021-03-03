@@ -21,15 +21,14 @@
   ],
   "packageRules": [
     {
-      "enabled": false,
-      "matchUpdateTypes": ["minor"],
-      "matchPackageNames": [
-        "ingress-nginx", "cert-managet", "longhorn"
-      ]
-    },
-    {
-      "matchDatasources": ["helm"],
+      "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": [
+        "ghcr.io/fluxcd/source-controller",
+        "ghcr.io/fluxcd/notification-controller",
+        "ghcr.io/fluxcd/kustomize-controller",
+        "ghcr.io/fluxcd/helm-controller"
+      ],
       "automerge": true
     }
   ]
