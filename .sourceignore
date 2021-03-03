@@ -1,1 +1,4 @@
 .sops.yaml
+# workspace and action directories
+.github/
+.vscode/
