@@ -1,0 +1,22 @@
+{
+  "timezone": "Asia/Taipei",
+  "platform": "github",
+  "repositories": ["timtorChen/pi-cluster"],
+  "gitAuthor": "Renovate Bot <renovate@whitesourcesoftware.com>",
+  "logLevel": "debug",
+  "dependencyDashboard": true,
+  "onboarding": true,
+  "onboardingBranch": "renovate/configure",
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"]
+  },
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.yaml$"],
+      "matchStrings": [
+        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
+      ],
+      "datasourceTemplate": "helm"
+    }
+  ]
+}
