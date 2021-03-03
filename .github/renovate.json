@@ -1,4 +1,5 @@
 {
+  "timezone": "Asia/Taipei",
   "kubernetes": {
     "fileMatch": ["\\.yaml$"]
   },
@@ -10,5 +11,13 @@
       ],
       "datasourceTemplate": "helm"
     }
-  ]
+  ],
+  "dependencyDashboard": true,
+  "platform": "github",
+  "logLevel": "debug",
+  "repositories": ["timtorChen/pi-cluster"],
+  "branchPrefix": "test-renovate/",
+  "dryRun": true,
+  "onboarding": false,
+  "gitAuthor": "timtor chen <to@timtorchen.com>"
 }

@@ -1,0 +1,21 @@
+name: Renovate
+on:
+  push:
+    branches:
+      - "main"
+  schedule:
+    - cron: '0 0 * * *' # every 8 am on UTC+8
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Renovate
+        #* BUG on renovatebot action
+        #* not able to use major version like renovatebot/github-action@v24
+        uses: renovatebot/github-action@release
+        with:
+          configurationFile: .github/renovate.json
+          token: ${{ secrets.RENOVATE_TOKEN }}
