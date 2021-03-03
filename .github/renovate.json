@@ -29,7 +29,8 @@
         "ghcr.io/fluxcd/kustomize-controller",
         "ghcr.io/fluxcd/helm-controller"
       ],
-      "automerge": true
+      "automerge": true,
+      "requiredStatusChecks": null
     }
   ]
 }
