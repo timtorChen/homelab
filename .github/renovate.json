@@ -30,7 +30,7 @@
     {
       "matchDatasources": ["helm"],
       "matchUpdateTypes": ["minor", "patch"],
-      "autoMerge": true
+      "automerge": true
     }
   ]
 }
