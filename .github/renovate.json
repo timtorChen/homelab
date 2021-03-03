@@ -18,5 +18,19 @@
       ],
       "datasourceTemplate": "helm"
     }
+  ],
+  "packageRules": [
+    {
+      "enabled": false,
+      "matchUpdateTypes": ["minor"],
+      "matchPackageNames": [
+        "ingress-nginx", "cert-managet", "longhorn"
+      ]
+    },
+    {
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "autoMerge": true
+    }
   ]
 }
