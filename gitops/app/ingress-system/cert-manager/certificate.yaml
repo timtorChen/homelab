@@ -15,9 +15,9 @@ spec:
       - dns01:
           cloudflare:
             email: timtorchen@protonmail.com
-            apiKeySecretRef:
-              name: cloudflare-apikey
-              key: apikey
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
 --- 
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -51,9 +51,9 @@ spec:
       - dns01:
           cloudflare:
             email: timtorchen@protonmail.com
-            apiKeySecretRef:
-              name: cloudflare-apikey
-              key: apikey
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
 --- 
 apiVersion: cert-manager.io/v1
 kind: Certificate
