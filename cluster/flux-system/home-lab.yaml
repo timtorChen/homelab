@@ -40,6 +40,9 @@ spec:
   interval: 10m0s
   path: ./gitops/app
   prune: true
+  dependsOn:
+    - name: crd
+    - name: infra
   sourceRef:
     kind: GitRepository
     name: flux-system
