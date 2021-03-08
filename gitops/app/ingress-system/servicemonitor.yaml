@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  namespace: monitor-system
+  namespace: ingress-system
   name: nginx-ingress
 spec:
   namespaceSelector:
