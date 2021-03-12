@@ -25,7 +25,8 @@ spec:
         value: "true"
         operator: Equal
     persistence:
-      storageClass: local
+      storageClass: nfs-client
+      size: 500Gi
     ingress:
       enabled: true
       annotations:
@@ -37,13 +38,10 @@ spec:
     resources:
       requests:
         memory: 1Gi
-        
-    replicas: 1
+
+    mode: standalone
     existingSecret: minio-secret
     buckets:
-      - name: longhorn-backup
-        policy: none
-        purge: false
       - name: thanos
         policy: none
         purge: false
