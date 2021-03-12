@@ -16,14 +16,6 @@ spec:
       version: 8.0.9
   interval: 1h
   values:
-    # Schedule minio only on storage node with HDD RAID attached
-    nodeSelector:
-      kubernetes.io/hostname: agent-storage-pi4
-    tolerations:
-      - key: "poweroff"
-        effect: NoSchedule
-        value: "true"
-        operator: Equal
     persistence:
       storageClass: nfs-client
       size: 500Gi
