@@ -1,4 +1,4 @@
 creation_rules:
 -   pgp: B5F09B452E660A84
     path_regex: .*secret\.(yml|yaml)$
-    encrypted_regex: (^data$|^stringData$|user|[Pp]assword)
+    encrypted_regex: (^data$|^stringData$|user|[Pp]assword|userDatabase)
