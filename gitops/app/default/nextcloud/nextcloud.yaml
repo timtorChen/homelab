@@ -75,7 +75,9 @@ spec:
           value: nextcloud-redis
         - name: REDIS_HOST_PORT
           value: "6379"
-
+        - name: REDIS_HOST_PASSWORD
+          value: password
+          
     internalDatabase:
       enabled: false
 
