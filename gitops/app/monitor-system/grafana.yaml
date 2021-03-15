@@ -25,7 +25,17 @@ spec:
     persistence:
       enabled: true
       storageClass: longhorn
+      accessModes: 
+        - ReadWriteMany
       size: 100Mi
+
+    replicas: 2
+
+    deploymentStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1 # minimum pod 1
+        maxSurge: 1 # maximum pod 3
 
     resources:
       requests:
