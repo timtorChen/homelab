@@ -17,11 +17,27 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
   namespace: flux-system
+  name: source
+spec:
+  interval: 10m0s
+  path: ./gitops/source
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  validation: client
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  namespace: flux-system
   name: infra
 spec:
   interval: 10m0s
   path: ./gitops/infra
   prune: false
+  dependsOn:
+    - name: source
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -41,6 +57,7 @@ spec:
   path: ./gitops/app
   prune: true
   dependsOn:
+    - name: source
     - name: crd
     - name: infra
   sourceRef:
