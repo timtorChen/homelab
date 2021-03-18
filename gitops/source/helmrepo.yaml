@@ -158,3 +158,13 @@ metadata:
 spec:
   url:  https://charts.drone.io 
   interval: 24h
+---
+# bitnami
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: bitnami
+spec:
+  url: https://charts.bitnami.com/bitnami
+  interval: 24h
