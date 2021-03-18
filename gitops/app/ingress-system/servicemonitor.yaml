@@ -1,3 +1,4 @@
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -12,3 +13,18 @@ spec:
       app.kubernetes.io/name: ingress-nginx
   endpoints:
     - port: metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: ingress-system
+  name: external-dns
+spec:
+  namespaceSelector:
+    matchNames:
+      - ingress-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: external-dns
+  endpoints:
+    - port: http

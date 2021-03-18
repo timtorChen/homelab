@@ -1,0 +1,32 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  namespace: flux-system
+  name: external-dns-crd-source
+spec:
+  interval: 5m
+  url: https://github.com/kubernetes-sigs/external-dns
+  ref: 
+    tag: v0.7.6
+  ignore: |
+    # exclude all
+    /*
+    # include crd
+    !/docs/contributing/crd-source/crd-manifest.yaml
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: external-dns-crd
+spec:
+  interval: 10m
+  prune: true
+  sourceRef: 
+    kind: GitRepository
+    name: external-dns-crd-source
+  healthChecks:
+    - apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      name: dnsendpoints.externaldns.k8s.io

@@ -1,0 +1,41 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: ingress-system
+  name: external-dns
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: bitnami
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+      chart: external-dns
+      version: 4.9.1
+  interval: 1h
+  values:
+    image:
+      registry: k8s.gcr.io
+      repository: external-dns/external-dns
+      tag: v0.7.6
+    sources:
+      - crd
+      - ingress
+    annotationFilter: external-dns in (public)
+    domainFilters:
+      - timtor.dev
+      - timtorchen.com
+    provider: cloudflare
+    cloudflare:
+      secretName: cloudflare-secret
+      proxied: true
+    policy: sync
+    crd:
+      create: false
+      apiversion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
