@@ -20,6 +20,9 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: nginx
+        external-dns: public
+        external-dns.alpha.kubernetes.io/hostname: grafana.timtorchen.com
+        external-dns.alpha.kubernetes.io/target: cname.timtorchen.com
       hosts:
         - grafana.timtorchen.com
     persistence:

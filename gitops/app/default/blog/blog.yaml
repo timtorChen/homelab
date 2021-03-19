@@ -18,8 +18,14 @@ spec:
     ingress:
       enabled: true
       annotations:
+        kubernetes.io/ingress.class: nginx
+        external-dns: public
+        external-dns.alpha.kubernetes.io/hostname: timtorchen.com,www.timtorchen.com
+        external-dns.alpha.kubernetes.io/target: cname.timtorchen.com
       hosts:
       - host: timtorchen.com
+        paths: [/]
+      - host: www.timtorchen.com
         paths: [/]
     
     serviceAccount:
