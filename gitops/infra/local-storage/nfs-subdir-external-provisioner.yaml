@@ -18,7 +18,7 @@ spec:
   values:
     nfs:
       server: 192.168.255.100
-      path: /mnt/md0
+      path: /pool
     storageClass:
       name: nfs-client
       allowVolumeExpansion: true
