@@ -24,7 +24,7 @@ spec:
         nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
 
     defaultSettings:
-      backupTarget: nfs://192.168.255.100:/mnt/md0
+      backupTarget: nfs://192.168.255.100:/pool
       guaranteedEngineCPU: 0.25
       defaultDataPath: /longhorn
       defaultReplicaCount: 2
