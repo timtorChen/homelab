@@ -6,7 +6,7 @@
   "logLevel": "debug",
   "dependencyDashboard": true,
   "onboarding": true,
-  "onboardingBranch": "renovate/configure",
+  "onboardingBranch": "action/config/renovate",
   "kubernetes": {
     "fileMatch": ["\\.yaml$"],
     "ignorePaths": ["cluster/flux-system/"]
