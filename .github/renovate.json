@@ -8,7 +8,8 @@
   "onboarding": true,
   "onboardingBranch": "renovate/configure",
   "kubernetes": {
-    "fileMatch": ["\\.yaml$"]
+    "fileMatch": ["\\.yaml$"],
+    "ignorePaths": ["cluster/flux-system/"]
   },
   "regexManagers": [
     {
@@ -17,20 +18,6 @@
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n"
       ],
       "datasourceTemplate": "helm"
-    }
-  ],
-  "packageRules": [
-    {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": [
-        "ghcr.io/fluxcd/source-controller",
-        "ghcr.io/fluxcd/notification-controller",
-        "ghcr.io/fluxcd/kustomize-controller",
-        "ghcr.io/fluxcd/helm-controller"
-      ],
-      "automerge": true,
-      "requiredStatusChecks": null
     }
   ]
 }
