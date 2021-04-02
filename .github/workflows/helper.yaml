@@ -1,0 +1,11 @@
+---
+name: Helper
+on:
+  push:
+
+jobs:
+  show-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show context
+        uses: crazy-max/ghaction-dump-context@v1
