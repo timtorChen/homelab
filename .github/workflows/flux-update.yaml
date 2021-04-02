@@ -23,7 +23,7 @@ jobs:
           flux install --export > ./cluster/flux-system/gotk-components.yaml
           
           FULL_VERSION="$(flux -v)"
-          VERSION="${FULL_VERSION#flux version }"
+          VERSION="v${FULL_VERSION#flux version }"
 
           echo "⚡ Current flux version: $VERSION"
           echo "::set-output name=version::$VERSION"
@@ -31,11 +31,12 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: flux/update-${{ steps.flux.outputs.version }}
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          branch: "flux/update-${{ steps.flux.outputs.version }}"
           committer: "Timtor Chen <to@timtor.dev>"
           author: "Timtor Chen <to@timtor.dev>"
-          title: Update flux components to ${{ steps.flux.output.version }}
+          title: "Update flux components to ${{ steps.flux.output.version }}"
+          commit-message: "Update flux components to ${{ steps.flux.output.version }}"
           body: |
             Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.flux.outputs.version }}
           delete-branch: true
