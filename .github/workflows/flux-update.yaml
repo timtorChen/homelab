@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: "main"
       
       - name: Setup Flux CLI
         uses: fluxcd/flux2/action@main
@@ -34,6 +32,7 @@ jobs:
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
           branch: "flux/update-${{ steps.flux.outputs.version }}"
+          base: "${{ github.event.repository.default_branch }}"
           committer: "Timtor Chen <to@timtor.dev>"
           author: "Timtor Chen <to@timtor.dev>"
           title: "Update flux components to ${{ steps.flux.outputs.version }}"
