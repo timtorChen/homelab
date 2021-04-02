@@ -1,20 +1,23 @@
+---
+# Flux version: v0.11.0
+# Components: source-controller,kustomize-controller,helm-controller,notification-controller
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: flux-system
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: alerts.notification.toolkit.fluxcd.io
 spec:
   group: notification.toolkit.fluxcd.io
@@ -180,11 +183,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: buckets.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -367,11 +370,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: gitrepositories.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -582,11 +585,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: helmcharts.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -773,11 +776,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: helmreleases.helm.toolkit.fluxcd.io
 spec:
   group: helm.toolkit.fluxcd.io
@@ -1288,11 +1291,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: helmrepositories.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -1455,11 +1458,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: kustomizations.kustomize.toolkit.fluxcd.io
 spec:
   group: kustomize.toolkit.fluxcd.io
@@ -1533,6 +1536,10 @@ spec:
                   - name
                   type: object
                 type: array
+              force:
+                default: false
+                description: Force instructs the controller to recreate resources when patching fails due to an immutable field change.
+                type: boolean
               healthChecks:
                 description: A list of resources to be included in the health assessment.
                 items:
@@ -1668,6 +1675,27 @@ spec:
                       type: string
                     description: Substitute holds a map of key/value pairs. The variables defined in your YAML manifests that match any of the keys defined in the map will be substituted with the set value. Includes support for bash string replacement functions e.g. ${var:=default}, ${var:position} and ${var/substring/replacement}.
                     type: object
+                  substituteFrom:
+                    description: SubstituteFrom holds references to ConfigMaps and Secrets containing the variables and their values to be substituted in the YAML manifests. The ConfigMap and the Secret data keys represent the var names and they must match the vars declared in the manifests for the substitution to happen.
+                    items:
+                      description: SubstituteReference contains a reference to a resource containing the variables name and value.
+                      properties:
+                        kind:
+                          description: Kind of the values referent, valid values are ('Secret', 'ConfigMap').
+                          enum:
+                          - Secret
+                          - ConfigMap
+                          type: string
+                        name:
+                          description: Name of the values referent. Should reside in the same namespace as the referring resource.
+                          maxLength: 253
+                          minLength: 1
+                          type: string
+                      required:
+                      - kind
+                      - name
+                      type: object
+                    type: array
                 type: object
               prune:
                 description: Prune enables garbage collection.
@@ -1712,7 +1740,7 @@ spec:
                 description: Timeout for validation, apply and health checking operations. Defaults to 'Interval' duration.
                 type: string
               validation:
-                description: Validate the Kubernetes objects before applying them on the cluster. The validation strategy can be 'client' (local dry-run), 'server' (APIServer dry-run) or 'none'.
+                description: Validate the Kubernetes objects before applying them on the cluster. The validation strategy can be 'client' (local dry-run), 'server' (APIServer dry-run) or 'none'. When 'Force' is 'true', validation will fallback to 'client' if set to 'server' because server-side validation is not supported in this scenario.
                 enum:
                 - none
                 - client
@@ -1826,11 +1854,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: providers.notification.toolkit.fluxcd.io
 spec:
   group: notification.toolkit.fluxcd.io
@@ -1899,6 +1927,8 @@ spec:
                 - gitlab
                 - bitbucket
                 - azuredevops
+                - googlechat
+                - webex
                 type: string
               username:
                 description: Bot username for this provider
@@ -1969,11 +1999,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.3.0
+    controller-gen.kubebuilder.io/version: v0.4.1
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: receivers.notification.toolkit.fluxcd.io
 spec:
   group: notification.toolkit.fluxcd.io
@@ -2075,6 +2105,7 @@ spec:
                 - quay
                 - gcr
                 - nexus
+                - acr
                 type: string
             required:
             - resources
@@ -2147,7 +2178,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: helm-controller
   namespace: flux-system
 ---
@@ -2156,7 +2187,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: kustomize-controller
   namespace: flux-system
 ---
@@ -2165,7 +2196,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: notification-controller
   namespace: flux-system
 ---
@@ -2174,7 +2205,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: source-controller
   namespace: flux-system
 ---
@@ -2183,7 +2214,7 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: crd-controller-flux-system
 rules:
 - apiGroups:
@@ -2262,7 +2293,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: cluster-reconciler-flux-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -2281,7 +2312,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: crd-controller-flux-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -2312,7 +2343,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: notification-controller
   namespace: flux-system
@@ -2331,7 +2362,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: source-controller
   namespace: flux-system
@@ -2350,7 +2381,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: webhook-receiver
   namespace: flux-system
@@ -2369,7 +2400,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: helm-controller
   namespace: flux-system
@@ -2398,7 +2429,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/helm-controller:v0.8.2
+        image: ghcr.io/fluxcd/helm-controller:v0.9.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2441,7 +2472,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: kustomize-controller
   namespace: flux-system
@@ -2470,7 +2501,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/kustomize-controller:v0.9.3
+        image: ghcr.io/fluxcd/kustomize-controller:v0.10.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2515,7 +2546,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: notification-controller
   namespace: flux-system
@@ -2543,7 +2574,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/notification-controller:v0.10.0
+        image: ghcr.io/fluxcd/notification-controller:v0.11.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2590,7 +2621,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
     control-plane: controller
   name: source-controller
   namespace: flux-system
@@ -2623,7 +2654,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/source-controller:v0.9.1
+        image: ghcr.io/fluxcd/source-controller:v0.10.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2673,7 +2704,7 @@ kind: NetworkPolicy
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: allow-scraping
   namespace: flux-system
 spec:
@@ -2692,7 +2723,7 @@ kind: NetworkPolicy
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: allow-webhooks
   namespace: flux-system
 spec:
@@ -2710,7 +2741,7 @@ kind: NetworkPolicy
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: v0.8.0
+    app.kubernetes.io/version: v0.11.0
   name: deny-ingress
   namespace: flux-system
 spec:
@@ -2723,3 +2754,4 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+---
