@@ -1,0 +1,46 @@
+---
+name: Cron - Flux Update
+on:
+  push:
+    branches:
+      - "action/config"
+  schedule:
+    - cron: "0 12 * * *"
+jobs:
+  flux-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "main"
+      
+      - name: Setup Flux CLI
+        uses: fluxcd/flux2/action@main
+      
+      - name: Update Flux
+        id: flux
+        run: |
+          flux install --export > ./cluster/flux-system/gotk-components.yaml
+          
+          FULL_VERSION="$(flux -v)"
+          VERSION="v${FULL_VERSION#flux version }"
+
+          echo "⚡ Current flux version: $VERSION"
+          echo "::set-output name=version::$VERSION"
+        
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          branch: "flux/update-${{ steps.flux.outputs.version }}"
+          committer: "Timtor Chen <to@timtor.dev>"
+          author: "Timtor Chen <to@timtor.dev>"
+          title: "Update flux components to ${{ steps.flux.outputs.version }}"
+          commit-message: "Update flux components to ${{ steps.flux.outputs.version }}"
+          body: |
+            Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.flux.outputs.version }}
+          delete-branch: true
+
+
+        

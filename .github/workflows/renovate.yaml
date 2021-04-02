@@ -1,11 +1,10 @@
-name: Renovate
+name: Cron - Renovate
 on:
   push:
     branches:
-      - "main"
-      - "renovate/configure"
+      - "action/config"
   schedule:
-    - cron: '0 0 * * *' # every 8 am on UTC+8
+    - cron: "0 12 * * *"
 jobs:
   renovate:
     runs-on: ubuntu-latest
