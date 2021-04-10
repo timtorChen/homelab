@@ -22,7 +22,7 @@ spec:
 
     persistence:
       enabled: true
-      storageClass: longhorn
+      storageClass: ceph-fs
       size: 500Mi
 
     ingress:

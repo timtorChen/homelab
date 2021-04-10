@@ -26,7 +26,7 @@ spec:
 
     persistenceVolume:
       enabled: true
-      storageClass: longhorn
+      storageClass: ceph-fs
       size: 8Gi
 
     extraSecretNamesForEnvFrom:

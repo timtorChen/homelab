@@ -36,16 +36,16 @@ spec:
     persistence:
       config:
         enabled: true
-        storageClass: longhorn
+        storageClass: ceph-fs
         size: 1Gi
 
       media:
         enabled: true
-        storageClass: longhorn
+        storageClass: ceph-fs
         size: 50Gi
         accessMode: ReadWriteMany
 
     resources:
       requests:
-        cpu: 1
-        memory: 500Mi
+        cpu: 0.5
+        memory: 250Mi
