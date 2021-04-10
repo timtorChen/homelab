@@ -24,7 +24,7 @@ spec:
         - host: drone.timtorchen.com
           paths: [/]
 
-    persistenceVolume:
+    persistentVolume:
       enabled: true
       storageClass: ceph-fs
       size: 8Gi
