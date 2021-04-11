@@ -88,6 +88,10 @@ spec:
         secretName: nextcloud-postgres-secret
         usernameKey: postgres-username
         passwordKey: postgres-password
+
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 600 # first install is slow in rsync
     
     metrics:
       enabled: true
