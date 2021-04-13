@@ -35,8 +35,8 @@ jobs:
           base: "${{ github.event.repository.default_branch }}"
           committer: "Timtor Chen <to@timtor.dev>"
           author: "Timtor Chen <to@timtor.dev>"
-          title: "Update flux components to ${{ steps.flux.outputs.version }}"
-          commit-message: "Update flux components to ${{ steps.flux.outputs.version }}"
+          title: "(bot) Update flux components to ${{ steps.flux.outputs.version }}"
+          commit-message: "(bot) Update flux components to ${{ steps.flux.outputs.version }}"
           body: |
             Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.flux.outputs.version }}
           delete-branch: true
