@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: nfs-subdir-external-provisioner
-      # renovate: registryUrl=https://kubernetes.github.io/ingress-nginx
+      # renovate: registryUrl=https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
       chart: nfs-subdir-external-provisioner
       version: 4.0.3
   interval: 1h
