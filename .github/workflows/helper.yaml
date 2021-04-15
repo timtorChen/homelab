@@ -2,7 +2,9 @@
 name: Helper
 on:
   push:
-
+    branches:
+      - "action/config"
+      - $default-branch
 jobs:
   show-context:
     runs-on: ubuntu-latest
