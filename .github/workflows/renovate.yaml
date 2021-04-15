@@ -17,5 +17,5 @@ jobs:
         #* not able to use major version like renovatebot/github-action@v24
         uses: renovatebot/github-action@release
         with:
-          configurationFile: .github/renovate.json
+          configurationFile: .github/renovate.js
           token: ${{ secrets.RENOVATE_TOKEN }}
