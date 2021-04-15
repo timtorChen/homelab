@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - "action/config"
-      - $default-branch
+      - "main"
 jobs:
   show-context:
     runs-on: ubuntu-latest
