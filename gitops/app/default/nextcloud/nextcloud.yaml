@@ -32,7 +32,7 @@ spec:
 
     persistence:
       enabled: true
-      storageClass: longhorn
+      storageClass: ceph-fs
       accessMode: ReadWriteOnce
       size: 250Gi
 
@@ -89,6 +89,10 @@ spec:
         usernameKey: postgres-username
         passwordKey: postgres-password
 
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 600 # first install is slow in rsync
+    
     metrics:
       enabled: true
       https: true

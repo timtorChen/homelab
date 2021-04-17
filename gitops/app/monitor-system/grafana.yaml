@@ -27,7 +27,7 @@ spec:
         - grafana.timtorchen.com
     persistence:
       enabled: true
-      storageClass: longhorn
+      storageClassName: ceph-fs
       accessModes: 
         - ReadWriteMany
       size: 100Mi
