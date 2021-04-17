@@ -65,10 +65,15 @@ spec:
         - name: jellyfin-media
           persistentVolumeClaim:
             claimName: jellyfin-media
+        - name: photoprism-originals
+          persistentVolumeClaim:
+            claimName: photoprism-originals
 
       extraVolumeMounts:
         - name: jellyfin-media
           mountPath: /jellyfin-media
+        - name: photoprism-originals
+          mountPath: /photoprism-originals
 
       extraEnv:
         - name: REDIS_HOST

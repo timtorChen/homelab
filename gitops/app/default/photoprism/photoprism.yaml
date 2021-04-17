@@ -1,0 +1,47 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: photoprism
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: k8s-at-home
+      chart: photoprism
+      version: 4.1.1
+  interval: 1h
+
+  values:
+    image:
+      repository: photoprism/photoprism-arm64
+      tag: "20210222"
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
+      hosts:
+        - host: photo.timtorchen.com
+          paths:
+            - path: /
+
+    env:
+      PHOTOPRISM_SITE_URL: photo.timtorchen.com
+      PHOTOPRISM_PUBLIC: false
+      PHOTOPRISM_ADMIN_PASSWORD: password
+
+    persistence:
+      config:
+        enabled: true
+        storageClass: ceph-fs
+        accessMode: ReadWriteMany
+        size: 100Mi
+        mountPath: /photoprism/storage
+
+      originals:
+        enabled: true
+        existingClaim: photoprism-originals
+        mountPath: /photoprism/originals
