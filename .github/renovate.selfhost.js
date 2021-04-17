@@ -9,5 +9,4 @@ module.exports = {
   onboarding: true,
   onboardingBranch: "action/config",
   onboardingConfigFileName: "renovate.json5",
-  commitMessagePrefix: "(bot)"
 };
