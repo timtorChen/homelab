@@ -36,14 +36,13 @@ spec:
     persistence:
       config:
         enabled: true
-        storageClass: ceph-fs
-        size: 1Gi
+        existingClaim: jellyfin-config
+        mountPath: /config
 
       media:
         enabled: true
-        storageClass: ceph-fs
-        size: 50Gi
-        accessMode: ReadWriteMany
+        existingClaim: jellyfin-media
+        mountPath: /media
 
     resources:
       requests:
