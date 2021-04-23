@@ -10,6 +10,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: k8s-at-home
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: photoprism
       version: 4.1.1
   interval: 1h
@@ -28,20 +29,34 @@ spec:
           paths:
             - path: /
 
-    env:
-      PHOTOPRISM_SITE_URL: photo.timtorchen.com
-      PHOTOPRISM_PUBLIC: false
-      PHOTOPRISM_ADMIN_PASSWORD: password
+    podSecurityContext:
+      fsGroup: 1000
+      runAsGroup: 1000
+      runAsUser: 1000
+      fsGroupChangePolicy: "OnRootMismatch"
+
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "1"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
 
     persistence:
       config:
         enabled: true
-        storageClass: ceph-fs
-        accessMode: ReadWriteMany
-        size: 100Mi
+        existingClaim: photoprism-config
         mountPath: /photoprism/storage
-
       originals:
         enabled: true
         existingClaim: photoprism-originals
         mountPath: /photoprism/originals
+
+    env:
+      PHOTOPRISM_SITE_URL: photo.timtorchen.com
+      PHOTOPRISM_PUBLIC: false
+
+    envFrom:
+      - secretRef:
+          name: photoprism-secret
