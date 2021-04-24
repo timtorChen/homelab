@@ -18,6 +18,8 @@
         "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*?)\n",
         // kube-prometheus-stack CRD
         "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",
+        // cert-manager CRD
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
     },
   ],

@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  namespace: ingress-system
+  namespace: cert-manager
   name: cert-manager
 spec:
   chart:
@@ -16,7 +16,7 @@ spec:
       version: v1.3.1
   interval: 1h
   values:
-    installCRDs: true
+    installCRDs: false
     extraArgs:
       - --dns01-recursive-nameservers-only
       - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53

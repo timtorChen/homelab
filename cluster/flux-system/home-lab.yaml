@@ -45,7 +45,7 @@ spec:
     provider: sops
     secretRef:
       name: gpg-secret
-  validation: client
+  validation: server
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
@@ -67,7 +67,4 @@ spec:
     provider: sops
     secretRef:
       name: gpg-secret
-  ## TODO: keep track of some issues in order to seperate CRD from app
-  ## eg. cert-manager, CRD is only in github release
-  ##     longhorn, planning to do in v1.2 milestone
-  # validation: client
+  validation: server

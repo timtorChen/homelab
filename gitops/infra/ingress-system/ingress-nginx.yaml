@@ -18,7 +18,7 @@ spec:
   values:
     controller:
       extraArgs:
-        default-ssl-certificate: ingress-system/wildcard-certificate-secret
+        default-ssl-certificate: cert-manager/wildcard-certificate-secret
       publishService:
         enabled: true
       service:
