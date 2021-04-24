@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "action/config"
+      - "main"
   schedule:
     - cron: "0 12 * * *"
 jobs:
