@@ -1,0 +1,17 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: kube-system
+  name: kured
+spec:
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  selector:
+    matchLabels:
+      app: kured
+  endpoints:
+  - port: metrics
+    path: /metrics
+    interval: 60s

@@ -4,8 +4,6 @@ kind: ServiceMonitor
 metadata:
   namespace: rook-ceph
   name: rook-ceph-mgr
-  labels:
-    team: rook
 spec:
   namespaceSelector:
     matchNames:
