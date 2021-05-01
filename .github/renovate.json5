@@ -14,7 +14,7 @@
       matchStrings: [
         // common helm release
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n",
-        // common CRD - refer chart version to determine git tag should update or not
+        // common CRD
         "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*?)\n",
         // kube-prometheus-stack CRD
         "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",

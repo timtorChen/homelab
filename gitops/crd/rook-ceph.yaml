@@ -8,6 +8,7 @@ spec:
   interval: 5m
   url: https://github.com/rook/rook
   ref:
+    # renovate: registryUrl=https://charts.rook.io/release chart=rook-ceph
     tag: v1.5.9
   ignore: |
     # exclude all
