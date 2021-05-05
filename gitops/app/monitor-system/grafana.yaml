@@ -13,7 +13,7 @@ spec:
         name: grafana
       # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
-      version: 6.8.0
+      version: 6.8.4
   interval: 1h
   values:
     ingress:
