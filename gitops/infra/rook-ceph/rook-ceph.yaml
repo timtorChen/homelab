@@ -22,3 +22,6 @@ spec:
       requests:
         cpu: 0.1
         memory: 250Mi
+    csi:
+      snapshotter:
+        image: k8s.gcr.io/sig-storage/csi-snapshotter:v4.1.0

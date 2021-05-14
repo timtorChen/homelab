@@ -1,0 +1,57 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: velero
+  name: velero
+spec:
+  interval: 1h
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: vmware-tanzu
+      # renovate: registryUrl=https://vmware-tanzu.github.io/helm-charts
+      chart: velero
+      version: 2.20.0
+  values:
+    upgradeCRDs: false
+    image:
+      repository: velero/velero
+      tag: v1.5.4
+    initContainers:
+    - name: velero-plugin-for-aws
+      image: velero/velero-plugin-for-aws:v1.2.0
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /target
+          name: plugins
+    - name: velero-csi-plugin
+      image: raspbernetes/velero-csi-plugin:v0.1.2
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+        - mountPath: /target
+          name: plugins
+    metrics:
+      enabled: true
+      podAnnotations: {}
+    configuration:
+      provider: aws
+      backupStorageLocation:
+        name: default
+        bucket: velero
+        config:
+          s3Url: http://minio.local-storage.svc:9000
+          s3ForcePathStyle: true
+          region: home
+      volumeSnapshotLocation:
+        name: default
+        config:
+          region: home
+      features: EnableCSI
+    credentials:
+      useSecret: true
+      existingSecret: velero-backup-store
+    backupsEnabled: true
+    snapshotsEnabled: true

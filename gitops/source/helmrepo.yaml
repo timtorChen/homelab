@@ -178,3 +178,13 @@ metadata:
 spec:
   url: https://charts.rook.io/release
   interval: 24h
+---
+# vmware-tanzu
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: vmware-tanzu
+spec:
+  url: https://vmware-tanzu.github.io/helm-charts
+  interval: 24h
