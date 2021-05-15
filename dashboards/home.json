@@ -15,10 +15,230 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 9,
-  "iteration": 1612681585603,
+  "id": 31,
+  "iteration": 1621057588501,
   "links": [],
   "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "auto",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "instance"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 152
+              },
+              {
+                "id": "displayName",
+                "value": "Instance"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nodename"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              },
+              {
+                "id": "displayName",
+                "value": "Node"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #cpu"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPUs"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #mem"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #uptime"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uptime"
+              },
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #temp"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.5.3",
+      "repeat": null,
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "node_uname_info",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uname"
+        },
+        {
+          "exemplar": true,
+          "expr": "instance:node_num_cpu:sum",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "cpu"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "mem"
+        },
+        {
+          "exemplar": true,
+          "expr": "time() - node_boot_time_seconds",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uptime"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_hwmon_temp_celsius",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "temp"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Panel Title",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "instance",
+                "nodename",
+                "Value #cpu",
+                "Value #mem",
+                "Value #temp",
+                "Value #uptime"
+              ]
+            }
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value #cpu": 2,
+              "Value #mem": 3,
+              "Value #temp": 5,
+              "Value #uptime": 4,
+              "instance": 0,
+              "nodename": 1
+            },
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
     {
       "aliasColors": {},
       "bars": false,
@@ -27,23 +247,6 @@
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
           "unit": "percent"
         },
         "overrides": []
@@ -52,9 +255,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 9,
+        "w": 7,
         "x": 0,
-        "y": 0
+        "y": 7
       },
       "hiddenSeries": false,
       "id": 8,
@@ -67,16 +270,19 @@
         "max": false,
         "min": false,
         "rightSide": false,
-        "show": true,
+        "show": false,
+        "sort": "current",
         "total": false,
-        "values": false,
-        "sort": "current"
+        "values": false
       },
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "7.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -86,10 +292,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(1 - avg(irate(node_cpu_seconds_total{mode=~\"idle\", kubernetes_node=~\"$hostname\"} [5m])) by (kubernetes_node))*100",
+          "expr": "(1 -(avg by (instance) (irate(node_cpu_seconds_total{mode=~\"idle\"} [$__rate_interval]))))\n*100\n*on(instance) group_left(nodename) node_uname_info\n{nodename=~\"$node\"}",
           "format": "time_series",
-          "interval": "30m",
-          "legendFormat": "{{hostname}}",
+          "interval": "$minstep",
+          "intervalFactor": 1,
+          "legendFormat": "{{nodename}}",
           "refId": "A"
         }
       ],
@@ -114,21 +321,23 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:159",
           "decimals": null,
           "format": "percent",
           "label": "",
           "logBase": 1,
           "max": "100",
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
+          "$$hashKey": "object:160",
           "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -144,7 +353,6 @@
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "unit": "percent"
         },
         "overrides": []
@@ -153,9 +361,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 9,
-        "x": 9,
-        "y": 0
+        "w": 7,
+        "x": 7,
+        "y": 7
       },
       "hiddenSeries": false,
       "id": 10,
@@ -164,15 +372,18 @@
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "7.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -182,9 +393,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(1- node_memory_MemAvailable_bytes{kubernetes_node=~\"$hostname\"}/node_memory_MemTotal_bytes)*100",
-          "interval": "30m",
-          "legendFormat": "{{kubernetes_node}}",
+          "expr": "avg by (instance) (1-(node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes))\n* 100\n* on(instance) group_left(nodename) node_uname_info\n{nodename=~\"$node\"}",
+          "interval": "$minstep",
+          "legendFormat": "{{nodename}}",
           "refId": "B"
         }
       ],
@@ -208,156 +419,28 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:309",
           "format": "percent",
           "label": null,
           "logBase": 1,
           "max": "100",
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
+          "$$hashKey": "object:310",
           "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
         "align": false,
         "alignLevel": null
       }
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 18,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.1.1",
-      "targets": [
-        {
-          "expr": "avg(node_hwmon_temp_celsius{kubernetes_node=~\"$hostname\"})",
-          "interval": "30m",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Temperatue",
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 21,
-        "y": 0
-      },
-      "id": 4,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.1.1",
-      "targets": [
-        {
-          "expr": "avg(100*(1 - (node_filesystem_avail_bytes{mountpoint=\"/\", kubernetes_node=~\"$hostname\"}/node_filesystem_size_bytes{mountpoint=\"/\", kubernetes_node=~\"$hostname\"})))",
-          "format": "time_series",
-          "interval": "30m",
-          "legendFormat": "",
-          "refId": "A"
-        },
-        {
-          "expr": "",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "B"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Disk usage",
-      "type": "stat"
     },
     {
       "aliasColors": {},
@@ -367,25 +450,28 @@
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "unit": "celsius"
         },
         "overrides": []
       },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 23,
-        "x": 0,
+        "h": 7,
+        "w": 10,
+        "x": 14,
         "y": 7
       },
       "hiddenSeries": false,
-      "id": 6,
+      "id": 2,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
         "current": false,
+        "hideEmpty": false,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": false
@@ -393,8 +479,11 @@
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "7.5.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -402,11 +491,19 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
+      "targets": [
+        {
+          "expr": "avg (node_hwmon_temp_celsius) by (instance)\n* on(instance) group_left(nodename) node_uname_info\n{nodename=~\"$node\"}",
+          "interval": "$minstep",
+          "legendFormat": "{{ nodename }}",
+          "refId": "A"
+        }
+      ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Temperatue",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -422,33 +519,149 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "$$hashKey": "object:763",
+          "format": "celsius",
           "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "80",
+          "min": "30",
           "show": true
         },
         {
+          "$$hashKey": "object:764",
           "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 7,
+        "y": 14
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "expr": "avg(\n(1- (node_filesystem_avail_bytes/node_filesystem_size_bytes{mountpoint=\"/\"}))\n*100\n* on(instance) group_left(nodename) node_uname_info\n{nodename=~\"$node\"})",
+          "format": "time_series",
+          "interval": "30m",
+          "legendFormat": "{{nodename}}",
+          "refId": "A"
+        },
+        {
+          "expr": "",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk usage",
+      "type": "stat"
     }
   ],
-  "schemaVersion": 26,
+  "refresh": false,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Prometheus source",
+        "multi": false,
+        "name": "promsource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "Loki"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Loki source",
+        "multi": false,
+        "name": "lokisource",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
       {
         "allValue": null,
         "current": {
@@ -458,13 +671,18 @@
         },
         "datasource": "Prometheus",
         "definition": "label_values(node_uname_info, nodename)",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": "hostname",
+        "label": "node",
         "multi": false,
-        "name": "hostname",
+        "name": "node",
         "options": [],
-        "query": "label_values(node_uname_info, nodename)",
+        "query": {
+          "query": "label_values(node_uname_info, nodename)",
+          "refId": "Prometheus-node-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -474,6 +692,78 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "auto": true,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "selected": false,
+          "text": "auto",
+          "value": "$__auto_interval_minstep"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "label": "Min step",
+        "name": "minstep",
+        "options": [
+          {
+            "selected": true,
+            "text": "auto",
+            "value": "$__auto_interval_minstep"
+          },
+          {
+            "selected": false,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          }
+        ],
+        "query": "30s,1m,10m,30m,1h,6h,12h,1d,7d,",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
       }
     ]
   },
@@ -496,6 +786,6 @@
   },
   "timezone": "",
   "title": "Home",
-  "uid": "TnYGf-LMz",
-  "version": 3
+  "uid": "GMPDLPyGz",
+  "version": 4
 }

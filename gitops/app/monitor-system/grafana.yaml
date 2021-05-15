@@ -85,10 +85,6 @@ spec:
           gnetId: 9614
           revsion: 1
           datasource: Prometheus
-        longhorn:
-          gnetId: 13032
-          revision: 6
-          datasource: Prometheus
         node:
           gnetId: 8919
           revision: 24
@@ -97,3 +93,21 @@ spec:
           gnetId: 13105
           revision: 5
           datasource: Prometheus
+        zfs:
+          gnetId: 7845
+          revision: 4
+          datasource: Prometheus
+        ceph-pool:
+          gnetId: 5342
+          revision: 5
+          datasource: Prometheus
+        ceph-cluster:
+          gnetId: 2842
+          revision: 14
+          datasource: Prometheus
+        ceph-osd: 
+          gnetId: 5336
+          revision: 5
+          datasource: Promethues
+
+
