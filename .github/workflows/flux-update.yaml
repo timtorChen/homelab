@@ -22,24 +22,28 @@ jobs:
         run: |
           flux install --export > ./cluster/flux-system/gotk-components.yaml
           
-          FULL_VERSION="$(flux -v)"
-          VERSION="v${FULL_VERSION#flux version }"
+          FULL="$(flux -v)"                         # e.g. flux version 0.13.1   
+          VERSION="${FULL#flux version }"           # e.g. 0.13.1
+          TAG="v$VESION"                            # e.g. v0.13.1 
+          MAJOR="$(echo $VERSION | cut -d . -f 1)"  # e.g. 0
 
           echo "⚡ Current flux version: $VERSION"
           echo "::set-output name=version::$VERSION"
-        
+          echo "::set-output name=tag::$TAG"
+          echo "::set-output name=major::$MAJOR"
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
-          branch: "flux/update-${{ steps.flux.outputs.version }}"
+          branch: "action/flux-${{ steps.flux.outputs.major }}.x"
           base: "${{ github.event.repository.default_branch }}"
           committer: "Timtor Chen <to@timtor.dev>"
           author: "Timtor Chen <to@timtor.dev>"
           title: "(bot) Update flux components to ${{ steps.flux.outputs.version }}"
           commit-message: "(bot) Update flux components to ${{ steps.flux.outputs.version }}"
           body: |
-            Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.flux.outputs.version }}
+            Release notes: https://github.com/fluxcd/flux2/releases/tag/v${{ steps.flux.outputs.tag }}
           delete-branch: true
 
 
