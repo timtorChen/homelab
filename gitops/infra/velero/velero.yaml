@@ -55,3 +55,13 @@ spec:
       existingSecret: velero-backup-store
     backupsEnabled: true
     snapshotsEnabled: true
+    schedules:
+      all-volume-daily:
+        schedule: "0 6 * * *"
+        template:
+          ttl: "10d"
+          includedNamespaces:
+          - '*'
+          includedResources:
+          - pv
+          - pvc
