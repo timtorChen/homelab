@@ -6,11 +6,7 @@ metadata:
   name: rook-ceph
 spec:
   cephVersion:
-    # Choice of ceph/ceph image version
-    # currently support v14 and v15
-    # stick to v15.2.7 if using a parition as an OSD
-    # https://github.com/rook/rook/issues/6849
-    image: ceph/ceph:v15.2.7
+    image: ceph/ceph:v15.2.11
     allowUnsupported: false
   dataDirHostPath: /ceph
   mon:
