@@ -59,7 +59,7 @@ spec:
       all-volume-daily:
         schedule: "0 6 * * *"
         template:
-          ttl: "10d"
+          ttl: "240h"
           includedNamespaces:
           - '*'
           includedResources:
