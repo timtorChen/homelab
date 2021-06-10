@@ -24,7 +24,7 @@ jobs:
           
           FULL="$(flux -v)"                         # e.g. flux version 0.13.1   
           VERSION="${FULL#flux version }"           # e.g. 0.13.1
-          TAG="v$VESION"                            # e.g. v0.13.1 
+          TAG="v$VERSION"                            # e.g. v0.13.1 
           MAJOR="$(echo $VERSION | cut -d . -f 1)"  # e.g. 0
 
           echo "⚡ Current flux version: $VERSION"
@@ -43,7 +43,7 @@ jobs:
           title: "(bot) Update flux components to ${{ steps.flux.outputs.version }}"
           commit-message: "(bot) Update flux components to ${{ steps.flux.outputs.version }}"
           body: |
-            Release notes: https://github.com/fluxcd/flux2/releases/tag/v${{ steps.flux.outputs.tag }}
+            Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.flux.outputs.tag }}
           delete-branch: true
 
 
