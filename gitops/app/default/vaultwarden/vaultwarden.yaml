@@ -28,14 +28,26 @@ spec:
         mountPath: /config
 
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
-      hosts:
-        - host: vaultwarden.${ROOT_DOMAIN}
-          paths:
-          - path: /
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
+        hosts:
+          - host: vaultwarden.${ROOT_DOMAIN}
+            paths:
+            - path: /
+              pathType: Prefix
+              service:
+                port: 80
+            - path: /notifications/hub/negotiate
+              pathType: Prefix
+              service:
+                port: 80
+            - path: /notifications/hub
+              pathType: Prefix
+              service:
+                port: 3012
 
     resources:
       requests:
