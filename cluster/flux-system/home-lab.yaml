@@ -68,3 +68,9 @@ spec:
     secretRef:
       name: gpg-secret
   validation: server
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-config
+      - kind: Secret
+        name: cluster-secret

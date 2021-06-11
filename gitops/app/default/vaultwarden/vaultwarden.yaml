@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: bitwardenrs
+  name: vaultwarden
 spec:
   chart:
     spec:
@@ -11,19 +11,21 @@ spec:
         namespace: flux-system
         name: k8s-at-home
       # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: bitwardenrs
-      version: 2.0.0
+      chart: vaultwarden
+      version: 1.0.1
   interval: 1h
 
   values:
     image:
-      repository: bitwardenrs/server
-      tag: 1.18.0
+      repository: vaultwarden/server
+      pullPolicy: IfNotPresent
+      tag: 1.21.0
 
     persistence:
-      enabled: true
-      storageClass: ceph-fs
-      size: 500Mi
+      config:
+        enabled: true
+        existingClaim: vaultwarden-config
+        mountPath: /config
 
     ingress:
       enabled: true
@@ -31,21 +33,17 @@ spec:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
       hosts:
-        - host: bitwarden.timtorchen.com
-          paths: [/]
+        - host: vaultwarden.${ROOT_DOMAIN}
+          paths:
+          - path: /
 
     resources:
       requests:
         cpu: 100m
         memory: 100Mi
 
-    bitwardenrs:
-      domain: https://bitwarden.timtorchen.com
-      signupsAllowed: true
-      admin:
-        enabled: true
-        disableAdminToken: false
-        existingSecret:
-          enabled: true
-          name: bitwardenrs-secret
-          tokenKey: admin-token
+    env:
+      DOMAIN: https://vaultwarden.${ROOT_DOMAIN}
+      SIGNUP_ALLOWED: true
+      DISABLE_ADMIN_TOKEN: false
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}

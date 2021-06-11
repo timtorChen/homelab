@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: cluster-config
+data:
+  ROOT_DOMAIN: timtorchen.com
