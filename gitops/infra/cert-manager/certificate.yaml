@@ -8,13 +8,13 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: timtorchen@protonmail.com
+    email: ${EMAIL}
     privateKeySecretRef:
       name: acme-account-private-key-staging
     solvers: &solvers
       - dns01:
           cloudflare:
-            email: timtorchen@protonmail.com
+            email: ${EMIAL}
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
@@ -27,8 +27,8 @@ metadata:
 spec:
   secretName: wildcard-certificate-secret-staging
   dnsNames: &dnsNames
-  - timtorchen.com
-  - "*.timtorchen.com"
+  - ${ROOT_DOMAIN}
+  - "*.${ROOT_DOMAIN}"
   issuerRef: 
     kind: Issuer
     name: cloudflare-dns01-issuer-staging
@@ -44,13 +44,13 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: timtorchen@protonmail.com
+    email: ${EMIAL}
     privateKeySecretRef:
       name: acme-account-private-key
     solvers:
       - dns01:
           cloudflare:
-            email: timtorchen@protonmail.com
+            email: ${EMIAL}
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
@@ -63,8 +63,8 @@ metadata:
 spec:
   secretName: wildcard-certificate-secret
   dnsNames:
-  - timtorchen.com
-  - "*.timtorchen.com"
+  - ${ROOT_DOMAIN}
+  - "*.${ROOT_DOMAIN}"
   issuerRef: 
     kind: Issuer
     name: cloudflare-dns01-issuer

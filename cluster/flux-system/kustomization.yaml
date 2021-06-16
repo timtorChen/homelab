@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-- gotk-components.yaml # flux2 manifest and CRD
-- gotk-source.yaml  # git source 
-# the first triggered kustomization, defines the flux2 itself
-- gotk-sync.yaml
-# the second triggered kustomization, defines the home-lab 
-- home-lab.yaml
