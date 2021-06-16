@@ -4,4 +4,4 @@ metadata:
   namespace: flux-system
   name: cluster-config
 data:
-  ROOT_DOMAIN: timtorchen.com
+  ROOT_DOMAIN: timtor.dev

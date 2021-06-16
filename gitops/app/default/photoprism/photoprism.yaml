@@ -25,7 +25,7 @@ spec:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
       hosts:
-        - host: photo.timtorchen.com
+        - host: photo.${ROOT_DOMAIN}
           paths:
             - path: /
 
@@ -54,7 +54,7 @@ spec:
         mountPath: /photoprism/originals
 
     env:
-      PHOTOPRISM_SITE_URL: photo.timtorchen.com
+      PHOTOPRISM_SITE_URL: photo.${ROOT_DOMAIN}
       PHOTOPRISM_PUBLIC: false
 
     envFrom:

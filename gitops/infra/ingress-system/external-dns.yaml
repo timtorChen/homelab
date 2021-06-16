@@ -24,10 +24,10 @@ spec:
       - ingress
     annotationFilter: external-dns in (public)
     domainFilters:
-      - timtor.dev
-      - timtorchen.com
+      - ${ROOT_DOMAIN}
     provider: cloudflare
     cloudflare:
+      apiToken: ${CLOUDFLARE_API_TOKEN}
       secretName: cloudflare-secret
       proxied: true
     policy: sync
