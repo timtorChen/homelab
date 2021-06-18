@@ -13,7 +13,7 @@ spec:
         name: minio
       # renovate: registryUrl=https://helm.min.io/
       chart: minio
-      version: 8.0.9
+      version: 8.0.10
   interval: 1h
   values:
     persistence:
