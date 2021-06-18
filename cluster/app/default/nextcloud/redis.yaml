@@ -12,7 +12,7 @@ spec:
         name: groundhog2k
       # renovate: registryUrl=https://groundhog2k.github.io/helm-charts/
       chart: redis
-      version: 0.3.1
+      version: 0.4.6
   interval: 1h
   values:
     resources:
