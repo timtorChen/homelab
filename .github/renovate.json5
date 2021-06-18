@@ -5,23 +5,31 @@
   dependencyDashboard: true,
   commitMessagePrefix: "(bot)",
   kubernetes: {
-    fileMatch: ["^cluster/.*\\.yaml$"],
-    ignorePaths: ["^cluster/base/.*"]
+    fileMatch: ["cluster/.*\\.yaml$"],
+    ignorePaths: ["cluster/base/"],
   },
   regexManagers: [
     {
-      datasourceTemplate: "helm",
+      // Helmrelease
       fileMatch: ["^cluster/.*\\.yaml$"],
       matchStrings: [
-        // common helm release
+        // common
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n",
-        // common CRD
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*?)\n",
-        // kube-prometheus-stack CRD
-        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",
-        // cert-manager CRD
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ],
+      datasourceTemplate: "helm",
+    },
+    {
+      // CRD
+      fileMatch: ["^cluster/crd/.*\\.yaml$"],
+      matchStrings: [
+        // common
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*?)\n",
+        // kube-prometheus-stack
+        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",
+        // cert-manager
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
+      ],
+      datasourceTemplate: "helm",
     },
   ],
 }
