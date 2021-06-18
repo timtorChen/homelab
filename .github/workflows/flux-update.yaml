@@ -20,11 +20,11 @@ jobs:
       - name: Update Flux
         id: flux
         run: |
-          flux install --export > ./cluster/flux-system/gotk-components.yaml
+          flux install --export > ./cluster/base/gotk-components.yaml
           
           FULL="$(flux -v)"                         # e.g. flux version 0.13.1   
           VERSION="${FULL#flux version }"           # e.g. 0.13.1
-          TAG="v$VERSION"                            # e.g. v0.13.1 
+          TAG="v$VERSION"                           # e.g. v0.13.1 
           MAJOR="$(echo $VERSION | cut -d . -f 1)"  # e.g. 0
 
           echo "⚡ Current flux version: $VERSION"
