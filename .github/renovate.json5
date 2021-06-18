@@ -5,12 +5,13 @@
   dependencyDashboard: true,
   commitMessagePrefix: "(bot)",
   kubernetes: {
-    fileMatch: ["^gitops/.*\\.yaml$"],
+    fileMatch: ["^cluster/.*\\.yaml$"],
+    ignorePaths: ["^cluster/base/.*"]
   },
   regexManagers: [
     {
       datasourceTemplate: "helm",
-      fileMatch: ["^gitops/.*\\.yaml$"],
+      fileMatch: ["^cluster/.*\\.yaml$"],
       matchStrings: [
         // common helm release
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n",
