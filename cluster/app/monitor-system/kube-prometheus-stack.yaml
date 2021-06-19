@@ -13,9 +13,10 @@ spec:
         name: prometheus
       # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
-      version: 15.2.0
+      version: 16.10.0
   interval: 1h
   values:
+    # grafana subchart
     grafana:
       enabled: true
       ingress:
@@ -29,14 +30,6 @@ spec:
         userKey: admin-user
         passwordKey: admin-password
 
-    prometheus-node-exporter:
-      tolerations: []
-
-    kube-state-metrics:
-      image:
-        repository: k8s.gcr.io/kube-state-metrics/kube-state-metrics
-        tag: v1.9.8
-
     prometheusOperator:
       enabled: true
 
@@ -45,8 +38,16 @@ spec:
         replicas: 2
         thanos:
           image: raspbernetes/thanos
-          tag: v0.17.1
+          tag: v0.21.1
           objectStorageConfig:
             name: thanos-object-store
             key: object-store.yaml
         serviceMonitorSelectorNilUsesHelmValues: false
+
+    # prometheus-kube-state-metrics subchart
+    kube-state-metrics:
+      resources: {}
+
+    # prometheus-node-exporter subchart
+    prometheus-node-exporter:
+      resources: {}

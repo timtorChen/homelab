@@ -15,12 +15,26 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 31,
-  "iteration": 1621057588501,
+  "id": 12,
+  "iteration": 1624101357390,
   "links": [],
   "panels": [
     {
+      "collapsed": false,
       "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Node",
+      "type": "row"
+    },
+    {
+      "datasource": "${promsource}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -41,7 +55,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "instance"
+              "options": "ip"
             },
             "properties": [
               {
@@ -50,7 +64,7 @@
               },
               {
                 "id": "displayName",
-                "value": "Instance"
+                "value": "IP"
               }
             ]
           },
@@ -129,14 +143,26 @@
                 "value": "celsius"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Node"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 176
+              }
+            ]
           }
         ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 14,
       "options": {
@@ -150,7 +176,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "node_uname_info",
+          "expr": "label_replace(node_uname_info, \"ip\", \"$1\", \"instance\" , \"(.*):.*\" )",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -189,7 +215,7 @@
         },
         {
           "exemplar": true,
-          "expr": "node_hwmon_temp_celsius",
+          "expr": "avg(node_hwmon_temp_celsius) by (instance)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -200,7 +226,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Summary",
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -208,11 +234,12 @@
             "include": {
               "names": [
                 "instance",
+                "ip",
                 "nodename",
                 "Value #cpu",
                 "Value #mem",
-                "Value #temp",
-                "Value #uptime"
+                "Value #uptime",
+                "Value #temp"
               ]
             }
           }
@@ -224,14 +251,17 @@
         {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "instance": true
+            },
             "indexByName": {
-              "Value #cpu": 2,
-              "Value #mem": 3,
-              "Value #temp": 5,
-              "Value #uptime": 4,
-              "instance": 0,
-              "nodename": 1
+              "Value #cpu": 3,
+              "Value #mem": 4,
+              "Value #temp": 6,
+              "Value #uptime": 5,
+              "instance": 1,
+              "ip": 0,
+              "nodename": 2
             },
             "renameByName": {}
           }
@@ -244,14 +274,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${promsource}",
       "fieldConfig": {
         "defaults": {
           "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
@@ -350,14 +380,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${promsource}",
       "fieldConfig": {
         "defaults": {
           "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
@@ -403,7 +433,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "RAM usage",
+      "title": "Memory usage",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -447,14 +477,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${promsource}",
       "fieldConfig": {
         "defaults": {
           "unit": "celsius"
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
@@ -543,7 +573,7 @@
       }
     },
     {
-      "datasource": null,
+      "datasource": "${promsource}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -575,7 +605,7 @@
       "gridPos": {
         "h": 4,
         "w": 3,
-        "x": 7,
+        "x": 0,
         "y": 14
       },
       "id": 4,
@@ -614,9 +644,122 @@
       "timeShift": null,
       "title": "Disk usage",
       "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 18,
+      "panels": [],
+      "title": "Cluster",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${promsource}",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 13,
+        "x": 0,
+        "y": 19
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "1 - \navg(kubelet_volume_stats_available_bytes{job=\"kubelet\"}/kubelet_volume_stats_capacity_bytes) \nby (persistentvolumeclaim)",
+          "interval": "",
+          "legendFormat": "{{persistentvolumeclaim}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "PVC usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:165",
+          "decimals": null,
+          "format": "percentunit",
+          "label": "",
+          "logBase": 1,
+          "max": "1",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:166",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
-  "refresh": false,
+  "refresh": "10s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -632,7 +775,7 @@
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": "Prometheus source",
+        "label": "prom source",
         "multi": false,
         "name": "promsource",
         "options": [],
@@ -645,14 +788,14 @@
       {
         "current": {
           "selected": false,
-          "text": "Loki",
-          "value": "Loki"
+          "text": "No data sources found",
+          "value": ""
         },
         "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": "Loki source",
+        "label": "loki source",
         "multi": false,
         "name": "lokisource",
         "options": [],
@@ -698,14 +841,14 @@
         "auto_count": 30,
         "auto_min": "10s",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "auto",
           "value": "$__auto_interval_minstep"
         },
         "description": null,
         "error": null,
         "hide": 0,
-        "label": "Min step",
+        "label": "min step",
         "name": "minstep",
         "options": [
           {
@@ -768,7 +911,7 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -786,6 +929,6 @@
   },
   "timezone": "",
   "title": "Home",
-  "uid": "GMPDLPyGz",
-  "version": 4
+  "uid": "YY7cbBRnz",
+  "version": 5
 }
