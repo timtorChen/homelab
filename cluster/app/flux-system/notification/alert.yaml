@@ -36,7 +36,7 @@ spec:
       namespace: longhorn-system
       name: '*'
     - kind: HelmRelease
-      namespace: monitor-system
+      namespace: monitor
       name: '*'
     - kind: HelmRelease
       namespace: default
