@@ -1,0 +1,43 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mealie
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: k8s-at-home
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: mealie
+      version: 2.2.0
+  interval: 1h
+
+  values:
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          external-dns: public
+          external-dns.alpha.kubernetes.io/hostname: grafana.${ROOT_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: cname.${ROOT_DOMAIN}
+        hosts:
+          - host: meal.${ROOT_DOMAIN}
+            paths:
+              - path: /
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: mealie-config
+        mountPath: /app/data
+
+    # https://hay-kot.github.io/mealie/documentation/getting-started/install/#env-variables
+    env:
+      TZ: Asia/Taipei
+      DB_TYPE: sqlite
+      DEFAULT_GROUP: Home
+      DEFAULT_EMAIL: ${EMAIL}
