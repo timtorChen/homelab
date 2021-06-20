@@ -25,12 +25,6 @@ spec:
         external-dns.alpha.kubernetes.io/target: cname.${ROOT_DOMAIN}
       hosts:
         - grafana.${ROOT_DOMAIN}
-    persistence:
-      enabled: true
-      storageClassName: ceph-fs
-      accessModes: 
-        - ReadWriteMany
-      size: 100Mi
 
     replicas: 2
 
@@ -105,9 +99,7 @@ spec:
           gnetId: 2842
           revision: 14
           datasource: Prometheus
-        ceph-osd: 
+        ceph-osd:
           gnetId: 5336
           revision: 5
           datasource: Promethues
-
-
