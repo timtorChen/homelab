@@ -12,7 +12,7 @@ spec:
         name: k8s-at-home
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: jellyfin
-      version: 5.0.0
+      version: 8.2.0
   interval: 1h
 
   values:
@@ -24,14 +24,15 @@ spec:
     replicas: 1
 
     ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
-      hosts:
-      - host: jellyfin.${ROOT_DOMAIN}
-        paths:
-        - path: /
+      main:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
+        hosts:
+        - host: jellyfin.${ROOT_DOMAIN}
+          paths:
+          - path: /
     
     persistence:
       config:
