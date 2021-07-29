@@ -47,6 +47,8 @@ spec:
     grafana.ini:
       auth.anonymous:
         enabled: true
+      live:
+        allowed_origins: https://grafana.${ROOT_DOMAIN}
 
     dashboardProviders:
       dashboardproviders.yaml:
