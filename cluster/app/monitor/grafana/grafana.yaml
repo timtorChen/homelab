@@ -39,6 +39,10 @@ spec:
         cpu: 100m
         memory: 100Mi
 
+    persistence:
+      enabled: true
+      existingClaim: grafana
+
     admin:
       existingSecret: grafana-secret
       userKey: admin-user
