@@ -8,9 +8,7 @@ spec:
   interval: 1m0s
   ref:
     branch: main
-  secretRef:
-    name: flux-system
-  url: ssh://git@github.com/timtorChen/pi-cluster
+  url: https://github.com/timtorChen/pi-cluster
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
