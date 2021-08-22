@@ -23,7 +23,7 @@ metadata:
   name: velero-crd
 spec:
   interval: 10m
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: velero-crd-source

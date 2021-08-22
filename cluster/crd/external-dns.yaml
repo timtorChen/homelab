@@ -22,7 +22,7 @@ metadata:
   name: external-dns-crd
 spec:
   interval: 10m
-  prune: true
+  prune: false
   sourceRef: 
     kind: GitRepository
     name: external-dns-crd-source

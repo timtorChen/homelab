@@ -23,7 +23,7 @@ metadata:
   name: rook-ceph-crd
 spec:
   interval: 10m
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: rook-ceph-crd-source

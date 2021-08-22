@@ -22,7 +22,7 @@ metadata:
   name: external-snapshotter-crd
 spec:
   interval: 10m
-  prune: true
+  prune: false
   sourceRef: 
     kind: GitRepository
     name: external-snapshotter-crd-source
