@@ -8,6 +8,7 @@ spec:
   interval: 10m0s
   path: ./cluster/app
   prune: true
+  validation: server
   dependsOn:
     - name: source
     - name: crd
@@ -19,7 +20,6 @@ spec:
     provider: sops
     secretRef:
       name: gpg-secret
-  validation: server
   postBuild:
     substituteFrom:
       - kind: ConfigMap

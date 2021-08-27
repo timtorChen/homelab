@@ -8,6 +8,7 @@ spec:
   interval: 10m0s
   path: ./cluster/infra
   prune: false
+  validation: client
   dependsOn:
     - name: source
   sourceRef:
@@ -17,7 +18,6 @@ spec:
     provider: sops
     secretRef:
       name: gpg-secret
-  validation: server
   postBuild:
     substituteFrom:
       - kind: ConfigMap
