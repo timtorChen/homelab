@@ -19,7 +19,7 @@ spec:
   interval: 1h
   values:
     nfs:
-      server: 192.168.255.100
+      server: 192.168.255.101
       path: /pool
     storageClass:
       name: nfs-client
