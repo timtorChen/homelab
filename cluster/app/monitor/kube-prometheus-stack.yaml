@@ -13,7 +13,7 @@ spec:
         name: prometheus
       # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
-      version: 16.10.0
+      version: 18.1.0
   interval: 1h
   values:
     # grafana subchart
