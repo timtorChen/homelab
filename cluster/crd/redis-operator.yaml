@@ -3,26 +3,26 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: GitRepository
 metadata:
   namespace: flux-system
-  name: kubegres-crd-source
+  name: redis-operator-crd-source
 spec:
   interval: 5m
-  url: https://github.com/reactive-tech/kubegres
+  url: https://github.com/OT-CONTAINER-KIT/helm-charts
   ref: 
-    tag: v1.11
+    tag: redis-operator-0.8.0
   ignore: |
     # exclude all
     /*
     # include crd
-    !config/crd
+    !charts/redis-operator/crds
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
 metadata:
   namespace: flux-system
-  name: kubegres-crd
+  name: redis-operator-crd
 spec:
   interval: 10m
   prune: true
   sourceRef: 
     kind: GitRepository
-    name: kubegres-crd-source
+    name: redis-operator-crd-source
