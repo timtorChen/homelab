@@ -1,5 +1,5 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
   namespace: flux-system
@@ -8,7 +8,6 @@ spec:
   interval: 10m0s
   path: ./cluster/app
   prune: true
-  validation: server
   dependsOn:
     - name: source
     - name: crd

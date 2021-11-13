@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: GitRepository
 metadata:
   namespace: flux-system
-  name: kubegres-crd-source
+  name: kubegres-source
 spec:
   interval: 5m
   url: https://github.com/reactive-tech/kubegres
@@ -12,17 +12,19 @@ spec:
   ignore: |
     # exclude all
     /*
-    # include crd
-    !config/crd
+    # include default kustomization
+    !config/default 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  namespace: flux-system
-  name: kubegres-crd
+  name: kubegres
+  namespace: database
 spec:
-  interval: 10m
-  prune: true
-  sourceRef: 
+  interval: 10m0s
+  prune: false
+  targetNamespace: database
+  sourceRef:
     kind: GitRepository
-    name: kubegres-crd-source
+    namespace: flux-system
+    name: kubegres-source
