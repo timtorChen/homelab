@@ -1,20 +1,4 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: GitRepository
-metadata:
-  namespace: flux-system
-  name: redis-operator-crd-source
-spec:
-  interval: 5m
-  url: https://github.com/OT-CONTAINER-KIT/helm-charts
-  ref: 
-    tag: redis-operator-0.8.0
-  ignore: |
-    # exclude all
-    /*
-    # include crd
-    !charts/redis-operator/crds
----
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
@@ -23,6 +7,7 @@ metadata:
 spec:
   interval: 10m
   prune: true
+  path: "./charts/redis-operator/crds"
   sourceRef: 
     kind: GitRepository
-    name: redis-operator-crd-source
+    name: redis-operator-source

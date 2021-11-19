@@ -1,0 +1,12 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  namespace: flux-system
+  name: external-snapshotter-source
+spec:
+  interval: 5m
+  url: https://github.com/kubernetes-csi/external-snapshotter
+  ref: 
+    # TODO: add renovate
+    tag: v4.1.0
