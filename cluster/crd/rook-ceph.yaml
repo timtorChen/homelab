@@ -7,7 +7,6 @@ metadata:
 spec:
   interval: 10m
   prune: false
-  path: "./cluster/examples/kubernetes/ceph/crds.yaml"
   sourceRef:
     kind: GitRepository
-    name: rook-ceph-source
+    name: rook-ceph-crd-source
