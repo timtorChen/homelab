@@ -1,5 +1,8 @@
 {
     "terminal.integrated.env.linux": {
         "VSCODE_WORKSPACE": "pi-cluster"
+    },
+    "terminal.integrated.env.osx": {
+        "VSCODE_WORKSPACE": "pi-cluster"
     }
 }
