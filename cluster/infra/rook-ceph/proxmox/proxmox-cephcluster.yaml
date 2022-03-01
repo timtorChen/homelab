@@ -1,0 +1,14 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  namespace: rook-ceph-proxmox
+  name: rook-ceph-proxmox
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v16.2.7
+  crashCollector:
+    disable: true
+  dataDirHostPath: /ceph-proxmox
+  external:
+    enable: true
