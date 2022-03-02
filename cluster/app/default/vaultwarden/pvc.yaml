@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: vaultwarden-config
 spec:
-  storageClassName: ceph-fs
+  storageClassName: proxmox-nvme
   accessModes:
     - ReadWriteOnce
   resources:
