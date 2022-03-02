@@ -9,32 +9,27 @@ spec:
       sourceRef:
         kind: HelmRepository
         namespace: flux-system
-        name: bitnami
-      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+        name: external-dns
+      # renovate: registryUrl=https://kubernetes-sigs.github.io/external-dns
       chart: external-dns
-      version: 4.11.1
+      version: 1.7.1
   interval: 1h
   values:
-    image:
-      registry: k8s.gcr.io
-      repository: external-dns/external-dns
-      tag: v0.7.6
     sources:
       - crd
       - ingress
-    annotationFilter: external-dns in (public)
+    provider: cloudflare
+    env:
+      - name: CF_API_TOKEN
+        value: ${CLOUDFLARE_API_TOKEN}
+      - name: CF_API_EMAIL
+        value: ${EMAIL}
     domainFilters:
       - ${ROOT_DOMAIN}
-    provider: cloudflare
-    cloudflare:
-      apiToken: ${CLOUDFLARE_API_TOKEN}
-      secretName: cloudflare-secret
-      proxied: true
+    extraArgs:
+      - --annotation-filter=external-dns in (public)
+      - --cloudflare-proxied
     policy: sync
-    crd:
-      create: false
-      apiversion: externaldns.k8s.io/v1alpha1
-      kind: DNSEndpoint
     rbac:
       create: true
     serviceAccount:

@@ -159,16 +159,6 @@ spec:
   url:  https://charts.drone.io 
   interval: 24h
 ---
-# bitnami
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  namespace: flux-system
-  name: bitnami
-spec:
-  url: https://charts.bitnami.com/bitnami
-  interval: 24h
----
 # rook-ceph
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
@@ -197,4 +187,14 @@ metadata:
   name: ot-container
 spec:
   url:  https://ot-container-kit.github.io/helm-charts
+  interval: 24h
+---
+# external-dns
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: external-dns
+spec:
+  url:  https://kubernetes-sigs.github.io/external-dns
   interval: 24h
