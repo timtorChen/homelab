@@ -9,7 +9,7 @@ spec:
   url: https://github.com/kubernetes-sigs/external-dns
   ref: 
     # TODO: add renovate
-    tag: v0.7.6
+    tag: external-dns-helm-chart-1.7.1
   ignore: |
     # exclude all
     /*
