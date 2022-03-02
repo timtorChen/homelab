@@ -1,6 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
+  namespace: default
   name: photoprism-index
 spec:
   schedule: "0 * * * *"
