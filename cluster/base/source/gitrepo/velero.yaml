@@ -9,4 +9,4 @@ spec:
   url: https://github.com/vmware-tanzu/helm-charts
   ref:
     # renovate: registryUrl=https://vmware-tanzu.github.io/helm-charts chart=velero
-    tag: velero-2.20.0
+    tag: velero-2.28.0
