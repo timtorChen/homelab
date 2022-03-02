@@ -3,7 +3,7 @@
 
 module.exports = {
   platform: "github",
-  repositories: ["timtorChen/pi-cluster"], 
+  repositories: ["timtorChen/k3s-garden"], 
   gitAuthor: "Renovate Bot <renovate@whitesourcesoftware.com>",
   onboarding: true,
   onboardingBranch: "action/config",
