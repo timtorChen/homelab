@@ -13,7 +13,7 @@ spec:
         name: k8s-at-home
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: vaultwarden
-      version: 2.0.0
+      version: 4.0.1
   interval: 1h
 
   values:
