@@ -8,7 +8,7 @@ spec:
   interval: 5m
   url: https://github.com/kubernetes-sigs/external-dns
   ref: 
-    # removate: registryUrl=https://kubernetes-sigs.github.io/external-dns
+    # removate: registryUrl=https://kubernetes-sigs.github.io/external-dns chart=external-dns
     tag: external-dns-helm-chart-1.7.1
   ignore: |
     # exclude all
