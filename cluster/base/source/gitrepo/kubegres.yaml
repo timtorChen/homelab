@@ -8,5 +8,5 @@ spec:
   interval: 5m
   url: https://github.com/reactive-tech/kubegres
   ref:
-    # TODO: add renovate
+    # renovate repo=reactive-tech/kubegres
     tag: v1.11

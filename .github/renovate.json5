@@ -21,9 +21,17 @@
         // tag with a prefix the same as chart name
         "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",  
         // cert-manager
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*(?<currentValue>v\\d+\\.\\d+\\.\\d+)\n",
       ],
       datasourceTemplate: "helm",
     },
+    {
+      //- Kustomization
+      fileMatch: ["^cluster/.*\\.yaml$"],
+      matchStrings: [
+        "repo=(?<depName>.*?)\n *tag: (?<currentValue>.*?)\n"
+      ],
+      datasourceTemplate: "github-tags"
+    }
   ],
 }
