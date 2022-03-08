@@ -13,7 +13,7 @@ spec:
         name: ingress-nginx
       # renovate: registryUrl=https://kubernetes.github.io/ingress-nginx
       chart: ingress-nginx
-      version: 3.30.0
+      version: 3.40.0
   interval: 1h
   values:
     controller:
