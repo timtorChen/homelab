@@ -11,6 +11,7 @@ spec:
         kind: HelmRepository
         namespace: flux-system
         name: ot-container
+      # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts
       chart: redis-operator
       version: 0.8.0
   interval: 1h

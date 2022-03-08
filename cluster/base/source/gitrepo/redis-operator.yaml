@@ -8,5 +8,5 @@ spec:
   interval: 5m
   url: https://github.com/OT-CONTAINER-KIT/helm-charts
   ref: 
-    # TODO: add renovate
+      # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts
     tag: redis-operator-0.8.0

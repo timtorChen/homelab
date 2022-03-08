@@ -10,22 +10,16 @@
   },
   regexManagers: [
     {
-      // Helmrelease
       fileMatch: ["^cluster/.*\\.yaml$"],
       matchStrings: [
-        // common
+        //- Helmrelease
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n",
-      ],
-      datasourceTemplate: "helm",
-    },
-    {
-      // CRD
-      fileMatch: ["^cluster/crd/.*\\.yaml$"],
-      matchStrings: [
+        
+        //- CRD Gitrepo and Kustomization
         // common
         "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*?)\n",
-        // kube-prometheus-stack
-        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",
+        // tag with a prefix the same as chart name
+        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-z-]+)-(?<currentValue>.*?)\n",  
         // cert-manager
         "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
       ],
