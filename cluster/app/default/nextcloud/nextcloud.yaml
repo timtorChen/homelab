@@ -13,12 +13,12 @@ spec:
         name: nextcloud
       # renovate: registryUrl=https://nextcloud.github.io/helm/
       chart: nextcloud
-      version: 2.5.4
+      version: 2.12.1
   interval: 1h
   values:
     image:
       repository: nextcloud
-      tag: 20.0.4-apache
+      tag: 22.2.4-apache
       pullPolicy: IfNotPresent
 
     ingress:
@@ -27,83 +27,132 @@ spec:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
         nginx.ingress.kubernetes.io/proxy-body-size: 50G
-      hosts:
-        - host: nc.${ROOT_DOMAIN}
-          paths: [/]
+      path: /
+      # use nextcloud.host as ingerss host
+
+    replicaCount: 2
+
+    affinity:
+      nodeAffinity:
+        # do not put the nextcloud in master nodes
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/master
+                  operator: DoesNotExist
+        # prefer in amd64
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/arch
+                  operator: In
+                  values:
+                    - amd64
+
+      podAntiAffinity:
+        # do not put pod to the same node
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - nextcloud
+            topologyKey: kubernetes.io/hostname
+
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 300 # first install may slow in rsync
 
     persistence:
       enabled: true
-      storageClass: ceph-fs
-      accessMode: ReadWriteOnce
-      size: 250Gi
-
-    resources:
-      requests:
-        cpu: 1 # 2 seems too aggresive 
-        memory: 1Gi
+      existingClaim: nextcloud-data
 
     nextcloud:
       host: nc.${ROOT_DOMAIN}
-      existingSecret:
-        enabled: true
-        secretName: nextcloud-secret
-        usernameKey: admin-username
-        passwordKey: admin-password
+      username: ${NEXTCLOUD_USER}
+      password: ${NEXTCLOUD_PASSWORD}
 
+      defaultConfigs:
+        # use apcu as local memcache, use and use custom redis cluster config below
+        apcu.config.php: true
+        redis.config.php: false
+        smtp.config.php: false
+        # database configs
+        autoconfig.php: true
+
+      # PHP config in /usr/local/etc/php/conf.d for apache image
+      # use redis cluster as session handler
+      # config document - https://github.com/phpredis/phpredis/blob/develop/cluster.markdown#session-handler
       phpConfigs:
         upload.ini: |-
           upload_max_filesize=10G
           post_max_size=10G
           memory_limit=4G
+        redis-cluster.ini: |-
+          session.save_handler = rediscluster
+          session.save_path = "seed[]=${NEXTCLOUD_KUBEGRES_ENDPOINT}&timeout=2&read_timeout=2&failover=error&persistent=1&auth[user]=${NEXTCLOUD_KUBEGRES_USER}&auth[pass]=${NEXTCLOUD_KUBEGRES_PASSWORD}"
+          redis.session.locking_enabled=1
+          redis.session.lock_retries=-1
+          redis.session.lock_wait_time=10000 ;in microsecond
+
       configs:
         https.config.php: |-
           <?php
-          $CONFIG = array (
+          $CONFIG = [
             'overwriteprotocol' => 'https'
-          );
+          ];
+
+        # use redis cluster as nextcloud distributed memcache
+        # config document - https://github.com/nextcloud/server/blob/master/tests/redis-cluster.config.php
+        redis-cluster.config.php: |-
+          <?php 
+          $CONFIG = [
+            'memcache.distributed' => '\\OC\\Memcache\\Redis',
+            'memcache.locking' => '\\OC\\Memcache\\Redis',
+            'redis.cluster' => [
+              'seeds' => [
+                '${NEXTCLOUD_KUBEGRES_ENDPOINT}',
+              ],
+              'timeout' => 0.0,
+              'read_timeout' => 0.0,
+              'failover_mode' => \RedisCluster::FAILOVER_ERROR,
+              'user' => '${NEXTCLOUD_KUBEGRES_USER}',
+              'password' => '${NEXTCLOUD_KUBEGRES_PASSWORD}'
+            ],
+          ];
 
       extraVolumes:
         - name: jellyfin-media
           persistentVolumeClaim:
             claimName: jellyfin-media
-        - name: photoprism-originals
-          persistentVolumeClaim:
-            claimName: photoprism-originals
-
+            
       extraVolumeMounts:
         - name: jellyfin-media
           mountPath: /jellyfin-media
-        - name: photoprism-originals
-          mountPath: /photoprism-originals
-
-      extraEnv:
-        - name: REDIS_HOST
-          value: nextcloud-redis
-        - name: REDIS_HOST_PORT
-          value: "6379"
 
     internalDatabase:
       enabled: false
 
+    #- Postgres setting
+    # environments will be used in autoconfig.php
     externalDatabase:
       enabled: true
       type: postgresql
-      host: nextcloud-postgres
-      existingSecret:
-        enabled: true
-        secretName: nextcloud-postgres-secret
-        usernameKey: postgres-username
-        passwordKey: postgres-password
+      host: ${NEXTCLOUD_KUBEGRES_ENDPOINT}
+      user: ${NEXTCLOUD_KUBEGRES_USERNAME}
+      password: ${NEXTCLOUD_KUBEGRES_PASSWORD}
+      database: nextcloud
 
-    livenessProbe:
-      enabled: true
-      initialDelaySeconds: 600 # first install is slow in rsync
-    
     metrics:
       enabled: true
       https: true
-      image:
-        repository: xperimental/nextcloud-exporter
-        tag: 0.4.0-4-g2af5ccb
-      sercice:
-        annotations: {}
