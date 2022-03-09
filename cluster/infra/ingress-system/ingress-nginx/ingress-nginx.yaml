@@ -13,7 +13,7 @@ spec:
         name: ingress-nginx
       # renovate: registryUrl=https://kubernetes.github.io/ingress-nginx
       chart: ingress-nginx
-      version: 3.30.0
+      version: 4.0.18
   interval: 1h
   values:
     controller:
@@ -27,12 +27,8 @@ spec:
         externalTrafficPolicy: Local
       autoscaling:
         enabled: false
+      replicaCount: 2
       metrics:
         port: 10254
-        enabled: true
-        service:
-          annotations:
-            prometheus.io/scrape: "true"
-            prometheus.io/port: "10254"
     defaultBackend:
       enabled: false
