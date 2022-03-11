@@ -4,7 +4,7 @@ metadata:
   namespace: monitor
   name: grafana
 spec:
-  storageClassName: ceph-fs
+  storageClassName: proxmox-nvme
   accessModes:
     - ReadWriteMany
   resources:
