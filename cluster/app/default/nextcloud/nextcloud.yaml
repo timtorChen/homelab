@@ -100,7 +100,7 @@ spec:
           memory_limit=4G
         redis-cluster.ini: |-
           session.save_handler = rediscluster
-          session.save_path = "seed[]=${NEXTCLOUD_KUBEGRES_ENDPOINT}&timeout=2&read_timeout=2&failover=error&persistent=1&auth[user]=${NEXTCLOUD_KUBEGRES_USER}&auth[pass]=${NEXTCLOUD_KUBEGRES_PASSWORD}"
+          session.save_path = "seed[]=${NEXTCLOUD_REDIS_ENDPOINT}&timeout=2&read_timeout=2&failover=error&persistent=1&auth[user]=${NEXTCLOUD_REDIS_USER}&auth[pass]=${NEXTCLOUD_REDIS_PASSWORD}"
           redis.session.locking_enabled=1
           redis.session.lock_retries=-1
           redis.session.lock_wait_time=10000 ;in microsecond
@@ -121,13 +121,13 @@ spec:
             'memcache.locking' => '\\OC\\Memcache\\Redis',
             'redis.cluster' => [
               'seeds' => [
-                '${NEXTCLOUD_KUBEGRES_ENDPOINT}',
+                '${NEXTCLOUD_REDIS_ENDPOINT}',
               ],
               'timeout' => 0.0,
               'read_timeout' => 0.0,
               'failover_mode' => \RedisCluster::FAILOVER_ERROR,
-              'user' => '${NEXTCLOUD_KUBEGRES_USER}',
-              'password' => '${NEXTCLOUD_KUBEGRES_PASSWORD}'
+              'user' => '${NEXTCLOUD_REDIS_USER}',
+              'password' => '${NEXTCLOUD_REDIS_PASSWORD}'
             ],
           ];
 
@@ -149,7 +149,7 @@ spec:
       enabled: true
       type: postgresql
       host: ${NEXTCLOUD_KUBEGRES_ENDPOINT}
-      user: ${NEXTCLOUD_KUBEGRES_USERNAME}
+      user: ${NEXTCLOUD_KUBEGRES_USER}
       password: ${NEXTCLOUD_KUBEGRES_PASSWORD}
       database: nextcloud
 
