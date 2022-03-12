@@ -8,5 +8,10 @@ spec:
   interval: 5m
   url: https://github.com/OT-CONTAINER-KIT/helm-charts
   ref: 
-      # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts chart=redis-operator
-    tag: redis-operator-0.8.0
+    # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts chart=redis-operator
+    tag: redis-operator-0.10.1
+  ignore: |
+    # exclude all
+    /*
+    # include crd
+    !charts/redis-operator/crds
