@@ -7,7 +7,6 @@ metadata:
 spec:
   interval: 10m
   prune: false
-  path: "./charts/velero/crds"
   sourceRef:
     kind: GitRepository
-    name: velero-source
+    name: velero-crd-source

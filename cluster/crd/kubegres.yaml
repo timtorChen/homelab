@@ -7,7 +7,6 @@ metadata:
 spec:
   interval: 10m
   prune: false
-  path: "./config/crd"
   sourceRef: 
     kind: GitRepository
-    name: kubegres-source
+    name: kubegres-crd-source

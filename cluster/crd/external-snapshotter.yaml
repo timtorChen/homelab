@@ -7,11 +7,6 @@ metadata:
 spec:
   interval: 10m
   prune: false
-  path: "./client/config/crd"
   sourceRef: 
     kind: GitRepository
-    name: external-snapshotter-source
-  
-  # VolumeSnapshot
-  # VolumeSnapshotClass
-  # VolumeSnapshotContent
+    name: external-snapshotter-crd-source

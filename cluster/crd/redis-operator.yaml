@@ -6,8 +6,7 @@ metadata:
   name: redis-operator-crd
 spec:
   interval: 10m
-  prune: true
-  path: "./charts/redis-operator/crds"
+  prune: false
   sourceRef: 
     kind: GitRepository
-    name: redis-operator-source
+    name: redis-operator-crd-source

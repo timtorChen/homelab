@@ -7,7 +7,6 @@ metadata:
 spec:
   interval: 10m
   prune: false
-  path: "./deploy/kubernetes/snapshot-controller"
   sourceRef: 
     kind: GitRepository
     namespace: flux-system
