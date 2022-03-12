@@ -8,6 +8,8 @@ spec:
   interval: 10m0s
   path: ./cluster/infra
   prune: false
+  dependsOn:
+    - name: source
   sourceRef:
     kind: GitRepository
     name: flux-system

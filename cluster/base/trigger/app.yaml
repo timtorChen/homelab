@@ -9,6 +9,7 @@ spec:
   path: ./cluster/app
   prune: true
   dependsOn:
+    - name: source
     - name: crd
     - name: infra
   sourceRef:
