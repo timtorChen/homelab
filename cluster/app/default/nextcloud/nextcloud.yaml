@@ -115,7 +115,7 @@ spec:
         # use redis cluster as nextcloud distributed memcache
         # config document - https://github.com/nextcloud/server/blob/master/tests/redis-cluster.config.php
         redis-cluster.config.php: |-
-          <?php 
+          <?php
           $CONFIG = [
             'memcache.distributed' => '\\OC\\Memcache\\Redis',
             'memcache.locking' => '\\OC\\Memcache\\Redis',
