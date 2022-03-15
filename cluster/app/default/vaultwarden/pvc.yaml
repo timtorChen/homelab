@@ -6,7 +6,7 @@ metadata:
 spec:
   storageClassName: proxmox-nvme
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 500Mi
+      storage: 100Mi
