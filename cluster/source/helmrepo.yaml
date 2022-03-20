@@ -198,3 +198,13 @@ metadata:
 spec:
   url:  https://kubernetes-sigs.github.io/external-dns
   interval: 24h
+---
+# metrics-server
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: metrics-server
+spec:
+  url: https://kubernetes-sigs.github.io/metrics-server/
+  interval: 24h
