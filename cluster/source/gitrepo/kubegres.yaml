@@ -14,3 +14,20 @@ spec:
     /*
     # include the crd folder
     !/config/crd
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  namespace: flux-system
+  name: kubegres-source
+spec:
+  interval: 5m
+  url: https://github.com/reactive-tech/kubegres
+  ref:
+    # renovate repo=reactive-tech/kubegres
+    tag: v1.11
+  ignore: |
+    /*
+    # include kustomization folder
+    !/config/manager
+    !/config/rbac
