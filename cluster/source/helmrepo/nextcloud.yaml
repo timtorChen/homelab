@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: nextcloud
+spec:
+  url: https://nextcloud.github.io/helm/
+  interval: 24h

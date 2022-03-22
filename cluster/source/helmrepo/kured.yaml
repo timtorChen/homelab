@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: kured
+spec:
+  url: https://weaveworks.github.io/kured
+  interval: 24h
