@@ -11,19 +11,11 @@ spec:
       sourceRef:
         kind: HelmRepository
         namespace: flux-system
-        name: stable
+        name: metallb
       version: 0.12.1
-      # renovate: registryUrl=https://charts.helm.sh/stable
+      # renovate: registryUrl=https://metallb.github.io/metallb
       chart: metallb
   values:
-    controller:
-      image:
-        repository: metallb/controller
-        tag: v0.9.5
-    speaker:
-      image:
-        repository: metallb/speaker
-        tag: v0.9.5
     configInline:
       address-pools:
         - name: default
