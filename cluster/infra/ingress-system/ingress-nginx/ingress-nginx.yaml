@@ -30,5 +30,17 @@ spec:
       replicaCount: 2
       metrics:
         port: 10254
+      affinity:
+        nodeAffinity:
+          # do not in master node, and only in amd64 node
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: DoesNotExist
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
     defaultBackend:
       enabled: false
