@@ -13,7 +13,7 @@ spec:
         name: k8s-at-home
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: mealie
-      version: 2.2.0
+      version: 4.0.0
   interval: 1h
 
   values:
@@ -33,12 +33,42 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: mealie-config
+        existingClaim: mealie-data
         mountPath: /app/data
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 200m
+        memory: 128Mi
+
+    controller:
+      replicas: 2
+      strategy: RollingUpdate
+      rollingUpdate:
+        unavaliable: 1
+        surge: 1
+
+    affinity:
+      podAntiAffinity:
+        # do not put pods in a same node
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - mealie
+            topologyKey: kubernetes.io/hostname
+
 
     # https://hay-kot.github.io/mealie/documentation/getting-started/install/#env-variables
     env:
       TZ: Asia/Taipei
       DB_TYPE: sqlite
+      BASE_URL: meal.${ROOT_DOMAIN}
       DEFAULT_GROUP: Home
       DEFAULT_EMAIL: ${EMAIL}
+      DEFAULT_PASSWORD: ${MEALIE_PASSWORD}
