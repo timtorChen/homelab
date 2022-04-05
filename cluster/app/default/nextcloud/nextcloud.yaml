@@ -83,7 +83,7 @@ spec:
       password: ${NEXTCLOUD_PASSWORD}
 
       defaultConfigs:
-        # use apcu as local memcache, use and use custom redis cluster config below
+        # use apcu as local memcache, and use custom redis cluster config below
         apcu.config.php: true
         redis.config.php: false
         smtp.config.php: false
@@ -135,10 +135,15 @@ spec:
         - name: jellyfin-media
           persistentVolumeClaim:
             claimName: jellyfin-media
-            
+        - name: qbittorrent-download
+          persistentVolumeClaim:
+            claimName: qbittorrent-download
+
       extraVolumeMounts:
         - name: jellyfin-media
           mountPath: /jellyfin-media
+        - name: qbittorrent-download
+          mountPath: /qbittorrent-download
 
     internalDatabase:
       enabled: false

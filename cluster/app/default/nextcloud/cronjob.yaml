@@ -1,0 +1,76 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: default
+  name: nextcloud-cronjob
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: nextcloud-data
+              persistentVolumeClaim:
+                claimName: nextcloud-data
+            - name: jellyfin-media
+              persistentVolumeClaim:
+                claimName: jellyfin-media
+            - name: qbittorrent-download
+              persistentVolumeClaim:
+                claimName: qbittorrent-download
+
+          securityContext:
+            fsGroup: 33
+            runAsGroup: 33
+            runAsUser: 33
+
+          containers:
+            - &container
+              name: nextcloud-preview-generate
+              image: nextcloud:22.2.4-apache
+              imagePullPolicy: IfNotPresent
+              args:
+                - php
+                - /var/www/html/occ
+                - preview:pre-generate
+              volumeMounts:
+                # nextcloud
+                - name: nextcloud-data
+                  mountPath: /var/www/html
+                  subPath: html
+                - name: nextcloud-data
+                  mountPath: /var/www/html/data
+                  subPath: data
+                - name: nextcloud-data
+                  mountPath: /var/www/html/config
+                  subPath: config
+                - name: nextcloud-data
+                  mountPath: /var/www/html/custom_apps
+                  subPath: custom_apps
+                # external
+                - name: jellyfin-media
+                  mountPath: /jellyfin-media
+                - name: qbittorrent-download
+                  mountPath: /qbittorrent-download
+
+              resources:
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+            - <<: *container
+              name: nextcloud-file-scan
+              args:
+                - php
+                - /var/www/html/occ
+                - files:scan
+                - --all
