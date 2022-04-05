@@ -13,7 +13,7 @@ spec:
         name: banzaicloud
       # renovate: registryUrl=https://kubernetes-charts.banzaicloud.com
       chart: thanos
-      version: 0.4.3
+      version: 0.4.6
   interval: 1h
   values:
     image:
