@@ -60,4 +60,4 @@ spec:
 
   redisExporter:
     enabled: false
-    image: quay.io/opstree/redis-exporter:1.0
+    image: quay.io/opstree/redis-exporter:2.0
