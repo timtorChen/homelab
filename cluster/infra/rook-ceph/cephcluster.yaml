@@ -6,7 +6,7 @@ metadata:
   name: rook-ceph
 spec:
   cephVersion:
-    image: ceph/ceph:v15.2.11
+    image: ceph/ceph:v15.2.13
     allowUnsupported: false
   dataDirHostPath: /ceph
   mon:
