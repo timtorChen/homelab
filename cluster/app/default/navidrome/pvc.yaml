@@ -2,22 +2,22 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: default
-  name: jellyfin-config
+  name: navidrome-config
 spec:
-  storageClassName: proxmox-nvme
+  storageClassName: proxmox-ssd
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Mi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: default
-  name: jellyfin-media
+  name: navidrome-data
 spec:
-  storageClassName: proxmox-nvme
+  storageClassName: proxmox-ssd
   accessModes:
     - ReadWriteMany
   resources:

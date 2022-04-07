@@ -19,10 +19,10 @@ spec:
             - name: nextcloud-data
               persistentVolumeClaim:
                 claimName: nextcloud-data
-            - name: jellyfin-media
+            - name: music
               persistentVolumeClaim:
-                claimName: jellyfin-media
-            - name: qbittorrent-download
+                claimName: navidrome-data
+            - name: torrent
               persistentVolumeClaim:
                 claimName: qbittorrent-download
 
@@ -55,10 +55,10 @@ spec:
                   mountPath: /var/www/html/custom_apps
                   subPath: custom_apps
                 # external
-                - name: jellyfin-media
-                  mountPath: /jellyfin-media
-                - name: qbittorrent-download
-                  mountPath: /qbittorrent-download
+                - name: music
+                  mountPath: /music
+                - name: torrent
+                  mountPath: /torrent
 
               resources:
                 limits:

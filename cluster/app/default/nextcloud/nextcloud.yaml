@@ -132,18 +132,18 @@ spec:
           ];
 
       extraVolumes:
-        - name: jellyfin-media
+        - name: music
           persistentVolumeClaim:
-            claimName: jellyfin-media
-        - name: qbittorrent-download
+            claimName: navidrome-data
+        - name: torrent
           persistentVolumeClaim:
             claimName: qbittorrent-download
 
       extraVolumeMounts:
-        - name: jellyfin-media
-          mountPath: /jellyfin-media
-        - name: qbittorrent-download
-          mountPath: /qbittorrent-download
+        - name: music
+          mountPath: /music
+        - name: torrent
+          mountPath: /torrent
 
     internalDatabase:
       enabled: false
