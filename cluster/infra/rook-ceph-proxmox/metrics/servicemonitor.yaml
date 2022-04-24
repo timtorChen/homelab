@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: rook-ceph-proxmox
+  name: rook-ceph-proxmox
+spec:
+  namespaceSelector:
+    matchNames:
+      - rook-ceph-proxmox
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rook-ceph-proxmox-metrics
+  endpoints:
+    - port: metrics

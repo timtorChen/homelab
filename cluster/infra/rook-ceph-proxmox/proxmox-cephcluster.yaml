@@ -7,8 +7,6 @@ metadata:
 spec:
   cephVersion:
     image: quay.io/ceph/ceph:v16.2.7
-  crashCollector:
-    disable: true
   dataDirHostPath: /ceph-proxmox
   external:
     enable: true
