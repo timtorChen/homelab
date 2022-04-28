@@ -1,0 +1,11 @@
+---
+version: "3"
+
+includes:
+  pre-commit: ./.taskfile/pre-commit.yaml
+
+tasks:
+  init:
+    deps: ["pre-commit:init"]
+  check:
+    deps: ["pre-commit:check"]

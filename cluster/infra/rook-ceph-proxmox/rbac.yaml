@@ -3,7 +3,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: rook-ceph-cluster-mgmt
-  namespace: rook-ceph-proxmox # namespace:cluster
+  namespace: rook-ceph-proxmox
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -11,13 +11,13 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: rook-ceph-system
-    namespace: rook-ceph # namespace:operator
+    namespace: rook-ceph
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: rook-ceph-cmd-reporter
-  namespace: rook-ceph-proxmox # namespace:cluster
+  namespace: rook-ceph-proxmox
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -25,19 +25,19 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: rook-ceph-cmd-reporter
-    namespace: rook-ceph-proxmox # namespace:cluster
+    namespace: rook-ceph-proxmox
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: rook-ceph-cmd-reporter
-  namespace: rook-ceph-proxmox # namespace:cluster
+  namespace: rook-ceph-proxmox
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: rook-ceph-cmd-reporter
-  namespace: rook-ceph-proxmox # namespace:cluster
+  namespace: rook-ceph-proxmox
 rules:
   - apiGroups:
       - ""

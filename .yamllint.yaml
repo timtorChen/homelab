@@ -1,0 +1,22 @@
+---
+extends: default
+
+ignore: |
+  gotk-components.yaml
+  *secret.yaml
+
+rules:
+  indentation:
+    spaces: 2
+
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: true
+
+  line-length:
+    max: 80
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  empty-lines:
+    max: 1

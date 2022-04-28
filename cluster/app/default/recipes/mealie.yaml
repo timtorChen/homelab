@@ -63,7 +63,6 @@ spec:
                     - mealie
             topologyKey: kubernetes.io/hostname
 
-
     # https://hay-kot.github.io/mealie/documentation/getting-started/install/#env-variables
     env:
       TZ: Asia/Taipei

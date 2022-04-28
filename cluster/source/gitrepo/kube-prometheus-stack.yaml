@@ -8,8 +8,10 @@ spec:
   interval: 5m
   url: https://github.com/prometheus-community/helm-charts
   ref:
+    # yamllint disable rule:line-length
     # renovate: registryUrl=https://prometheus-community.github.io/helm-charts chart=kube-prometheus-stack
-    tag: kube-prometheus-stack-16.10.0
+    tag: kube-prometheus-stack-34.10.0
+    # yamllint enable
   ignore: |
     /*
     # include the crd folder

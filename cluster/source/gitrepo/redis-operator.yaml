@@ -7,9 +7,11 @@ metadata:
 spec:
   interval: 5m
   url: https://github.com/OT-CONTAINER-KIT/helm-charts
-  ref: 
-      # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts chart=redis-operator
+  ref:
+    # yamllint disable rule:line-length
+    # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts chart=redis-operator
     tag: redis-operator-0.10.1
+    # yamllint enable
   ignore: |
     /*
     # include the crd folder

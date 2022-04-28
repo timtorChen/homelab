@@ -31,8 +31,8 @@ spec:
     deploymentStrategy:
       type: RollingUpdate
       rollingUpdate:
-        maxUnavailable: 1 # minimum pod 1
-        maxSurge: 1 # maximum pod 3
+        maxUnavailable: 1
+        maxSurge: 1
 
     resources:
       requests:

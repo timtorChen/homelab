@@ -25,7 +25,8 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8, 192.168.0.0/16"
+        nginx.ingress.kubernetes.io/whitelist-source-range: >-
+          10.0.0.0/8, 192.168.0.0/16
         nginx.ingress.kubernetes.io/proxy-body-size: 50G
       path: /
       # use nextcloud.host as ingerss host
@@ -71,7 +72,7 @@ spec:
 
     livenessProbe:
       enabled: true
-      initialDelaySeconds: 300 # first install may slow in rsync
+      initialDelaySeconds: 300  # first install may slow in rsync
 
     persistence:
       enabled: true
@@ -92,18 +93,21 @@ spec:
 
       # PHP config in /usr/local/etc/php/conf.d for apache image
       # use redis cluster as session handler
-      # config document - https://github.com/phpredis/phpredis/blob/develop/cluster.markdown#session-handler
+      # config docs:
+      # https://github.com/phpredis/phpredis/blob/develop/cluster.markdown#session-handler
       phpConfigs:
         upload.ini: |-
           upload_max_filesize=10G
           post_max_size=10G
           memory_limit=4G
+        # yamllint disable rule:line-length
         redis-cluster.ini: |-
           session.save_handler = rediscluster
           session.save_path = "seed[]=${NEXTCLOUD_REDIS_ENDPOINT}&timeout=2&read_timeout=2&failover=error&persistent=1&auth[user]=${NEXTCLOUD_REDIS_USER}&auth[pass]=${NEXTCLOUD_REDIS_PASSWORD}"
           redis.session.locking_enabled=1
           redis.session.lock_retries=-1
           redis.session.lock_wait_time=10000 ;in microsecond
+        # yamllint enable
 
       configs:
         https.config.php: |-
@@ -113,7 +117,8 @@ spec:
           ];
 
         # use redis cluster as nextcloud distributed memcache
-        # config document - https://github.com/nextcloud/server/blob/master/tests/redis-cluster.config.php
+        # config docs:
+        # https://github.com/nextcloud/server/blob/master/tests/redis-cluster.config.php
         redis-cluster.config.php: |-
           <?php
           $CONFIG = [
@@ -148,7 +153,7 @@ spec:
     internalDatabase:
       enabled: false
 
-    #- Postgres setting
+    # Postgres setting
     # environments will be used in autoconfig.php
     externalDatabase:
       enabled: true

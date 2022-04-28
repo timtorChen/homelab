@@ -1,5 +1,6 @@
+---
 name: Cron - Renovate
-on:
+"on":
   push:
     branches:
       - "action/config"

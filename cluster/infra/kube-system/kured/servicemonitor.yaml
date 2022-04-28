@@ -1,4 +1,4 @@
-
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -12,6 +12,6 @@ spec:
     matchLabels:
       app: kured
   endpoints:
-  - port: metrics
-    path: /metrics
-    interval: 60s
+    - port: metrics
+      path: /metrics
+      interval: 60s

@@ -17,7 +17,7 @@ spec:
   interval: 1h
   values:
     extraSecretNamesForEnvFrom:
-    - drone-secret
+      - drone-secret
     env:
       DRONE_SERVER_HOST: drone.${ROOT_DOMAIN}
       DRONE_SERVER_PROTO: https

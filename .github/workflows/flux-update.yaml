@@ -1,6 +1,6 @@
 ---
 name: Cron - Flux Update
-on:
+"on":
   push:
     branches:
       - "action/config"
@@ -13,18 +13,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - name: Setup Flux CLI
         uses: fluxcd/flux2/action@main
-      
+
       - name: Update Flux
         id: flux
         run: |
           flux install --export > ./cluster/base/gotk-components.yaml
-          
-          FULL="$(flux -v)"                         # e.g. flux version 0.13.1   
+
+          FULL="$(flux -v)"                         # e.g. flux version 0.13.1
           VERSION="${FULL#flux version }"           # e.g. 0.13.1
-          TAG="v$VERSION"                           # e.g. v0.13.1 
+          TAG="v$VERSION"                           # e.g. v0.13.1
           MAJOR="$(echo $VERSION | cut -d . -f 1)"  # e.g. 0
 
           echo "⚡ Current flux version: $VERSION"
@@ -32,6 +32,7 @@ jobs:
           echo "::set-output name=tag::$TAG"
           echo "::set-output name=major::$MAJOR"
 
+      # yamllint disable rule:line-length
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -45,6 +46,3 @@ jobs:
           body: |
             Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.flux.outputs.tag }}
           delete-branch: true
-
-
-        

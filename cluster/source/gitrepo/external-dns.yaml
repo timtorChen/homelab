@@ -7,9 +7,11 @@ metadata:
 spec:
   interval: 5m
   url: https://github.com/kubernetes-sigs/external-dns
-  ref: 
-    # removate: registryUrl=https://kubernetes-sigs.github.io/external-dns chart=external-dns
+  ref:
+    # yamllint disable rule:line-length
+    # renovate: registryUrl=https://kubernetes-sigs.github.io/external-dns chart=external-dns
     tag: external-dns-helm-chart-1.7.1
+    # yamllint enable
   ignore: |
     /*
     # include the crd file

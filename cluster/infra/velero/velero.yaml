@@ -21,18 +21,18 @@ spec:
       repository: velero/velero
       tag: v1.5.4
     initContainers:
-    - name: velero-plugin-for-aws
-      image: velero/velero-plugin-for-aws:v1.2.0
-      imagePullPolicy: IfNotPresent
-      volumeMounts:
-        - mountPath: /target
-          name: plugins
-    - name: velero-csi-plugin
-      image: raspbernetes/velero-csi-plugin:v0.1.2
-      imagePullPolicy: IfNotPresent
-      volumeMounts:
-        - mountPath: /target
-          name: plugins
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.2.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+      - name: velero-csi-plugin
+        image: raspbernetes/velero-csi-plugin:v0.1.2
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
     metrics:
       enabled: true
       podAnnotations: {}
@@ -61,7 +61,7 @@ spec:
         template:
           ttl: "240h"
           includedNamespaces:
-          - '*'
+            - "*"
           includedResources:
-          - pv
-          - pvc
+            - pv
+            - pvc

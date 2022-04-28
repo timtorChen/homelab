@@ -1,6 +1,6 @@
 ---
 name: Helper
-on:
+"on":
   push:
     branches:
       - "action/config"

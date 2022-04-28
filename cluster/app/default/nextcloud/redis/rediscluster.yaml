@@ -6,8 +6,9 @@ metadata:
   name: nextcloud-redis
 spec:
   clusterSize: 3
-  # TODO: change to ot-container official image after supporting muliarch
-  #       the operator will crash without redisExporter/redisExporter.image items
+  # TODO:
+  # change to ot-container official image after supporting muliarch
+  # the operator will crash without redisExporter/redisExporter.image items
   kubernetesConfig:
     image: timtor/redis:v6.2.5
 

@@ -8,8 +8,10 @@ spec:
   interval: 5m
   url: https://github.com/vmware-tanzu/helm-charts
   ref:
+    # yamllint disable rule:line-length
     # renovate: registryUrl=https://vmware-tanzu.github.io/helm-charts chart=velero
     tag: velero-2.28.0
+    # yamllint enable
   ignore: |
     /*
     # include the crd folder

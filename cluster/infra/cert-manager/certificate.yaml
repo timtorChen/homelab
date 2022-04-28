@@ -18,7 +18,7 @@ spec:
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
---- 
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -27,9 +27,9 @@ metadata:
 spec:
   secretName: wildcard-certificate-secret-staging
   dnsNames: &dnsNames
-  - ${ROOT_DOMAIN}
-  - "*.${ROOT_DOMAIN}"
-  issuerRef: 
+    - ${ROOT_DOMAIN}
+    - "*.${ROOT_DOMAIN}"
+  issuerRef:
     kind: Issuer
     name: cloudflare-dns01-issuer-staging
     group: cert-manager.io
@@ -40,7 +40,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   namespace: cert-manager
-  name:  cloudflare-dns01-issuer
+  name: cloudflare-dns01-issuer
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
@@ -54,7 +54,7 @@ spec:
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
---- 
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -63,9 +63,9 @@ metadata:
 spec:
   secretName: wildcard-certificate-secret
   dnsNames:
-  - ${ROOT_DOMAIN}
-  - "*.${ROOT_DOMAIN}"
-  issuerRef: 
+    - ${ROOT_DOMAIN}
+    - "*.${ROOT_DOMAIN}"
+  issuerRef:
     kind: Issuer
     name: cloudflare-dns01-issuer
     group: cert-manager.io

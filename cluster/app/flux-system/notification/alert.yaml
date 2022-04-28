@@ -1,17 +1,18 @@
+---
 apiVersion: notification.toolkit.fluxcd.io/v1beta1
 kind: Alert
 metadata:
   namespace: flux-system
   name: flux-system
 spec:
-  providerRef: 
+  providerRef:
     name: discord
   eventSeverity: info
   eventSources:
     - kind: Kustomization
-      name: '*'
+      name: "*"
     - kind: HelmRepository
-      name: '*'
+      name: "*"
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta1
 kind: Alert
@@ -19,25 +20,25 @@ metadata:
   namespace: flux-system
   name: helmreleases
 spec:
-  providerRef: 
+  providerRef:
     name: discord
   eventSeverity: info
   eventSources:
     - kind: HelmRelease
       namespace: kube-system
-      name: '*'
+      name: "*"
     - kind: HelmRelease
       namespace: ingress-system
-      name: '*'
+      name: "*"
     - kind: HelmRelease
       namespace: local-storage
-      name: '*'
+      name: "*"
     - kind: HelmRelease
       namespace: longhorn-system
-      name: '*'
+      name: "*"
     - kind: HelmRelease
       namespace: monitor
-      name: '*'
+      name: "*"
     - kind: HelmRelease
       namespace: default
-      name: '*'
+      name: "*"
