@@ -10,7 +10,7 @@ spec:
   ref:
     # yamllint disable rule:line-length
     # renovate: registryUrl=https://kubernetes-sigs.github.io/external-dns chart=external-dns
-    tag: external-dns-helm-chart-1.7.1
+    tag: external-dns-helm-chart-1.9.0
     # yamllint enable
   ignore: |
     /*

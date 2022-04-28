@@ -13,7 +13,7 @@ spec:
         name: external-dns
       # renovate: registryUrl=https://kubernetes-sigs.github.io/external-dns
       chart: external-dns
-      version: 1.7.1
+      version: 1.9.0
   interval: 1h
   values:
     sources:
