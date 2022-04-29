@@ -3,7 +3,11 @@ extends: default
 
 ignore: |
   gotk-components.yaml
+  *secret.yml
   *secret.yaml
+  *.sops.yml
+  *.sops.yaml
+  _*
 
 rules:
   indentation:

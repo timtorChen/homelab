@@ -3,9 +3,24 @@ version: "3"
 
 includes:
   pre-commit: ./.taskfile/pre-commit.yaml
+  terraform: ./.taskfile/terraform.yaml
+  ansible: ./.taskfile/ansible.yaml
+  secret: ./.taskfile/secret.yaml
 
 tasks:
   init:
-    deps: ["pre-commit:init"]
+    desc: Initiate and install dependencies
+    deps:
+      - ansible:init
+      - terraform:init
+      - pre-commit:init
   check:
-    deps: ["pre-commit:check"]
+    desc: Check and lint codes
+    deps:
+      - pre-commit:check
+      - terraform:lint
+      - ansible:lint
+      - yamllint
+  yamllint:
+    cmds:
+      - yamllint .

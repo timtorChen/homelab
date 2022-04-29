@@ -1,0 +1,17 @@
+---
+# -- garden
+garden_become: true
+garden_install_packages:
+  - unattended-upgrades
+  - net-tools
+  - trash-cli
+  - nfs-common
+  - vim
+garden_remove_packages:
+  - snapd
+
+# -- ssh hardening
+ssh_server_password_login: false
+ssh_permit_root_login: "no"
+sftp_enabled: true
+ssh_x11_forwarding: true

@@ -1,0 +1,5 @@
+---
+# check config docs:
+# https://ansible-lint.readthedocs.io/en/latest/
+exclude_paths:
+  - inventory/

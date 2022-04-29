@@ -1,2 +1,12 @@
+# plaintext
 .decrypted~*
 plain~*
+
+# ansible
+_roles.galaxy
+_collections.galaxy
+
+# terraform
+.terraform
+*.tfstate*
+vm.hosts.ini

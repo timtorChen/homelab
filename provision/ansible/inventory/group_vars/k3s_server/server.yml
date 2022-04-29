@@ -1,0 +1,32 @@
+---
+# -- k3s server
+k3s_etcd_datastore: true
+k3s_control_node: true
+k3s_server:
+  disable:
+    - servicelb
+    - traefik
+    - local-storage
+    - metrics-server
+  disable-cloud-controller: true
+  # expose metrics
+  etcd-expose-metrics: true
+  kube-proxy-arg:
+    - "metrics-bind-address=0.0.0.0"
+  kube-controller-manager-arg:
+    - "bind-address=0.0.0.0"
+  kube-scheduler-arg:
+    - "bind-address=0.0.0.0"
+  # etcd snapshot in local data-dir/db/snapshots
+  etcd_snapshot_name: "etcd-snapshot"
+  etcd_snapshot_schedule: "0 */6 * * *"
+  etcd_snapshot_retention: "10"
+
+# -- extra manifests
+k3s_server_manifests_templates:
+  - "../templates/kube-vip.yml.j2"
+
+# -- kube-vip
+kubevip_router_address: 192.168.248.1
+kubevip_router_as: "65000"
+kubevip_advertise_address: 192.168.255.10

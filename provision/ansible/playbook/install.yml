@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tags: [prep]
+  roles:
+    - name: garden
+
+- hosts: k3s_cluster
+  tags: [cluster]
+  roles:
+    - name: xanmanning.k3s

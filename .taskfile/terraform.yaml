@@ -1,0 +1,27 @@
+---
+version: "3"
+
+tasks:
+  init:
+    dir: provision/terraform
+    cmds:
+      - |
+        terraform init -backend-config=backend.cfg \
+        -backend-config=password="$GITLAB_TOKEN"
+
+  plan:
+    desc: Run "terraform plan" in provision/terraform directory for a lazy guy
+    dir: provision/terraform
+    cmds:
+      - terraform plan
+
+  apply:
+    dir: provision/terraform
+    desc: Run "terraform apply" in provision/terraform directory for a lazy guy
+    cmds:
+      - terraform apply
+
+  lint:
+    dir: provision/terraform
+    cmds:
+      - tflint
