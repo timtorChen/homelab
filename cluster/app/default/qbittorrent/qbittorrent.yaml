@@ -13,7 +13,7 @@ spec:
         name: k8s-at-home
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: qbittorrent
-      version: 13.2.0
+      version: 13.4.3
   interval: 1h
   values:
     env:
