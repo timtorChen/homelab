@@ -10,7 +10,7 @@ spec:
   ref:
     # yamllint disable rule:line-length
     # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts chart=redis-operator
-    tag: redis-operator-0.10.1
+    tag: redis-operator-0.10.3
     # yamllint enable
   ignore: |
     /*

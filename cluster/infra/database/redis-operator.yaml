@@ -13,7 +13,7 @@ spec:
         name: ot-container
       # renovate: registryUrl=https://ot-container-kit.github.io/helm-charts
       chart: redis-operator
-      version: 0.10.1
+      version: 0.10.3
   interval: 1h
   values:
     redisOperator:
