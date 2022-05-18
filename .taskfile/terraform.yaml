@@ -7,7 +7,8 @@ tasks:
     cmds:
       - |
         terraform init -backend-config=backend.cfg \
-        -backend-config=password="$GITLAB_TOKEN"
+        -backend-config=password="$GITLAB_TOKEN" \
+        -upgrade
 
   plan:
     desc: Run "terraform plan" in provision/terraform directory for a lazy guy

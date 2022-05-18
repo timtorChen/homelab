@@ -21,6 +21,7 @@ locals {
 
   k3s_nodes = {
     "server-vm-1" = {
+      node           = "nuc11-01"
       id             = 101
       server         = true
       cores          = 1
@@ -33,8 +34,10 @@ locals {
       password       = local.server_1_password
       ipconfig0      = "ip=192.168.255.1/21,gw=192.168.248.1"
       ssh_forward_ip = "192.168.255.1"
+      hagroup        = "nuc11-01"
     },
     "server-vm-2" = {
+      node           = "nuc11-02"
       id             = 102
       server         = true
       cores          = 1
@@ -47,8 +50,10 @@ locals {
       password       = local.server_1_password
       ipconfig0      = "ip=192.168.255.2/21,gw=192.168.248.1"
       ssh_forward_ip = "192.168.255.2"
+      hagroup        = "nuc11-02"
     },
     "server-vm-3" = {
+      node           = "nuc11-03"
       id             = 103
       server         = true
       cores          = 1
@@ -61,8 +66,10 @@ locals {
       password       = local.server_1_password
       ipconfig0      = "ip=192.168.255.3/21,gw=192.168.248.1"
       ssh_forward_ip = "192.168.255.3"
+      hagroup        = "nuc11-03"
     },
     "agent-vm-1" = {
+      node           = "nuc11-01"
       id             = 106
       server         = false
       cores          = 2
@@ -75,8 +82,10 @@ locals {
       password       = local.agent_1_password
       ipconfig0      = "ip=192.168.255.6/21,gw=192.168.248.1"
       ssh_forward_ip = "192.168.255.6"
+      hagroup        = "nuc11-01"
     },
     "agent-vm-2" = {
+      node           = "nuc11-02"
       id             = 107
       server         = false
       cores          = 2
@@ -89,8 +98,10 @@ locals {
       password       = local.agent_2_password
       ipconfig0      = "ip=192.168.255.7/21,gw=192.168.248.1"
       ssh_forward_ip = "192.168.255.7"
+      hagroup        = "nuc11-02"
     }
     "agent-vm-3" = {
+      node           = "nuc11-03"
       id             = 108
       server         = false
       cores          = 2
@@ -103,6 +114,7 @@ locals {
       password       = local.agent_3_password
       ipconfig0      = "ip=192.168.255.8/21,gw=192.168.248.1"
       ssh_forward_ip = "192.168.255.8"
+      hagroup        = "nuc11-03"
     }
   }
 }

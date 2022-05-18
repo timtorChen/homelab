@@ -8,16 +8,18 @@ provider "proxmox" {
 resource "proxmox_vm_qemu" "k3s_nodes" {
   for_each = local.k3s_nodes
 
-  #- node config
-  vmid = each.value.id
-  name = each.key
-
-  ## sequentially assign from nuc11-01 to nuc11-03
-  target_node = "nuc11-0${1 + index(keys(local.k3s_nodes), each.key) % 3}"
+  # -- node
+  vmid        = each.value.id
+  name        = each.key
+  target_node = each.value.node
   cores       = each.value.cores
   memory      = each.value.memory
   clone       = each.value.template
   full_clone  = true
+
+  # -- HA
+  hastate = "started"
+  hagroup = each.value.hagroup
 
   disk {
     type    = "scsi"
@@ -25,6 +27,11 @@ resource "proxmox_vm_qemu" "k3s_nodes" {
     size    = each.value.size
     discard = "on"
     ssd     = 1
+  }
+
+  network {
+    bridge = "vmbr0"
+    model  = "virtio"
   }
 
   #- cloud-init config
