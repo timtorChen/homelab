@@ -10,7 +10,7 @@ spec:
   ref:
     # yamllint disable rule:line-length
     # renovate: registryUrl=https://prometheus-community.github.io/helm-charts chart=kube-prometheus-stack
-    tag: kube-prometheus-stack-34.10.0
+    tag: kube-prometheus-stack-35.5.1
     # yamllint enable
   ignore: |
     /*
