@@ -5,12 +5,12 @@ metadata:
   namespace: default
   name: qbittorrent-download
 spec:
-  storageClassName: proxmox-nvme
+  storageClassName: nfs-hdd
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 50Gi
+      storage: 500Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -18,7 +18,7 @@ metadata:
   namespace: default
   name: qbittorrent-config
 spec:
-  storageClassName: proxmox-nvme
+  storageClassName: nfs-hdd
   accessModes:
     - ReadWriteMany
   resources:
