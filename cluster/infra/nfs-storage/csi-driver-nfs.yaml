@@ -1,0 +1,68 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: nfs-storage
+  name: csi-driver-nfs
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: flux-system
+        name: csi-driver-nfs
+      # renovate: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+      chart: csi-driver-nfs
+      version: v4.0.0
+  interval: 1h
+  values:
+    serviceAccount:
+      create: false
+      controller: csi-nfs-controller-sa
+    rbac:
+      create: false
+    # -- Controller Deployment
+    controller:
+      replicas: 1
+      tolerations: []
+      resources:
+        csiProvisioner:
+          limits:
+            memory: 400Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        livenessProbe:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        nfs:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+    # -- Node Daemonset
+    node:
+      tolerations: []
+      resources:
+        livenessProbe:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        nodeDriverRegistrar:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        nfs:
+          limits:
+            memory: 300Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
