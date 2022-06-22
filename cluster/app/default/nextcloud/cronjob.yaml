@@ -34,7 +34,7 @@ spec:
           containers:
             - &container
               name: nextcloud-preview-generate
-              image: nextcloud:22.2.4-apache
+              image: nextcloud:22.2.9-apache
               imagePullPolicy: IfNotPresent
               args:
                 - php
