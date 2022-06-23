@@ -13,7 +13,7 @@ spec:
         name: nextcloud
       # renovate: registryUrl=https://nextcloud.github.io/helm/
       chart: nextcloud
-      version: 2.12.1
+      version: 2.14.6
   interval: 1h
   values:
     image:
