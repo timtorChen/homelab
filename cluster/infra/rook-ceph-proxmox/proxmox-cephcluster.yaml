@@ -6,7 +6,7 @@ metadata:
   name: rook-ceph-proxmox
 spec:
   cephVersion:
-    image: quay.io/ceph/ceph:v16.2.7
+    image: quay.io/ceph/ceph:v17.2.1
   dataDirHostPath: /ceph-proxmox
   external:
     enable: true
