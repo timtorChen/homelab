@@ -10,7 +10,7 @@ spec:
   ref:
     # yamllint disable rule:line-length
     # renovate: registryUrl=https://vmware-tanzu.github.io/helm-charts chart=velero
-    tag: velero-2.28.0
+    tag: velero-2.30.0
     # yamllint enable
   ignore: |
     /*
