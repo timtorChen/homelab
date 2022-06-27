@@ -1,9 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  namespace: flux-system
-  name: blog
-spec:
-  url: https://timtorchen.github.io/blog
-  interval: 24h
