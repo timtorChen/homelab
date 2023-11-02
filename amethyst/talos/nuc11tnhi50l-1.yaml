@@ -1,0 +1,8 @@
+---
+machine:
+  network:
+    hostname: amethyst-nuc11tnhi50l-1
+  udev:
+    rules:
+      - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:33:54:cb", NAME="eth0"
+      - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:2c:f4:8c", NAME="eth1"

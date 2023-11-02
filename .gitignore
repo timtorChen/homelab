@@ -1,0 +1,5 @@
+.terraform
+.decrypted~*
+*.tfstate*
+
+.DS_Store

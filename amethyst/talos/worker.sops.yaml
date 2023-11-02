@@ -1,0 +1,80 @@
+version: v1alpha1
+debug: false
+persist: true
+machine:
+    # -- Setup
+    type: worker
+    token: ENC[AES256_GCM,data:PLBmg/5CR99F4g9sw8ssGtBi0KwVqMM=,iv:NsG+E/k2SvMuchGOE9HcRfko82UmBsrTCIfn110V23s=,tag:dlqBSxbwVJuYlN9+yWeAUA==,type:str]
+    ca:
+        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJQakNCOGFBREFnRUNBaEJWdDdDNitxdjZJN3ZmNWVNazhoM0JNQVVHQXl0bGNEQVFNUTR3REFZRFZRUUsKRXdWMFlXeHZjekFlRncweU16QTJNVFF3TnpVMU1UQmFGdzB6TXpBMk1URXdOelUxTVRCYU1CQXhEakFNQmdOVgpCQW9UQlhSaGJHOXpNQ293QlFZREsyVndBeUVBZ2lVQ0hqelNhakpUSkFIWUhJL0tMVVJLNFBBU2Y5M3FiMEkyCjBvNTZzb3lqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDaERBZEJnTlZIU1VFRmpBVUJnZ3JCZ0VGQlFjREFRWUkKS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVdVFqRGMyYmxWeGszMVNidgprMXJwYlFWcWwzb3dCUVlESzJWd0EwRUFKYlRlSVhCV29iUTUvOUFNMjkwcmsvYmJNK29YS3E2VzFsY2piSGEwCmpNeWY0Zld5TjBnNHJZUWNzdVFFSUVKV2VlOC85cksvemdIZU0xK2Q0VTBFREE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        key: ""
+    certSANs: []
+    install:
+        disk: /dev/sda
+        image: ghcr.io/siderolabs/installer:v1.4.5
+        bootloader: true
+        wipe: false
+    network: {}
+    # -- Services
+    kubelet:
+        image: ghcr.io/siderolabs/kubelet:v1.27.2
+        defaultRuntimeSeccompProfileEnabled: true
+        disableManifestsDirectory: true
+    # -- Talos features
+    features:
+        rbac: true
+        stableHostname: true
+        apidCheckExtKeyUsage: true
+cluster:
+    # -- Setup
+    controlPlane:
+        endpoint: https://192.168.253.10:6443
+    network:
+        cni:
+            name: none
+        dnsDomain: cluster.local
+        podSubnets:
+            - 10.244.0.0/16
+        serviceSubnets:
+            - 10.96.0.0/12
+    id: OMJ-snfRLFPqBNRJ5G5mSYxbNenZTVkio14Sp_e2jeM=
+    secret: ENC[AES256_GCM,data:YvNA4/aX7kJ/znkWPSejIZPG6CeOwbK6lK+yaXDAEivrx7KVm9JIpWDwXuQ=,iv:Z06egbJowZWVjxJ5v+kw4kcR6R/CmFuUHw0azs50b5M=,tag:3feArHNw/MW899y0Pd/mOQ==,type:str]
+    token: ENC[AES256_GCM,data:EQh40X1RUshhSkDAze1qMgM5eFjzEoU=,iv:k8tJb7USI7O+M9gzqQux0CFyUEUA6ArDsoEhZ+bfd5o=,tag:9OfH9/wisdlUnDWRSCOQGg==,type:str]
+    ca:
+        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJpekNDQVRDZ0F3SUJBZ0lSQUk1N1d4Sk5ZYlBNRHhIWmt3RkJhQ1F3Q2dZSUtvWkl6ajBFQXdJd0ZURVQKTUJFR0ExVUVDaE1LYTNWaVpYSnVaWFJsY3pBZUZ3MHlNekEyTVRRd056VTFNVEJhRncwek16QTJNVEV3TnpVMQpNVEJhTUJVeEV6QVJCZ05WQkFvVENtdDFZbVZ5Ym1WMFpYTXdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CCkJ3TkNBQVE4bVdKTjBSQXlEaEE2WENINW5jVm9rb1R1RmVjdHR6MjlhbVliMWt2bm9VbXM1RE1iTlk2VjRsZEUKYjl1RHBjblVBNmRvaHZhUTY5czZHNHFUWEhKU28yRXdYekFPQmdOVkhROEJBZjhFQkFNQ0FvUXdIUVlEVlIwbApCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0hRWURWUjBPCkJCWUVGT3o3NlhLYzlBck5sdUFWMXMzd2lJaDFMSHpHTUFvR0NDcUdTTTQ5QkFNQ0Ewa0FNRVlDSVFDT0hoUEwKSUNtL0c3TXFIcFBFTmJnUXlrenJJenBDOFcwQWNxR1VlNW00c2dJaEFMVSt0NjByTnNGTlp3TFI5Z2lpTGwxWgpyL2d4aHVONFZGS29aQ05uZDJNTQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+        key: ""
+    # -- Service
+    proxy:
+        disabled: true
+    # -- Extras
+    discovery:
+        enabled: false
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age: []
+    lastmodified: "2023-06-24T18:32:59Z"
+    mac: ENC[AES256_GCM,data:Kzocj7S0rXBAPdDcYn/tJ8YGzXhmpBIhmrRwFvJKI1cMA/AZ88DPiOpJ0Wtg5dsXgB8Zg5H+egQ85JsgkGGwfCypzIlXh6BQvjoiv2qCivwe2kStPhmD3/DhLrpVoqllqnD9oIbkDJHUa7BBLSgQnjngifTpob4S+OwdxSmEplI=,iv:/UyixpD71U2I9T8jsCgLGRFsfM3CH+d9M++pOTq2xAw=,tag:hDSldU+7Q3Fr+rFX4ApdaQ==,type:str]
+    pgp:
+        - created_at: "2023-06-19T09:28:13Z"
+          enc: |
+            -----BEGIN PGP MESSAGE-----
+
+            hQGMAxz8j/I27AiWAQv+M6mh7Fo9bZcm4tTMORD6sgWo3uJaQqtwHJubQf9bb+mD
+            bMHFPatzAx57u+JNG/tidgyNdCGAtxeKARb5JRYvSOFuUL/SZG2TGAI+sVeDeZTj
+            lSRlJvqBoG18jok88qC2RMuquKi6IRgCSeXKe62UzHqU/Bq7u/ws4HruYrzDc2Wy
+            zOBDE9yGJAzVrFFDPkPfUBeLtFWorvg3m/FZ1n/SAK9n29+iBNMLTONi9VvXEipl
+            BTL87hnV8i6jZDirVEJ3+WztcNx6Ioj8C1UQuxMimKMhZG5Rzqc8rinBDnAx5Ron
+            sHZIB+PZ+gTlwyHDuiFZOuRj+e70DlKbNsDQ0S5H5VhXxMyWmy6wTFRtrsvcxUsf
+            sP1KF6FqMpaDr6G2yTl+FBMOoFM5IhC6UhABiRD7pITNfRnOzA3qpexormlBR+AB
+            yN3v7FU/csfCtjeb7WRHHcvPLBvojHvtereu1MTCWGUxbixDVPO5gUT3uFSoinOf
+            6aMMGCEK+nH6zBmxIIrV0lEB4tBbLmGhpMu1owJ8Kh+u+xXF4M70GnAZ33PbgYdb
+            lexmis6eUK82P/zF9iLq6ALBMdXnPQkZVCHzaecflBg2DmNgyMT9eny22IUUruHu
+            AgU=
+            =cEIQ
+            -----END PGP MESSAGE-----
+          fp: 1CFC8FF236EC0896
+    encrypted_regex: ^(token|key|secret)
+    version: 3.7.3

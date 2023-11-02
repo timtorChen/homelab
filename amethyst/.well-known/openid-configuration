@@ -1,0 +1,13 @@
+{
+  "issuer": "https://raw.githubusercontent.com/timtorchen/homelab/main/amethyst",
+  "jwks_uri": "https://raw.githubusercontent.com/timtorchen/homelab/main/amethyst/.well-known/jwks",
+  "response_types_supported": [
+    "id_token"
+  ],
+  "subject_types_supported": [
+    "public"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256"
+  ]
+}

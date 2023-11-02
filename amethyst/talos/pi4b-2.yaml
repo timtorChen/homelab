@@ -1,0 +1,4 @@
+---
+machine:
+  network:
+    hostname: amethyst-pi4b-2
