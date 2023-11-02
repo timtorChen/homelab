@@ -1,3 +1,0 @@
----
-- name: Initiate garden nodes
-  import_tasks: init.yml

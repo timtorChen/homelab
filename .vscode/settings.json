@@ -1,8 +1,0 @@
-{
-    "terminal.integrated.env.linux": {
-        "VSCODE_WORKSPACE": "k3s-garden"
-    },
-    "terminal.integrated.env.osx": {
-        "VSCODE_WORKSPACE": "k3s-garden"
-    }
-}
