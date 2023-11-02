@@ -17,8 +17,8 @@ resource "aws_iam_role" "cert-manager" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:cert-manager:cert-manager",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:cert-manager:cert-manager",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -60,8 +60,8 @@ resource "aws_iam_role" "cloudflared" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:cloudflared:cloudflared",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:cloudflared:cloudflared",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -103,8 +103,8 @@ resource "aws_iam_role" "snmp-exporter-mikrotik" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:snmp-exporter-mikrotik:snmp-exporter-mikrotik",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:snmp-exporter-mikrotik:snmp-exporter-mikrotik",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -146,8 +146,8 @@ resource "aws_iam_role" "grafana" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:grafana:grafana",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:grafana:grafana",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -189,8 +189,8 @@ resource "aws_iam_role" "grafana-postgres-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:grafana:grafana-postgres-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:grafana:grafana-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -232,8 +232,8 @@ resource "aws_iam_role" "loki" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:loki:loki",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:loki:loki",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -275,8 +275,8 @@ resource "aws_iam_role" "mimir" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mimir:mimir",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mimir:mimir",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -318,8 +318,8 @@ resource "aws_iam_role" "unpoller" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:unpoller:unpoller",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:unpoller:unpoller",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -362,8 +362,8 @@ resource "aws_iam_role" "unifi-controller" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:unifi-controller:unifi-controller",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -405,8 +405,8 @@ resource "aws_iam_role" "unifi-controller-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:unifi-controller:unifi-controller-backup-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -448,8 +448,8 @@ resource "aws_iam_role" "wego" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:wego:wego",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:wego:wego",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -491,8 +491,8 @@ resource "aws_iam_role" "nextcloud" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:nextcloud",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -534,8 +534,8 @@ resource "aws_iam_role" "nextcloud-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:nextcloud-backup-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -577,8 +577,8 @@ resource "aws_iam_role" "nextcloud-postgres-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:nextcloud-postgres-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -620,8 +620,8 @@ resource "aws_iam_role" "nextcloud-dragonfly" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:nextcloud-dragonfly",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud-dragonfly",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -663,8 +663,8 @@ resource "aws_iam_role" "vaultwarden" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:vaultwarden:vaultwarden",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -706,8 +706,8 @@ resource "aws_iam_role" "vaultwarden-backup" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -749,8 +749,8 @@ resource "aws_iam_role" "navidrome" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:navidrome",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:navidrome",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -792,8 +792,8 @@ resource "aws_iam_role" "navidrome-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:navidrome-backup-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:navidrome-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -835,8 +835,8 @@ resource "aws_iam_role" "immich" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:immich",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -878,8 +878,8 @@ resource "aws_iam_role" "immich-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:immich-backup-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -921,8 +921,8 @@ resource "aws_iam_role" "immich-postgres-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:immich-postgres-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -964,8 +964,8 @@ resource "aws_iam_role" "immich-dragonfly" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:immich-dragonfly",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-dragonfly",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -1007,8 +1007,8 @@ resource "aws_iam_role" "immich-typesense" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:immich-typesense",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-typesense",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -1050,8 +1050,8 @@ resource "aws_iam_role" "immich-typesense-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "oidc.timtor.dev/amethyst:sub" : "system:serviceaccount:mydata:immich-typesense-backup-secret-holder",
-            "oidc.timtor.dev/amethyst:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-typesense-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
           }
         }
       }

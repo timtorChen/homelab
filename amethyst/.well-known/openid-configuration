@@ -1,6 +1,6 @@
 {
-  "issuer": "https://raw.githubusercontent.com/timtorchen/homelab/main/amethyst",
-  "jwks_uri": "https://raw.githubusercontent.com/timtorchen/homelab/main/amethyst/.well-known/jwks",
+  "issuer": "https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst",
+  "jwks_uri": "https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst/.well-known/jwks",
   "response_types_supported": [
     "id_token"
   ],

@@ -82,8 +82,8 @@ cluster:
             oidc-client-id: ENC[AES256_GCM,data:Xlu8AT94ldSc8sD4zYlphetQq2tkvk+k8YG5/JXm7GnfJe7i,iv:Ys36Sk/ANcXkfXccpqq4l77w7TpsOwszd4GcgHje+XY=,tag:B7/lXAja91xgVywniY62LQ==,type:str]
             oidc-username-claim: email
             oidc-groups-claim: groups
-            service-account-issuer: https://oidc.timtor.dev/amethyst
-            service-account-jwks-uri: https://oidc.timtor.dev/amethyst/openid/v1/jwks
+            service-account-issuer: https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst
+            service-account-jwks-uri: https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst/.well-known/jwks
         # Certificae SANs for API server CA signing certificate
         certSANs:
             - 192.168.253.10
@@ -139,8 +139,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2023-10-23T03:16:22Z"
-    mac: ENC[AES256_GCM,data:gV3D+kAAacFk8J2h2JmAiDZUu2X3RNEYj78vBqfWMbfyP8d3E9R04hskPWfQT2iHk2tLfaOykGE+czKp1UVJa1Je2Ja1p8ZaDPWb/r6KcHnY1amIpY10wdrC50rV63D4p0fBDwRs2mrhVbeo4uNRezESsTrA7wXK7aZHQJ6vy/o=,iv:Ekqzkdd5yNlis8JdpvlX+MGfbewalinAKhhX0gxTq1A=,tag:Lmv42n9QBx6JIGgGpYQAgA==,type:str]
+    lastmodified: "2023-11-02T09:57:11Z"
+    mac: ENC[AES256_GCM,data:HotSVH3tWaXTzXGj1XnNFahssmM0zfu+H1kbOpuipgQ2iP+qNn0Ay6scExjocfUCi6apLh2tzkZdcFcb41ppzol5Spkk2u0gEcq6Lo5dcYhoBkyJL2FTlXJeYDSBsMYQBQYvwT4ew7645i4Z7M5ytEVs0GZhCCy3bd3n5bIkeq0=,iv:sQILt2D/N9kEnnZRQeNFqO4QlXZfJm7G3PDlSnZ2O90=,tag:Wixp9z2ciUE0RrQLTtrGhA==,type:str]
     pgp:
         - created_at: "2023-10-12T05:31:13Z"
           enc: |-

@@ -22,5 +22,5 @@ provider "aws" {
 
 locals {
   project         = "amethyst"
-  oidc_issuer_url = "https://raw.githubusercontent.com/timtorChen/oidc-test/main/amethyst"
+  oidc_issuer_url = "https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst"
 }
