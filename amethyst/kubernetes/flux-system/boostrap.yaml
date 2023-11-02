@@ -1,0 +1,439 @@
+---
+# My homelab repo hosted on Github
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  namespace: flux-system
+  name: homelab
+spec:
+  interval: 1m
+  url: https://github.com/timtorChen/homelab
+  ref:
+    branch: main
+---
+# --- 0 - Base Namespace ---
+# flux-system
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 0-flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/flux-system
+  prune: false
+---
+# --- 1 - Infra Namespaces ---
+# kube-system
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-kube-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/kube-system
+  prune: false
+---
+# kyverno
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-kyverno
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/kyverno
+  prune: false
+---
+# metallb-system
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-metallb-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/metallb-system
+  prune: false
+---
+# cert-manager
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-cert-manager
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/cert-manager
+  prune: false
+---
+# aws-identity-webhook
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-aws-identity-webhook
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/aws-identity-webhook
+  prune: true
+---
+# external-secrets
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-external-secrets
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/external-secrets
+  prune: false
+---
+# cloudflared
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-cloudflared
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/cloudflared
+  prune: true
+---
+# reloader
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-reloader
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/reloader
+  prune: true
+---
+# --- 2 - Storage Namespaces ---
+# rook-ceph
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 2-rook-ceph
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/rook-ceph
+  prune: false
+---
+# snapscheduler
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 2-snapscheduler
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/snapscheduler
+  prune: false
+---
+# volsync
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 2-volsync
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/volsync
+  prune: true
+---
+# --- 3 - Ingress Namespaces ---
+# ingress-nginx
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 3-ingress-nginx
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/ingress-nginx
+  prune: true
+---
+# --- 4 - Database Namespaces ---
+# cnpg
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 4-cnpg
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/cnpg
+  prune: false
+---
+# --- 5 - Monitor Namespaces ---
+# grafana
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-grafana
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/grafana
+  prune: false
+---
+# mimir
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-mimir
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/mimir
+  prune: false
+---
+# prometheus
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-prometheus
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/prometheus
+  prune: true
+---
+# loki
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-loki
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/loki
+  prune: false
+---
+# vector
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-vector
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/vector
+  prune: true
+---
+# promtail
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-promtail
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/promtail
+  prune: true
+---
+# node-exporter
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-node-exporter
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/node-exporter
+  prune: true
+---
+# smart-exporter
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-smart-exporter
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/smart-exporter
+  prune: true
+---
+# snmp-exporter-mikrotik
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-snmp-exporter-mikrotik
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/snmp-exporter-mikrotik
+  prune: true
+---
+# unifi-controller
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-unifi-controller
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/unifi-controller
+  prune: false
+---
+# unpoller
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-unpoller
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/unpoller
+  prune: true
+---
+# --- 6 - Application Namespaces ---
+# wego
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-wego
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/wego
+  prune: true
+---
+# vaultwarden
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-vaultwarden
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/vaultwarden
+  prune: false
+---
+# navidrome
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-navidrome
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/mydata/navidrome
+  prune: false
+---
+# immich
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-immich
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/mydata/immich
+  prune: false
+---
+# nextcloud
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-nextcloud
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /amethyst/kubernetes/mydata/nextcloud
+  prune: false

@@ -1,0 +1,94 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: grafana
+  name: grafana-policy
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+  ingress:
+    - # incoming traffic
+      fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ingress-nginx
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "3000"
+    - # metrics
+      fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-prometheus-stack
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "3000"
+    - # gossip between grafana pods
+      fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: grafana
+      toPorts:
+        - ports:
+            - protocol: ANY
+              port: "9094"
+  egress:
+    - # dns resolution
+      toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - protocol: ANY
+              port: "53"
+          rules:
+            dns:
+              - matchPattern: "*"
+    - # connect to database
+      toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: grafana
+            cnpg.io/cluster: grafana-postgres
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "5432"
+    - # datasources
+      toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: mimir
+            app.kubernetes.io/component: query-frontend
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "8080"
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: loki
+            app.kubernetes.io/component: read
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "3100"
+    - # download plugin
+      # TODO (or not): add TLS termination
+      toFQDNs:
+        - matchName: grafana.com
+        - matchName: grafana.net
+        - matchName: storage.googleapis.com
+        - matchName: github.com
+        - matchName: api.github.com
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "443"
+    - # gossip between grafana pods
+      toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: grafana
+      toPorts:
+        - ports:
+            - protocol: ANY
+              port: "9094"

@@ -1,0 +1,123 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: snmp-exporter-mikrotik
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: snmp-exporter-mikrotik
+  name: snmp-exporter
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    controller:
+      replicas: 1
+      strategy: RollingUpdate
+    image:
+      repository: prom/snmp-exporter
+      tag: v0.24.1
+    args:
+      - --config.file=/config/*.yml
+      - --config.file=/secret/*.yml
+
+    serviceAccount:
+      create: true
+      name: snmp-exporter-mikrotik
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-snmp-exporter-mikrotik
+        eks.amazonaws.com/audience: sts.amazonaws.com
+    podAnnotations:
+      secret.reloader.stakater.com/reload: &s snmp-exporter-mikrotik-secret
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+        mountPath: /config
+      secret:
+        enabled: true
+        type: custom
+        mountPath: /secret
+        volumeSpec:
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s
+
+    podSecurityContext:
+      fsGroup: 65534
+    securityContext: &sc
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    initContainers:
+      download:
+        image: busybox:1.28
+        securityContext: *sc
+        volumeMounts:
+          - name: config
+            mountPath: /config
+        command: ["sh", "-c"]
+        args:
+          - |
+            wget https://raw.githubusercontent.com/IgorKha/Grafana-Mikrotik/master/snmp/snmp.yml \
+              -O /config/snmp.yml
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            enabled: true
+            protocol: TCP
+            port: 9116
+
+    probes:
+      startup:
+        enabled: false
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - &mikrotik
+            port: http
+            scheme: http
+            path: /snmp
+            interval: 1m
+            scrapeTimeout: 15s
+            params:
+              module: [mikrotik]
+              auth: ["MikroTik-RB4011iGS+"]
+              target: ["192.168.248.1"]
+          - <<: *mikrotik
+            params:
+              module: [mikrotik]
+              auth: ["Mikrorik-CRS328-24P-4S+"]
+              target: ["192.168.248.2"]

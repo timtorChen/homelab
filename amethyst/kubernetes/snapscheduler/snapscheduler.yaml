@@ -1,0 +1,43 @@
+---
+# Helm
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: snapscheduler
+  name: backube
+spec:
+  url: https://backube.github.io/helm-charts/
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: snapscheduler
+  name: snapscheduler
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: backube
+      # renovate: registryUrl=https://backube.github.io/helm-charts/
+      chart: snapscheduler
+      version: 3.2.0
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  interval: 1h
+  maxHistory: 1
+  values:
+    manageCRDs: true
+    securityContext:
+      runAsNonRoot: true
+      readOnlyRootFilesystem: false
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    resources: {}
+    nodeSelector: {}

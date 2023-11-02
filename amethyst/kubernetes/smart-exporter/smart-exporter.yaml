@@ -1,0 +1,90 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: smart-exporter
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: smart-exporter
+  name: smart-exporter
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    controller:
+      type: daemonset
+    image:
+      repository: matusnovak/prometheus-smartctl
+      tag: v2.2.0
+    env:
+      SMARTCTL_EXPORTER_PORT: &port 9902
+      SMARTCTL_REFRESH_INTERVAL: 60
+
+    persistence:
+      device:
+        enabled: true
+        type: hostPath
+        hostPath: /dev
+        mountPath: /dev
+
+    securityContext:
+      privileged: true
+
+    tolerations:
+      - effect: NoSchedule
+        operator: Exists
+
+    resources:
+      limits:
+        memory: 64Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            enabled: true
+            protocol: TCP
+            port: *port
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 30s
+            relabelings:
+              - action: replace
+                sourceLabels: ["__meta_kubernetes_pod_node_name"]
+                targetLabel: nodename
+            metricRelabelings:
+              - action: drop
+                sourceLabels: [__name__]
+                regex: ^(python|process).*
+
+    probes:
+      startup:
+        enabled: false
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false

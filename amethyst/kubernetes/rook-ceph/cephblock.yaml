@@ -1,0 +1,177 @@
+# The manifest declear 4 storageClass:
+# rbd-fast: volume bakced by nvme SSD and retain after PVC got deleted
+# rbd-bulk: volume bakced by HDD and retain after PVC got deleted
+# rbd-fast-delete: volume bakced by nvme SSD and delete after PVC got deleted
+# rbd-bulk-delete: volume bakced by HDD and delete after PVC got deleted
+---
+# rbd-fast pool
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  namespace: rook-ceph
+  name: rbd-fast
+spec:
+  failureDomain: host
+  deviceClass: nvme
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true
+---
+# rbd-fast-volatile pool
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  namespace: rook-ceph
+  name: rbd-fast-volatile
+spec:
+  failureDomain: host
+  deviceClass: nvme
+  replicated:
+    size: 2
+    requireSafeReplicaSize: true
+---
+# rbd-bulk pool
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  namespace: rook-ceph
+  name: rbd-bulk
+spec:
+  failureDomain: host
+  deviceClass: hdd
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true
+---
+# rbd-bulk-volatile pool
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  namespace: rook-ceph
+  name: rbd-bulk-volatile
+spec:
+  failureDomain: host
+  deviceClass: hdd
+  replicated:
+    size: 2
+    requireSafeReplicaSize: true
+---
+# StorageClass rbd-fast
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rbd-fast
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: rbd-fast
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+---
+# StorageClass rbd-fast-delete
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rbd-fast-delete
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: rbd-fast
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+---
+# StorageClass rbd-fast-volatile
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rbd-fast-volatile
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: rbd-fast-volatile
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+---
+# StorageClass rbd-bulk
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rbd-bulk
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: rbd-bulk
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+---
+# StorageClass rbd-bulk-delete
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rbd-bulk-delete
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: rbd-bulk
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+---
+# StorageClass rbd-bulk-volatile
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rbd-bulk-volatile
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: rbd-bulk-volatile
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true

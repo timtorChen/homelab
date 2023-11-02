@@ -1,0 +1,79 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: mydata
+  name: nextcloud-config
+data:
+  # apache
+  extra.conf: |
+    # no upload limit
+    LimitRequestBody 0
+  ports.conf: |
+    Listen 8080
+  000-default.conf: |
+    <VirtualHost *:8080>
+      DocumentRoot /var/www/html
+      ErrorLog /dev/stderr
+      TransferLog /dev/stdout
+    </VirtualHost>
+
+  # php
+  php-config.ini: |
+    ; -- Redis session handler
+    session.save_handler = redis
+    session.save_path = "tcp://${REDIS_HOST}:${REDIS_HOST_PORT}?auth=${REDIS_HOST_PASSWORD}"
+    redis.session.locking_enabled = 1
+    redis.session.lock_retries = -1
+    redis.session.lock_wait_time = 10000
+
+  # nextcloud
+  # https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
+  extra.config.php: |
+    <?php
+    $CONFIG = [
+      # -- Init
+      'check_data_directory_permissions' => false,
+
+      # -- Postgres
+      'dbtype'        => 'pgsql',
+      'dbhost'        => getenv('POSTGRES_HOST'),
+      'dbname'        => getenv('POSTGRES_DB'),
+      'dbuser'        => getenv('POSTGRES_USER'),
+      'dbpassword'    => getenv('POSTGRES_PASSWORD'),
+      'dbtableprefix' => 'oc_',
+
+      # -- Redis
+      'memcache.local' => '\OC\Memcache\APCu',
+      'memcache.distributed' => '\\OC\\Memcache\\Redis',
+      'memcache.locking' => '\\OC\\Memcache\\Redis',
+      'redis' => [
+        'host' => getenv('REDIS_HOST'),
+        'port' => getenv('REDIS_HOST_PORT') ?: 6379,
+        'password' => getenv('REDIS_HOST_PASSWORD')
+      ],
+
+      # -- Application
+      'overwriteprotocol' => getenv('OVERWRITEPROTOCOL'),
+      'overwrite.cli.url' => getenv('OVERWRITECLIURL'),
+      'trusted_domains' => [
+         'localhost',
+         getenv('NEXTCLOUD_TRUSTED_DOMAINS')
+      ],
+
+      'appstoreenabled' => true,
+      'apps_paths' => [
+        0 => [
+          'path'     => OC::$SERVERROOT.'/apps',
+          'url'      => '/apps',
+          'writable' => false,
+        ],
+        1 => [
+          'path'     => OC::$SERVERROOT.'/custom_apps',
+          'url'      => '/custom_apps',
+          'writable' => true,
+        ]
+      ],
+      'bulkupload.enabled' => true,
+      'log_type' => 'errorlog',
+    ];

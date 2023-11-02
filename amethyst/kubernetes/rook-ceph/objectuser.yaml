@@ -1,0 +1,21 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStoreUser
+metadata:
+  name: admin
+  namespace: rook-ceph
+spec:
+  store: fast
+  displayName: admin
+  capabilities:
+    user: "*"
+    bucket: "*"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStoreUser
+metadata:
+  name: loki
+  namespace: rook-ceph
+spec:
+  store: fast
+  displayName: loki

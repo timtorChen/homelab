@@ -1,0 +1,96 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: vector
+  name: vector-config
+data:
+  talos.yaml: |
+    sources:
+      talos-kernel:
+        address: 0.0.0.0:3001
+        type: socket
+        mode: tcp
+        decoding:
+          codec: json
+
+      talos-service:
+        address: 0.0.0.0:3002
+        type: socket
+        mode: tcp
+        decoding:
+          codec: json
+
+    # TODO: issue tracking https://github.com/siderolabs/talos/issues/7356
+    # -- Debug console log
+    # sinks:
+    #   talos-debug:
+    #     type: console
+    #     inputs: [talos-*]
+    #     encoding:
+    #       codec: json
+
+  mikrotik.yaml: |
+    sources:
+      mikrotik:
+        address: 0.0.0.0:4001
+        type: socket
+        mode: udp
+        decoding:
+          codec: bytes
+
+    transforms:
+      mikrotik-remap:
+        type: remap
+        inputs: [mikrotik]
+        source: |
+          . |= parse_regex!(.message, r'^(?P<topics>.+?) (?P<hostname>.+?): (?P<message>.+)')
+
+    sinks:
+      # -- Debug console log
+      # mikrotik-debug:
+      #   type: console
+      #   inputs: [mikrotik-remap]
+      #   encoding:
+      #     codec: json
+
+      mikrotik-loki:
+        type: loki
+        inputs: [mikrotik-remap]
+        endpoint: http://loki-write.loki:3100
+        out_of_order_action: rewrite_timestamp
+        encoding:
+          codec: json
+          only_fields: [hostname, topics, message]
+        compression: snappy
+        labels:
+          device: mikrotik
+          hostname: "{{ hostname }}"
+          topics: "{{ topics }}"
+
+  #! skip - ubiquiti syslog is quiet unsable
+  ubiquiti.yaml: |
+    # sources:
+    #   ui:
+    #     address: 0.0.0.0:5001
+    #     type: socket
+    #     mode: udp
+    #     decoding:
+    #       codec: bytes
+
+    # sinks:
+    #   # -- Debug console log
+    #   # ui-debug:
+    #   #   type: console
+    #   #   inputs: [ui]
+    #   #   encoding:
+    #   #     codec: json
+
+    #   ui-loki:
+    #     type: loki
+    #     inputs: [ui]
+    #     endpoint: http://loki-write.loki:3100
+    #     encoding:
+    #       codec: json
+    #     labels:
+    #       device: ubiquiti

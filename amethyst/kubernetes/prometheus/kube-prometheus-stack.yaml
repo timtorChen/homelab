@@ -1,0 +1,211 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: prometheus
+  name: prometheus-community
+spec:
+  url: https://prometheus-community.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: prometheus
+  name: kube-prometheus-stack
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      version: 48.2.1
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  interval: 1h
+  maxHistory: 1
+  values:
+    # -- CRD
+    crds:
+      enabled: true
+
+    # -- Chart
+    prometheusOperator:
+      enabled: true
+      serviceMonitor:
+        selfMonitor: true
+        metricRelabelings:
+          - sourceLabels: [__name__]
+            regex: ^(go|process).*
+            action: drop
+      containerSecurityContext: &sc
+        runAsNonRoot: true
+        runAsGroup: 65534
+        runAsUser: 65534
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        limits:
+          memory: 64Mi
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      # sidecar config reloader
+      prometheusConfigReloader:
+        resources:
+          limits:
+            memory: 50Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+
+    kubeStateMetrics:
+      enabled: true
+    kube-state-metrics:
+      prometheus:
+        monitor:
+          enabled: true
+          interval: 1m
+      containerSecurityContext: *sc
+      resources:
+        requests:
+          cpu: 10m
+          memory: 128Mi
+
+    nodeExporter:
+      enabled: false
+    grafana:
+      enabled: false
+    alertmanager:
+      enabled: false
+
+    # -- Prometheus CRD
+    prometheus:
+      prometheusSpec:
+        replicas: 1
+        retention: 10d
+        serviceMonitorSelectorNilUsesHelmValues: false
+        scrapeInterval: 1m
+        externalLabels:
+          project: amethyst
+        remoteWrite:
+          - url: http://mimir-distributor.mimir.svc:8080/api/v1/push
+            writeRelabelConfigs:
+              - sourceLabels: [__name__]
+                regex: ^(scrape_.*|up)
+                action: drop
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: rbd-fast-delete
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+        securityContext: # podSecurityContext
+          runAsNonRoot: true
+          runAsGroup: 65534
+          runAsUser: 65534
+          fsGroup: 65534
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+
+      serviceMonitor:
+        selfMonitor: true
+        interval: 1m
+        metricRelabelings:
+          - sourceLabels: [__name__]
+            regex: ^(go|process).*
+            action: drop
+
+    # -- ServiceMonitor CRD
+    kubeEtcd:
+      enabled: true
+      endpoints: &endpoints
+        - 192.168.253.1
+        - 192.168.253.2
+        - 192.168.253.3
+      service:
+        port: 2381
+        targetPort: 2381
+      serviceMonitor:
+        scheme: http
+        metricRelabelings:
+          - &drop-useless
+            action: drop
+            sourceLabels: [__name__]
+            regex: ^(go|process).*
+          - action: drop
+            sourceLabels: [__name__]
+            regex: ^(grpc|etcd_grpc).*
+
+    # TODO: pick useful metrics
+    kubeControllerManager:
+      enabled: false
+      endpoints: *endpoints
+      service:
+        port: 10257
+        targetPort: 10257
+      serviceMonitor:
+        https: true
+        insecureSkipVerify: true
+        metricRelabelings:
+          - *drop-useless
+
+    # TODO: pick useful metrics
+    kubeScheduler:
+      enabled: false
+      endpoints: *endpoints
+      service:
+        port: 10259
+        targetPort: 10259
+      serviceMonitor:
+        https: true
+        insecureSkipVerify: true
+        metricRelabelings:
+          - *drop-useless
+
+    # TODO: pick useful metrics
+    kubeApiServer:
+      enabled: false
+      tlsConfig:
+        serverName: kubernetes
+        insecureSkipVerify: false
+      serviceMonitor:
+        metricRelabelings:
+          - *drop-useless
+
+    # TODO: pick useful metrics
+    kubelet:
+      enabled: false
+
+    coreDns:
+      enabled: true
+      service:
+        port: 9153
+        targetPort: 9153
+      serviceMonitor:
+        metricRelabelings:
+          - *drop-useless
+
+    kubeProxy:
+      enabled: false
+    # -- PrometheusRule CRD
+    defaultRules:
+      create: false

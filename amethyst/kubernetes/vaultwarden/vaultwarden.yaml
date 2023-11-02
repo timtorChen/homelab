@@ -1,0 +1,129 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: vaultwarden
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    image:
+      repository: ghcr.io/dani-garcia/vaultwarden
+      tag: 1.29.0-alpine
+
+    ## Debug only, uncomment
+    # command: ["sleep", "infinity"]
+
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-vaultwarden
+        eks.amazonaws.com/audience: sts.amazonaws.com
+    podAnnotations:
+      secret.reloader.stakater.com/reload: >
+        vaultwarden-secret,
+        vaultwarden-backup-secret
+
+    ## Environment variables reference
+    # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+    env:
+      DATA_FOLDER: &dir /data
+      ROCKET_PORT: &p1 8080
+      WEBSOCKET_ENABLED: true
+      WEBSOCKET_PORT: &p2 3012
+      SIGNUP_ALLOWED: true
+      DISABLE_ADMIN_TOKEN: false
+      ## Generate the admin token hash with command
+      ## `echo -n "admin-password" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4`
+      ADMIN_TOKEN:
+        valueFrom:
+          secretKeyRef:
+            name: &s vaultwarden-secret
+            key: ADMIN_TOKEN
+
+    persistence:
+      data:
+        enabled: true
+        type: pvc
+        mountPath: *dir
+        existingClaim: vaultwarden-data
+      secret:
+        enabled: true
+        type: custom
+        volumeSpec:
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s
+
+    podSecurityContext:
+      fsGroup: 65534
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 128Mi
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            enabled: true
+            port: *p1
+          websocket:
+            enabled: true
+            port: *p2
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - host: vault.timtor.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  port: *p1
+              - path: /notifications/hub
+                pathType: Prefix
+                service:
+                  port: *p2

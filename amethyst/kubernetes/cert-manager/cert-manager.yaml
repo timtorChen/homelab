@@ -1,0 +1,52 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: cert-manager
+  name: cert-manager
+spec:
+  url: https://charts.jetstack.io
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: cert-manager
+  name: cert-manager
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager
+      # renovate: registryUrl=https://charts.jetstack.io
+      chart: cert-manager
+      version: v1.12.2
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  interval: 1h
+  maxHistory: 1
+  values:
+    installCRDs: true
+    extraArgs:
+      - --dns01-recursive-nameservers-only
+      - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-cert-manager
+        eks.amazonaws.com/audience: sts.amazonaws.com
+    ## -- Workaround for syncing secret
+    volumes:
+      - name: &s cloudflare-secret
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: cert-manager-secret
+    volumeMounts:
+      - name: *s
+        mountPath: /cloudflare-secret
+        readOnly: true

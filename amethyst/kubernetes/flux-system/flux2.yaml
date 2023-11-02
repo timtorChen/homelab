@@ -1,0 +1,32 @@
+# CRDs and workloads is managed by this manifest
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  namespace: flux-system
+  name: flux2
+spec:
+  interval: 1m
+  url: https://github.com/fluxcd/flux2
+  ref:
+    tag: v2.0.0-rc.5
+  ignore: |
+    /*
+    !/manifests/bases/source-controller
+    !/manifests/bases/kustomize-controller
+    !/manifests/bases/helm-controller
+    !/manifests/bases/notification-controller
+    !/manifests/rbac
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: flux2
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux2
+  targetNamespace: flux-system
+  interval: 10m0s
+  prune: false

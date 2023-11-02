@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: unpoller
+  name: unpoller-config
+data:
+  unpoller.yaml: |
+    poller:
+      debug: false
+      quiet: false
+    prometheus:
+      http_listen: 0.0.0.0:9130
+    influxdb:
+      disable: true
+    unifi:
+      controllers:
+        - url: https://ui.timtor.dev
+          verify_ssl: true
+          # user: APP_UP_UNIFI_CONTROLLER_0_USER
+          # pass: APP_UP_UNIFI_CONTROLLER_0_PASS
+          sites:
+            - all

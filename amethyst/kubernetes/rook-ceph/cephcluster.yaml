@@ -1,0 +1,87 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  namespace: rook-ceph
+  name: main
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v17.2.6
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  mgr:
+    count: 2
+    modules:
+      - name: telemetry
+        enabled: false
+      - name: nfs
+        enabled: false
+      - name: pg_autoscaler
+        enabled: true
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    nodes:
+      - name: amethyst-nuc11tnhi50l-1
+        devices:
+          - config:
+              deviceClass: nvme
+            name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDCF214
+          - config:
+              deviceClass: hdd
+            name: /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH96900
+      - name: amethyst-nuc11tnhi50l-2
+        devices:
+          - config:
+              deviceClass: nvme
+            name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDD4746
+          - config:
+              deviceClass: hdd
+            name: /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH95W58
+      - name: amethyst-nuc11tnhi50l-3
+        devices:
+          - config:
+              deviceClass: nvme
+            name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDCF204
+          - config:
+              deviceClass: hdd
+            name: /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH93J1E
+  resources:
+    osd:
+      requests:
+        memory: 2Gi
+    mon:
+      requests:
+        memory: 1Gi
+    mgr:
+      requests:
+        memory: 512Mi
+    crashcollector:
+      requests:
+        memory: 60Mi
+
+  network:
+    provider: host
+  dashboard:
+    enabled: true
+  monitoring:
+    enabled: false
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: rook-ceph
+  name: rook-ceph
+spec:
+  namespaceSelector:
+    matchNames:
+      - rook-ceph
+  selector:
+    matchLabels:
+      app: rook-ceph-mgr
+      rook_cluster: rook-ceph
+  endpoints:
+    - port: http-metrics
+      path: /metrics

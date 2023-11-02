@@ -1,0 +1,33 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: cnpg
+  name: cnpg
+spec:
+  url: https://cloudnative-pg.github.io/charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: cnpg
+  name: cnpg
+spec:
+  interval: 1h
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: cnpg
+        name: cnpg
+      # renovate: registryUrl=https://cloudnative-pg.github.io/charts
+      chart: cloudnative-pg
+      version: 0.18.1
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    crds:
+      create: true

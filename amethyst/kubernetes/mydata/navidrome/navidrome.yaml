@@ -1,0 +1,99 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: mydata
+  name: navidrome
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: mydata
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    image:
+      repository: deluan/navidrome
+      tag: 0.48.0
+
+    ## debug only
+    # command: ["sleep", "infinity"]
+
+    env:
+      ND_MUSICFOLDER: &dir1 /data
+      ND_DATAFOLDER: &dir2 /db
+      # no such environment variable just for symmetry
+      ND_CACHEFOLDER: &dir3 /db/cache
+      ND_PORT: &p 4533
+      ND_ENABLETRANSCODINGCONFIG: "true"
+
+    persistence:
+      data:
+        enabled: true
+        type: pvc
+        mountPath: *dir1
+        existingClaim: navidrome-data
+      db:
+        enabled: true
+        type: pvc
+        existingClaim: navidrome-db
+        mountPath: *dir2
+      cache:
+        enabled: true
+        type: pvc
+        storageClass: fs-fast-delete
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        mountPath: *dir3
+        retain: true
+
+    podSecurityContext:
+      fsGroup: 65534
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 10m
+        memory: 256Mi
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            enabled: true
+            port: *p
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - host: music.timtor.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  port: *p

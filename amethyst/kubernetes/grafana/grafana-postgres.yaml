@@ -1,0 +1,104 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  namespace: grafana
+  name: grafana-postgres
+spec:
+  instances: 2
+  storage:
+    pvcTemplate:
+      storageClassName: fs-fast
+      resources:
+        requests:
+          storage: 10Gi
+      accessModes: ["ReadWriteOnce"]
+  bootstrap:
+    initdb:
+      database: grafana
+      owner: grafana
+      secret:
+        name: grafana-postgres-secret
+  env:
+    - name: TZ
+      value: Asia/Taipei
+  backup:
+    retentionPolicy: "2w"
+    barmanObjectStore:
+      endpointURL: https://s3.us-east-005.backblazeb2.com
+      destinationPath: s3://homelab-amethyst-grafana/
+      s3Credentials:
+        accessKeyId:
+          name: grafana-postgres-secret
+          key: POSTGRES_B2_ACCESS_KEY_ID
+        secretAccessKey:
+          name: grafana-postgres-secret
+          key: POSTGRES_B2_ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        maxParallel: 8
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  namespace: grafana
+  name: grafana-postgres-backup
+spec:
+  schedule: "0 0 0/12 * *"
+  backupOwnerReference: self
+  cluster:
+    name: grafana-postgres
+  target: prefer-standby
+---
+## workaround to hold secret
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: grafana
+  name: grafana-postgres-secret-holder
+  annotations:
+    eks.amazonaws.com/audience: sts.amazonaws.com
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-grafana-postgres-secret-holder
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: grafana
+  name: &n grafana-postgres-secret-holder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *n
+  template:
+    metadata:
+      labels:
+        app: *n
+    spec:
+      serviceAccount: *n
+      volumes:
+        - name: &s grafana-postgres-secret
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s
+      containers:
+        - name: *n
+          image: busybox:latest
+          command: ["sleep", "infinity"]
+          volumeMounts:
+            - name: *s
+              mountPath: /grafana-postgres-secret
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources: {}

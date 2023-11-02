@@ -1,0 +1,84 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller-data-backup
+spec:
+  sourcePVC: unifi-controller-data
+  trigger:
+    schedule: "0 0/12 * * *"
+  restic:
+    pruneIntervalDays: 14
+    repository: unifi-controller-backup-secret
+    retain:
+      daily: 5
+      weekly: 4
+      monthly: 3
+    copyMethod: Snapshot
+    volumeSnapshotClassName: rook-ceph-fs
+    storageClassName: fs-fast-volatile
+    accessModes: ["ReadWriteOnce"]
+    cacheStorageClassName: rbd-fast-volatile
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 1Gi
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault
+---
+## workaround to hold backup secret
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller-backup-secret-holder
+  annotations:
+    eks.amazonaws.com/audience: sts.amazonaws.com
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-unifi-controller-backup-secret-holder
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller-backup-secret-holder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi-controller-backup-secret-holder
+  template:
+    metadata:
+      labels:
+        app: unifi-controller-backup-secret-holder
+    spec:
+      serviceAccount: unifi-controller-backup-secret-holder
+      volumes:
+        - name: secret
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: unifi-controller-backup-secret
+      containers:
+        - name: unifi-controller-backup-secret-holder
+          image: busybox:latest
+          command: ["sleep", "infinity"]
+          volumeMounts:
+            - name: secret
+              mountPath: /secret
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources: {}

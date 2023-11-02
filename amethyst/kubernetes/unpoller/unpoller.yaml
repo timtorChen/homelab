@@ -1,0 +1,107 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: unpoller
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: unpoller
+  name: unpoller
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    controller:
+      replicas: 1
+    image:
+      repository: ghcr.io/unpoller/unpoller
+      tag: v2.9.2
+    command: ["unpoller", "--config", "/config/unpoller.yaml"]
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-unpoller
+        eks.amazonaws.com/audience: sts.amazonaws.com
+    podAnnotations:
+      secret.reloader.stakater.com/reload: &s unpoller-secret
+      configmap.reloader.skaater.com/reload: &c unpoller-config
+
+    env:
+      UP_UNIFI_CONTROLLER_0_USER:
+        valueFrom:
+          secretKeyRef:
+            name: *s
+            key: UP_UNIFI_CONTROLLER_0_USER
+      UP_UNIFI_CONTROLLER_0_PASS:
+        valueFrom:
+          secretKeyRef:
+            name: *s
+            key: UP_UNIFI_CONTROLLER_0_PASS
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: *c
+        mountPath: /config
+      sync-secret:
+        enabled: true
+        type: custom
+        volumeSpec:
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s
+
+    podSecurityContext:
+      fsGroup: 65534
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            enabled: true
+            protocol: TCP
+            port: 9130
+
+    probes:
+      startup:
+        enabled: false
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m

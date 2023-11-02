@@ -1,0 +1,41 @@
+---
+# Helm
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: rook-ceph
+  name: rook-ceph
+spec:
+  url: https://charts.rook.io/release
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: rook-ceph
+  name: rook-ceph
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: rook-ceph
+      # renovate: registryUrl=https://charts.rook.io/release
+      chart: rook-ceph
+      version: v1.11.8
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  interval: 1h
+  maxHistory: 1
+  values:
+    crds:
+      enabled: true
+    resources:
+      limits:
+        cpu: 100 # unreasonable number to remove the limit
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi

@@ -1,0 +1,19 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+  - deps/immich-postgres-secret.yaml
+  - deps/immich-postgres.yaml
+  - deps/immich-dragonfly.yaml
+  - deps/immich-dragonfly-secret.yaml
+  - deps/immich-typesense-backup-secret.yaml
+  - deps/immich-typesense-backup.yaml
+  - deps/immich-typesense-data.yaml
+  - deps/immich-typesense.yaml
+  - deps/immich-typesense-secret.yaml
+  - app/immich-backup-secret.yaml
+  - app/immich-backup.yaml
+  - app/immich-data.yaml
+  - app/immich-secret.yaml
+  - app/immich.yaml

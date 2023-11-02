@@ -1,0 +1,201 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: mimir
+  name: grafana
+spec:
+  url: https://grafana.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: mimir
+  name: mimir
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
+      chart: mimir-distributed
+      version: 5.0.0
+  interval: 1h
+  maxHistory: 1
+  values:
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-mimir
+        eks.amazonaws.com/audience: sts.amazonaws.com
+
+    global:
+      podAnnotations:
+        secret.reloader.stakater.com/reload: &s mimir-secret
+      extraEnvFrom:
+        - secretRef:
+            name: *s
+
+    mimir:
+      # https://grafana.com/docs/mimir/latest/references/configuration-parameters/
+      structuredConfig:
+        usage_stats:
+          enabled: false
+
+        multitenancy_enabled: false
+
+        blocks_storage:
+          backend: s3
+          s3:
+            endpoint: rook-ceph-rgw-fast.rook-ceph.svc:8080
+            bucket_name: amethyst-mimir
+            access_key_id: ${APP_S3_ACCESS_KEY_ID}
+            secret_access_key: ${APP_S3_SECRET_ACCESS_KEY}
+            insecure: true
+          tsdb:
+            dir: /data/tsdb
+          bucket_store:
+            sync_dir: /data/tsdb-sync
+
+        frontend:
+          max_outstanding_per_tenant: 1024
+        querier:
+          max_concurrent: 1024
+
+        limits:
+          # keep metrics for 90 days
+          compactor_blocks_retention_period: 90d
+        compactor:
+          # every 15 minutes mark old blocks as deleted, and update bucket index
+          cleanup_interval: 15m
+          # wait for 2 hours to actually delete the blocks
+          deletion_delay: 2h
+
+    # -- Read path: query frontend -> query -> storage gateway -> object storage
+    # query_frontend (stateless)
+    query_frontend:
+      replicas: 1
+      extraVolumes: &volumes
+        - name: *s
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s
+      extraVolumeMounts: &mounts
+        - name: *s
+          mountPath: /mimir-secret
+          readOnly: true
+      resources: &resources
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      strategy: &strategy
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+      readinessProbe: &readiness
+        initialDelaySeconds: 20
+      topologySpreadConstraints: &topology
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+
+    # querier (stateless)
+    querier:
+      replicas: 2
+      extraVolumes: *volumes
+      extraVolumeMounts: *mounts
+      resources: *resources
+      strategy: *strategy
+      readinessProbe: *readiness
+      topologySpreadConstraints: *topology
+
+    # store_gateway (stateful, index and chunk cache)
+    store_gateway:
+      replicas: 3
+      extraVolumes: *volumes
+      extraVolumeMounts: *mounts
+      resources: *resources
+      strategy: *strategy
+      readinessProbe: *readiness
+      topologySpreadConstraints: *topology
+      zoneAwareReplication:
+        enabled: false
+      # recommanded to be persistent, even data can be restored from object storage
+      persistentVolume:
+        enabled: true
+        storageClass: rbd-fast-delete
+        size: 5Gi
+
+    # -- Write path: distributor -> ingester -> Object Storage
+    # distributor (stateless)
+    # receive data from prometheus, and divide data to downstream ingesters
+    distributor:
+      replicas: 1
+      extraVolumes: *volumes
+      extraVolumeMounts: *mounts
+      resources: *resources
+      strategy: *strategy
+      readinessProbe: *readiness
+      topologySpreadConstraints: *topology
+
+    # ingester (stateful)
+    # data is stored for 2 hours and uploads to object storage
+    ingester:
+      replicas: 3
+      extraVolumes: *volumes
+      extraVolumeMounts: *mounts
+      resources: *resources
+      strategy: *strategy
+      readinessProbe: *readiness
+      topologySpreadConstraints: *topology
+      zoneAwareReplication:
+        enabled: false
+      persistentVolume:
+        enabled: true
+        storageClass: rbd-fast-delete
+        size: 5Gi
+
+    # -- Compactor: compactor -> Object Storage
+    # compactor (stateful)
+    # merge 2 hrs period blocks into one block
+    # and compact mutiple period blocks to a large block
+    compactor:
+      replicas: 2
+      extraVolumes: *volumes
+      extraVolumeMounts: *mounts
+      resources: *resources
+      strategy: *strategy
+      readinessProbe: *readiness
+      topologySpreadConstraints: *topology
+      # it's fine to redownload for light usage
+      persistentVolume:
+        enabled: false
+
+    # -- Monitoring
+    metaMonitoring:
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+        metricRelabelings:
+          - action: drop
+            sourceLabels: [__name__]
+            regex: ^(process).*
+
+    # -- Disabled components
+    ruler:
+      enabled: false
+    alertmanager:
+      enabled: false
+    query_scheduler:
+      enabled: false
+    overrides_exporter:
+      enabled: false
+    minio:
+      enabled: false
+    nginx:
+      enabled: false

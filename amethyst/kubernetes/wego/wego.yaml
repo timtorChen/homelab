@@ -1,0 +1,95 @@
+---
+# Helm
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: wego
+  name: wego
+spec:
+  type: oci
+  url: oci://ghcr.io/weaveworks/charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: wego
+  name: wego
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: wego
+      # renovate: registryUrl=oci://ghcr.io/weaveworks/charts/weave-gitops
+      chart: weave-gitops
+      version: 4.0.32
+  interval: 1h
+  maxHistory: 1
+  values:
+    ## Debug only, change to loglevel: debug
+    logLevel: info
+    additionalArgs:
+      - --auth-methods=oidc
+      ## Debug only, uncomment to enable default admin user
+      # - --auth-methods=user-account
+
+    ## Debug only, uncomment to enable default admin user
+    ## generate the passwordHash with `htpasswd -nbB - adhoc-password`
+    ## and copy the string start with "$2y$..."
+    # adminUser:
+    #   create: true
+    #   createClusterRole: true
+    #   createSecret: true
+    #   username: admin
+    #   passwordHash:
+
+    serviceAccount:
+      create: true
+      name: wego
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-wego
+        eks.amazonaws.com/audience: sts.amazonaws.com
+    podAnnotations:
+      secret.reloader.stakater.com/reload: &s wego-secret
+    extraVolumeMounts:
+      - name: *s
+        mountPath: /wego-secret
+        readOnly: true
+    extraVolumes:
+      - name: *s
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: *s
+
+    rbac:
+      create: true
+      ## impersonate specific users and groups
+      impersonationResources: ["users", "groups"]
+      ## TODO: add users and groups restriction
+      ## https://github.com/weaveworks/weave-gitops/issues/3485
+      impersonationResourceNames: []
+      ## get specific secrets
+      viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
+
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: gitops.timtor.dev
+          paths:
+            - path: /
+              pathType: Prefix

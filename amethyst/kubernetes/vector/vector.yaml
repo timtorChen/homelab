@@ -1,0 +1,80 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: vector
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: vector
+  name: vector
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    controller:
+      replicas: 2
+      strategy: RollingUpdate
+    image:
+      repository: timberio/vector
+      tag: 0.33.0-distroless-libc
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: &config vector-config
+    env:
+      VECTOR_CONFIG_DIR: /config
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: *config
+        mountPath: /config
+
+    service:
+      main:
+        ports:
+          http:
+            enabled: false
+          talos-kernel:
+            protocol: TCP
+            port: 3001
+          talos-service:
+            protocol: TCP
+            port: 3002
+          mikrotik:
+            protocol: UDP
+            port: 4001
+          unifi:
+            protocol: UDP
+            port: 5001
+
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    probes:
+      startup:
+        enabled: false
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false

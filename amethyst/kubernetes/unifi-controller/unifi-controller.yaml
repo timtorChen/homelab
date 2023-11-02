@@ -1,0 +1,109 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: unifi-controller
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 1.5.1
+  interval: 1h
+  maxHistory: 1
+  values:
+    ##! Stateful application in Deployment
+    controller:
+      replicas: 1
+      strategy: Recreate
+    image:
+      repository: jacobalberty/unifi
+      tag: v7.5
+
+    persistence:
+      data:
+        enabled: true
+        type: pvc
+        existingClaim: unifi-controller-data
+        mountPath: /unifi
+        subPath: data
+      tmp:
+        enabled: true
+        type: emptyDir
+        mountPath: /tmp
+
+    podSecurityContext:
+      fsGroup: 999
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 999
+      runAsGroup: 999
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    probes:
+      startup:
+        enabled: false
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            enabled: false
+          web:
+            protcol: TCP
+            port: &web 8443
+          inform:
+            prototol: TCP
+            port: &inform 8080
+          stun:
+            protocol: UDP
+            port: 3478
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        hosts:
+          - host: ui.timtor.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  port: *web
+      inform:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        hosts:
+          - host: ui.timtor.dev
+            paths:
+              - path: /inform
+                pathType: Prefix
+                service:
+                  port: *inform

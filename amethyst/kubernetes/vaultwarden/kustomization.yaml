@@ -1,0 +1,10 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - vaultwarden-backup-secret.yaml
+  - vaultwarden-backup.yaml
+  - vaultwarden-secret.yaml
+  - vaultwarden-data.yaml
+  - vaultwarden.yaml

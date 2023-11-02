@@ -1,0 +1,118 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: ingress-nginx
+  name: ingress-nginx
+spec:
+  url: https://kubernetes.github.io/ingress-nginx
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: ingress-nginx
+  name: ingress-nginx
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+      # renovate: registryUrl=https://kubernetes.github.io/ingress-nginx
+      chart: ingress-nginx
+      version: 4.7.0
+  interval: 1h
+  maxHistory: 1
+  values:
+    tcp:
+      "3001": vector/vector:3001  # talos-kernel
+      "3002": vector/vector:3002  # talos-service
+      "8080": unifi-controller/unifi-controller:8080  # unifi inform
+    udp:
+      "4001": vector/vector:4001  # mikrotik remote write
+      "5001": vector/vector:5001  # unifi remote write
+      "3478": unifi-controller/unifi-controller:3478  # unifi webrtc
+    controller:
+      config:
+        use-gzip: "true"
+        gzip-types: "*"
+        log-format-upstream: '{
+          "time": "$time_iso8601",
+          "request_agent": "$http_user_agent",
+          "request_referer": "$http_referer",
+          "request_uri": "$uri",
+          "request_protocol": "$server_protocol",
+          "request_method": "$request_method",
+          "request_time": "$request_time",
+          "request_length": "$request_length",
+          "upstream_namespace": "$namespace",
+          "upstream_ingress": "$ingress_name",
+          "upstream_service": "$service_name",
+          "upstream_addr": "$upstream_addr",
+          "upstream_response_time": "$upstream_response_time",
+          "response_length": "$bytes_sent",
+          "response_status": "$status",
+          "latitude": "$http_cf_iplatitude",
+          "longitude": "$http_cf_iplongitude",
+          "city": "$http_cf_ipcity",
+          "country": "$http_cf_ipcountry"
+          }'
+
+      extraArgs:
+        default-ssl-certificate: ingress-nginx/timtor.dev-wildcard-certificate-secret
+      publishService:
+        enabled: true
+      allowSnippetAnnotations: false
+      service:
+        type: LoadBalancer
+        externalIPs:
+          - 192.168.253.100
+        externalTrafficPolicy: Local
+      replicaCount: 2
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+          maxSurge: 1
+      resources:
+        limits:
+          cpu: 300m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      containerSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        # https://github.com/kubernetes/ingress-nginx/issues/9212
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+          add: ["NET_BIND_SERVICE"]
+        seccompProfile:
+          type: RuntimeDefault
+      admissionWebhooks:
+        createSecretJob:
+          securityContext: &sec
+            runAsNonRoot: true
+            runAsUser: 2000
+            runAsGroup: 2000
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+        patchWebhookJob:
+          securityContext: *sec
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          scrapeInterval: 1m
+
+    defaultBackend:
+      enabled: false

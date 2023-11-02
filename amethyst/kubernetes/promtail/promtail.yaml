@@ -1,0 +1,51 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  namespace: promtail
+  name: grafana
+spec:
+  url: https://grafana.github.io/helm-charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: promtail
+  name: promtail
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
+      chart: promtail
+      version: 6.11.9
+  interval: 1h
+  maxHistory: 1
+  values:
+    configmap:
+      enabled: true
+    config:
+      clients:
+        - url: http://loki-write-headless.loki.svc:3100/loki/api/v1/push
+          external_labels:
+            project: amethyst
+    containerSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+
+    serviceMonitor:
+      enabled: false

@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  namespace: ingress-nginx
+  name: timtor.dev-wildcard-certificate
+spec:
+  secretName: timtor.dev-wildcard-certificate-secret
+  dnsNames:
+    - timtor.dev
+    - "*.timtor.dev"
+  issuerRef:
+    kind: ClusterIssuer
+    name: timtor.dev-le-dns01

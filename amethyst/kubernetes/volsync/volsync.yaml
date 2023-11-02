@@ -1,0 +1,49 @@
+---
+# Helm
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: volsync
+  name: backube
+spec:
+  url: https://backube.github.io/helm-charts/
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: volsync
+  name: volsync
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: backube
+      # renovate: registryUrl=https://backube.github.io/helm-charts/
+      chart: volsync
+      version: 0.7.1
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  interval: 1h
+  maxHistory: 1
+  values:
+    manageCRDs: true
+
+    podSecurityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+
+    # manager container securityContext
+    securityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+
+    resources: {}
