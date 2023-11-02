@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.1.9"
+  required_version = "~> 1.2.9"
 
   backend "http" {}
   required_providers {
@@ -14,6 +14,10 @@ terraform {
     cloudflare = {
       source  = "cloudflare/cloudflare"
       version = "~>3.12.2"
+    }
+    grafana = {
+      source  = "grafana/grafana"
+      version = "~>1.29.0"
     }
   }
 }

@@ -126,6 +126,14 @@ locals {
   cloudflare_home_zone_id = data.sops_file.infra_secret.data["secret_cloudflare_home_zone_id"]
 }
 
+#- grafana
+locals {
+  grafana_url                 = "https://grafana.timtor.dev"
+  grafana_api_key             = data.sops_file.infra_secret.data["secret_grafana_api_key"]
+  grafana_discord_webhook_url = data.sops_file.infra_secret.data["secret_grafana_discord_webhook_url"]
+}
+
+
 #- static
 locals {
   home_ipv4 = data.sops_file.infra_secret.data["secret_home_ipv4"]
