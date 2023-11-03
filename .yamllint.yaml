@@ -1,0 +1,22 @@
+---
+extends: default
+
+ignore: |
+  *.sops.yaml
+  policy.yaml
+
+rules:
+  indentation:
+    spaces: 2
+
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: true
+
+  line-length:
+    max: 120
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  empty-lines:
+    max: 1

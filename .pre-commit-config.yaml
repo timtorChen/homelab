@@ -1,0 +1,10 @@
+---
+repos:
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: v8.8.2
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.27.1
+    hooks:
+      - id: yamllint
