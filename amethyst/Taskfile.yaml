@@ -1,0 +1,215 @@
+---
+version: "3"
+
+tasks:
+  # -- Talos
+  talos:apply-pi4b-1:
+    cmds:
+      - task: talos:apply
+        vars:
+          RoleFile: "controlplane.sops.yaml"
+          PatchFile: "pi4b-1.yaml"
+          Node: "192.168.253.1"
+  talos:reset-pi4b-1:
+    cmds:
+      - task: talos:reset
+        vars:
+          Node: "192.168.253.1"
+
+  talos:apply-pi4b-2:
+    cmds:
+      - task: talos:apply
+        vars:
+          RoleFile: "controlplane.sops.yaml"
+          PatchFile: "pi4b-2.yaml"
+          Node: "192.168.253.2"
+  talos:reset-pi4b-2:
+    cmds:
+      - task: talos:reset
+        vars:
+          Node: "192.168.253.2"
+
+  talos:apply-pi4b-3:
+    cmds:
+      - task: talos:apply
+        vars:
+          RoleFile: "controlplane.sops.yaml"
+          PatchFile: "pi4b-3.yaml"
+          Node: "192.168.253.3"
+  talos:reset-pi4b-3:
+    cmds:
+      - task: talos:reset
+        vars:
+          Node: "192.168.253.3"
+
+  talos:apply-nuc11tnhi50l-1:
+    cmds:
+      - task: talos:apply
+        vars:
+          RoleFile: "worker.sops.yaml"
+          PatchFile: "nuc11tnhi50l-1.yaml"
+          Node: "192.168.253.11"
+  talos:reset-nuc11tnhi50l-1:
+    cmds:
+      - task: talos:reset
+        vars:
+          Node: "192.168.253.11"
+
+  talos:apply-nuc11tnhi50l-2:
+    cmds:
+      - task: talos:apply
+        vars:
+          RoleFile: "worker.sops.yaml"
+          PatchFile: "nuc11tnhi50l-2.yaml"
+          Node: "192.168.253.12"
+  talos:reset-nuc11tnhi50l-2:
+    cmds:
+      - task: talos:reset
+        vars:
+          Node: "192.168.253.12"
+
+  talos:apply-nuc11tnhi50l-3:
+    cmds:
+      - task: talos:apply
+        vars:
+          RoleFile: "worker.sops.yaml"
+          PatchFile: "nuc11tnhi50l-3.yaml"
+          Node: "192.168.253.13"
+  talos:reset-nuc11tnhi50l-3:
+    cmds:
+      - task: talos:reset
+        vars:
+          Node: "192.168.253.13"
+
+  # -- Kubernetes
+  # yamllint disable rule:line-length
+  kubernetes:init:
+    silent: true
+    cmds:
+      - echo "Install Cilium on kube-system/cilium (helm)"
+      - |
+        helm upgrade --install cilium cilium/cilium \
+        --namespace kube-system \
+        --version 1.14.0-snapshot.4 \
+        --set ipam.mode=kubernetes \
+        --set kubeProxyReplacement=strict \
+        --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
+        --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
+        --set cgroup.autoMount.enabled=false \
+        --set cgroup.hostRoot=/sys/fs/cgroup \
+        --set k8sServiceHost="192.168.253.10" \
+        --set k8sServicePort="6443"
+
+      - echo "Install Flux on flux-system namespace (manifests)"
+      # flux install creates a flux-system namespace
+      - flux install --version v2.0.0-rc.5
+      - kubectl apply -f ./kubernetes/flux-system/boostrap.yaml
+
+      - echo "Prepare External Secrets provider secret on external-secrets namespace"
+      # create external-secrets if not existed
+      - kubectl get namespace | grep -q external-secrets || kubectl create ns external-secrets
+      - |
+        sops -d ./kubernetes/external-secrets/provider-secret.sops.yaml | \
+        kubectl apply -f -
+  # yamllint enable
+
+  # yamllint disable rule:line-length
+  kubernetes:pv:delete-unused:
+    silent: true
+    prompt: "Delete of all unused Persistence Volume and its data... contiune?"
+    cmds:
+      - |
+        kubectl get pv -o yaml | \
+        yq '.items[] | select(.status.phase != "Bound" ) | .spec.persistentVolumeReclaimPolicy = "Delete" | split_doc' | \
+        kubectl apply -f -
+  # yamllint enable
+
+  kubernetes:ceph:debug:
+    silent: true
+    cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- /bin/bash
+
+  kubernetes:ceph:crash:ls:
+    silent: true
+    cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- ceph crash ls
+
+  kubernetes:vautwarden:backup:
+    silent: true
+    cmd: restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-vaultwarden
+
+  kubernetes:navidrome:backup:
+    silent: true
+    cmds:
+      - echo "Data backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/data
+      - echo "Database backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/db
+
+  kubernetes:immich:backup:
+    silent: true
+    cmds:
+      - echo "Data backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-immich/app
+      # TODO: database backup list
+
+  kubernetes:nextcloud:backup:
+    silent: true
+    cmds:
+      - echo "Install backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/install
+      - echo "Data backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/data
+      # TODO: database backup list
+
+  # -- Terraform
+  terraform:remote-state:init:
+    dir: terraform/_remote-state
+    cmd: terraform init
+
+  terraform:remote-state:plan:
+    dir: terraform/_remote-state
+    cmd: terraform plan
+
+  terraform:remote-state:apply:
+    dir: terraform
+    cmd: terraform apply
+
+  terraform:remote-state:output:
+    cmd: terraform output
+
+  terraform:init:
+    dir: terraform
+    cmd: terraform init
+
+  terraform:plan:
+    dir: terraform
+    cmd: terraform plan
+
+  terraform:apply:
+    dir: terraform
+    cmd: terraform apply
+
+  terraform:output:
+    cmd: terraform output
+
+  # -- Functions
+  talos:apply:
+    internal: true
+    dir: talos
+    cmds:
+      - |
+        export RoleConfig="$(sops -d {{.RoleFile}})"
+        export Config="$(yq '. *= env(RoleConfig)' {{.PatchFile}})"
+        talosctl apply-config -f <(echo -n "$Config") -n {{.Node}} {{.CLI_ARGS}}
+
+  talos:reset:
+    internal: true
+    dir: talos
+    cmds:
+      - >
+        talosctl reset
+        --system-labels-to-wipe=STATE
+        --system-labels-to-wipe=EPHEMERAL
+        --system-labels-to-wipe=META
+        --reboot
+        --graceful
+        -n {{.Node}} {{.CLI_ARGS}}

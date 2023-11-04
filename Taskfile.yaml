@@ -1,0 +1,38 @@
+---
+version: "3"
+
+includes:
+  amethyst:
+    taskfile: amethyst
+    dir: amethyst
+
+vars:
+  SECRET_PATHS_REGEX:
+    sh: yq e '.creation_rules[].path_regex' .sops.yaml |  awk '{print "./"$0}' | tr '\n' '|'
+  SECRET_FILES:
+    sh: |
+      {{ if eq OS "linux" }} find \
+      {{ else if eq OS "darwin"}} gfind \
+      {{ end }} -type f -regextype posix-egrep -regex "{{.SECRET_PATHS_REGEX}}"
+
+tasks:
+  pre-commit:init:
+    desc: Initiate and install dependencies
+    cmds:
+      - pre-commit install
+
+  pre-commit:check:
+    desc: Check all pre-commit hooks
+    cmds:
+      - pre-commit run -a
+
+  secret:ls:
+    desc: List all secret files
+    silent: true
+    cmds:
+      - echo "{{.SECRET_FILES}}"
+  secret:encrypt:
+    desc: Encrypt all secret files
+    silent: true
+    cmds:
+      - echo "{{.SECRET_FILES}}" | xargs  -I {} sops -e -i {}
