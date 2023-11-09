@@ -78,8 +78,7 @@ spec:
         - matchName: grafana.com
         - matchName: grafana.net
         - matchName: storage.googleapis.com
-        - matchName: github.com
-        - matchName: api.github.com
+        - matchName: oauth.id.jumpcloud.com
       toPorts:
         - ports:
             - protocol: TCP

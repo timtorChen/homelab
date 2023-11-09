@@ -75,20 +75,22 @@ spec:
         org_name: Public
         org_role: Viewer
         hide_version: true
-      auth.github:
+      auth.generic_oauth:
         enabled: true
         allow_sign_up: true
         auto_login: false
-        client_id: ${GITHUB_OAUTH_APP_CLIENT_ID}
-        client_secret: ${GITHUB_OAUTH_APP_CLIENT_SECRET}
-        scopes: user:email,read:org
-        auth_url: https://github.com/login/oauth/authorize
-        token_url: https://github.com/login/oauth/access_token
-        api_url: https://api.github.com/user
+        name: JumpCloud
+        client_id: ${JUMPCLOUD_OIDC_CLIENT_ID}
+        client_secret: ${JUMPCLOUD_OIDC_CLIENT_SECRET}
+        auth_url: https://oauth.id.jumpcloud.com/oauth2/auth
+        token_url: https://oauth.id.jumpcloud.com/oauth2/token
+        api_url: https://oauth.id.jumpcloud.com/userinfo
+        scopes: email profile
         ## Roles
         allow_assign_grafana_admin: true
         role_attribute_path: >
-          login == 'timtorChen' && 'GrafanaAdmin' ||
+          groups == 'Admin' && 'GrafanaAdmin' ||
+          contains(groups[*], 'Admin') && 'GrafanaAdmin' ||
           'no-sorry-not-you'
         role_attribute_strict: true
         skip_org_role_sync: true
