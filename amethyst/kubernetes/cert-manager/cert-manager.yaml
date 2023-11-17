@@ -40,13 +40,13 @@ spec:
         eks.amazonaws.com/audience: sts.amazonaws.com
     ## -- Workaround for syncing secret
     volumes:
-      - name: &s cloudflare-secret
+      - name: &s cert-manager-secret
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: cert-manager-secret
+            secretProviderClass: *s
     volumeMounts:
       - name: *s
-        mountPath: /cloudflare-secret
+        mountPath: /cert-manager-secret
         readOnly: true
