@@ -83,7 +83,7 @@ cluster:
             oidc-username-claim: email
             oidc-groups-claim: groups
             service-account-issuer: https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst
-            service-account-jwks-uri: https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst/.well-known/jwks
+            service-account-jwks-uri: https://192.168.253.10:6443/openid/v1/jwks
         # Certificae SANs for API server CA signing certificate
         certSANs:
             - 192.168.253.10
@@ -139,8 +139,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2023-11-02T09:57:11Z"
-    mac: ENC[AES256_GCM,data:HotSVH3tWaXTzXGj1XnNFahssmM0zfu+H1kbOpuipgQ2iP+qNn0Ay6scExjocfUCi6apLh2tzkZdcFcb41ppzol5Spkk2u0gEcq6Lo5dcYhoBkyJL2FTlXJeYDSBsMYQBQYvwT4ew7645i4Z7M5ytEVs0GZhCCy3bd3n5bIkeq0=,iv:sQILt2D/N9kEnnZRQeNFqO4QlXZfJm7G3PDlSnZ2O90=,tag:Wixp9z2ciUE0RrQLTtrGhA==,type:str]
+    lastmodified: "2023-11-20T08:19:39Z"
+    mac: ENC[AES256_GCM,data:uN2hSJ0kNGuPA5rSlgmlGbWqevFzl8AkI1X/nOcNMboimkhroMfpirP6jdxdmhs/l4Bgjh2X4lbNXn48ggPM2xo7gCrxdaE4J2+BfKx8t4MtpEVQjqw9SGIrBu8n7POPvAexQbHtRc529cmwBb+flhTDomlmbZrtTTRyz0wt64o=,iv:jEbtJiV3IahwaMiO1XIQYBR662x28G4s4H2MsMEZbmI=,tag:IUfIbh8FRczZ2fa3IMvf0w==,type:str]
     pgp:
         - created_at: "2023-10-12T05:31:13Z"
           enc: |-
