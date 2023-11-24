@@ -6,3 +6,5 @@ resources:
   - cilium.yaml
   - snapshot-controller.yaml
   - metrics-server.yaml
+  - secrets-store-csi-driver.yaml
+  - secrets-store-csi-driver-provider-aws.yaml
