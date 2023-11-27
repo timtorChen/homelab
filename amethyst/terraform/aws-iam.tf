@@ -32,7 +32,7 @@ resource "aws_iam_policy" "cert-manager" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/cert-manager"
@@ -75,7 +75,7 @@ resource "aws_iam_policy" "cloudflared" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/cloudflared"
@@ -118,7 +118,7 @@ resource "aws_iam_policy" "snmp-exporter-mikrotik" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/snmp-exporter-mikrotik"
@@ -161,7 +161,7 @@ resource "aws_iam_policy" "grafana" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/grafana"
@@ -204,7 +204,7 @@ resource "aws_iam_policy" "grafana-postgres-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/grafana-postgres"
@@ -247,7 +247,7 @@ resource "aws_iam_policy" "loki" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/loki"
@@ -290,7 +290,7 @@ resource "aws_iam_policy" "mimir" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/mimir"
@@ -334,7 +334,7 @@ resource "aws_iam_policy" "unpoller" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/unpoller"
@@ -377,7 +377,7 @@ resource "aws_iam_policy" "unifi-controller" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/unifi-controller"
@@ -420,7 +420,7 @@ resource "aws_iam_policy" "unifi-controller-backup-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/unifi-controller-backup"
@@ -463,7 +463,7 @@ resource "aws_iam_policy" "wego" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/wego"
@@ -506,7 +506,7 @@ resource "aws_iam_policy" "nextcloud" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/nextcloud"
@@ -549,7 +549,7 @@ resource "aws_iam_policy" "nextcloud-backup-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/nextcloud-backup"
@@ -592,7 +592,7 @@ resource "aws_iam_policy" "nextcloud-postgres-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/nextcloud-postgres"
@@ -635,7 +635,7 @@ resource "aws_iam_policy" "nextcloud-dragonfly" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/nextcloud-dragonfly"
@@ -678,7 +678,7 @@ resource "aws_iam_policy" "vaultwarden" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/vaultwarden"
@@ -721,7 +721,7 @@ resource "aws_iam_policy" "vaultwarden-backup" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/vaultwarden-backup"
@@ -764,7 +764,7 @@ resource "aws_iam_policy" "navidrome" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/navidrome"
@@ -807,7 +807,7 @@ resource "aws_iam_policy" "navidrome-backup-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/navidrome-backup"
@@ -850,7 +850,7 @@ resource "aws_iam_policy" "immich" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich"
@@ -893,7 +893,7 @@ resource "aws_iam_policy" "immich-backup-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-backup"
@@ -936,7 +936,7 @@ resource "aws_iam_policy" "immich-postgres-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-postgres"
@@ -979,7 +979,7 @@ resource "aws_iam_policy" "immich-dragonfly" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-dragonfly"
@@ -1022,7 +1022,7 @@ resource "aws_iam_policy" "immich-typesense" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-typesense"
@@ -1065,7 +1065,7 @@ resource "aws_iam_policy" "immich-typesense-backup-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:*",
+        "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-typesense-backup"
