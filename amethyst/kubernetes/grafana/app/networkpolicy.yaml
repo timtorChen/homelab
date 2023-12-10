@@ -49,7 +49,6 @@ spec:
     - # connect to database
       toEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: grafana
             cnpg.io/cluster: grafana-postgres
       toPorts:
         - ports:
@@ -72,8 +71,9 @@ spec:
         - ports:
             - protocol: TCP
               port: "3100"
-    - # download plugin
-      # TODO (or not): add TLS termination
+    - # plugin and SSO
+      # TODO (or not): add TLS interception
+      # https://docs.cilium.io/en/stable/security/tls-visibility/
       toFQDNs:
         - matchName: grafana.com
         - matchName: grafana.net

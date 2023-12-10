@@ -1,0 +1,59 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: grafana
+  name: grafana-postgres-policy
+spec:
+  endpointSelector:
+    matchLabels:
+      cnpg.io/cluster: grafana-postgres
+  ingress:
+    - # connection from grafana
+      fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: grafana
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "5432"
+    - # connection between primary and replica
+      fromEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: grafana-postgres
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "5432"
+  egress:
+    - # dns resolution
+      toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - protocol: ANY
+              port: "53"
+          rules:
+            dns:
+              - matchPattern: "*"
+    - # kube-api
+      toEntities: [kube-apiserver]
+    - # connection between primary and replica
+      toEndpoints:
+        - matchLabels:
+            cnpg.io/cluster: grafana-postgres
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "5432"
+    - # backup
+      # TODO (or not): add TLS interception
+      # https://docs.cilium.io/en/stable/security/tls-visibility/
+      toFQDNs:
+        - matchName: s3.us-east-005.backblazeb2.com
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "443"
