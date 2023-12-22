@@ -1,15 +1,15 @@
 # Amethyst
 
-Amethyst is the infrastructure of my homelab. 
+Amethyst is the infrastructure of my homelab.
 
-The main purpose of the amethyst project is to build a Kubernetes system to hold my own data, and also provide a free space to learn new tools. I use [Talos Linux](https://github.com/siderolabs/talos) Kubernetes distribution, and follows the concept Infrastructure as Code (IaC), using [Flux](https://github.com/fluxcd/flux2) and [Terraform](https://github.com/hashicorp/terraform) to manage the system. I also try my best to public tuning parameters. Sure, sentative data are encrypted with [sops](https://github.com/getsops/sops) or remotely put on the cloud.
+The main purpose of the amethyst project is to build a Kubernetes system to hold my own data, and also provide a free space to learn new tools. I use [Talos Linux](https://github.com/siderolabs/talos) Kubernetes distribution, and follows the concept Infrastructure as Code (IaC), using [Flux](https://github.com/fluxcd/flux2) and [Terraform](https://github.com/hashicorp/terraform) to manage the system. I also try my best to public tuning parameters. Sure, sentative data are encrypted with [sops](https://github.com/getsops/sops) or put remotely on the cloud.
 
 ## Directories
 
 ```bash
 amethyst
   ├── .well-known    # OpenID Connect discovery documents
-  ├── docs           # documents and photos
+  ├── docs           # Documents and photos
   ├── kubernetes     # In-cluster workloads organize by namespace
   ├── talos          # Talos Linux configurations
   ├── terraform      # Clouds configurations
@@ -53,18 +53,24 @@ amethyst
 <img src="docs/src/rack-20231206.jpg" width="400px"/>
 </details>
 
-| Device                           | Description             | RAM                          | Disk                                                                                                             | Quantity |
-| -------------------------------- | ----------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------- |
-| Mikrotik<br/>RB4011iGS+RM        | Router                  |                              |                                                                                                                  | 1        |
-| Mikrotik<br/>CRS328-24P-4S+RM    | PoE Switch              |                              |                                                                                                                  | 1        |
-| Intel<br/>NUC11TNHi50L           | Kubernetes master nodes | 16-32GB Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450, and 4TB HDD Seagate ST4000VN008<div/> | 3        |
-| Raspberry Pi 4B</br>with PoE hat | Kubernetes worker nodes | 8GB                          | 960GB SSD Micron 5200                                                                                            | 3        |
-| Ubiquiti U6-lite                 | Wireless AP             |                              |                                                                                                                  | 1        |
-| Ubiquiti U6-LR                   | Wireless AP             |                              |                                                                                                                  | 1        |
+| Device                           | Description               | Count | RAM                          | Disk                                                                                                             |
+| -------------------------------- | ------------------------- | ----- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Intel<br/>NUC11TNHi50L           | Kubernetes control planes | 3     | 16-32GB Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450, and 4TB HDD Seagate ST4000VN008<div/> |
+| Raspberry Pi 4B</br>with PoE hat | Kubernetes worker nodes   | 3     | 8GB                          | 960GB SSD Micron 5200                                                                                            |
+| Askey RTF8207W                   | Chunghwa Telecom modem    | 1     |                              |                                                                                                                  |
+| Mikrotik<br/>RB4011iGS+RM        | Router                    | 1     |                              |                                                                                                                  |
+| Mikrotik<br/>CRS328-24P-4S+RM    | PoE Switch                | 1     |                              |                                                                                                                  |
+| Ubiquiti U6-lite                 | Wireless AP               | 1     |                              |                                                                                                                  |
+| Ubiquiti U6-LR                   | Wireless AP               | 1     |                              |                                                                                                                  |
+| APC AP7902                       | 16p Switched PDU          | 1     |                              |                                                                                                                  |
 
 ## Networking
 
-TBD
+300MB/300MB
+
+## Storage and Backup
+
+I use rook ceph as the storage engine to Kubernetes workloads, and backup Volumes using volsync.
 
 ## Secret Management
 
