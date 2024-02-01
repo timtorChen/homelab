@@ -1,0 +1,22 @@
+---
+name: cron-renovate
+"on":
+  push:
+    branches:
+      - "main"
+  schedule:
+    - cron: "0 16 * * *" # every 08:00 UTC+8
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Renovate
+        uses: renovatebot/github-action@v40.0.2
+        env:
+          LOG_LEVEL: debug
+          RENOVATE_REPOSITORIES: timtorChen/homelab
+          RENOVATE_PLATFORM: github
+          RENOVATE_USERNAME: timtor-bot
+          RENOVATE_GIT_AUTHOR: Timtor-bot <bot@timtor.dev>
+          RENOVATE_TOKEN: ${{ secrets.BOT_USER_TOKEN }}
+          RENOVATE_GIT_PRIVATE_KEY: ${{ secrets.BOT_USER_GPG_KEY }}

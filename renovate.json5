@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  // configurations
+  // https://docs.renovatebot.com/configuration-options
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Taipei",
+  "dependencyDashboard": true,
+  "commitMessagePrefix": "chore({{{replace '(.*?)\\/.*' '$1' packageFileDir }}}):",
+  "kubernetes": {
+    "fileMatch": [".*\\.yaml$"]
+  },
+  "customManagers": [
+    {
+      // HelmRelease
+      "fileMatch": [".*\\.yaml$"],
+      "datasourceTemplate": "helm",
+      "matchStrings": [
+        "# renovate: registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n"
+      ]
+    },
+    {
+      // OCI based HelmRelease
+      "fileMatch": [".*\\.yaml$"],
+      "datasourceTemplate": "docker",
+      "matchStrings": [
+        "# renovate: packageName=(?<packageName>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n"
+      ]
+    }
+  ]
+}

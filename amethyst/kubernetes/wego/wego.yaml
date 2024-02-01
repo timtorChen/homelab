@@ -21,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: wego
-      # renovate: registryUrl=oci://ghcr.io/weaveworks/charts/weave-gitops
+      # renovate: packageName=ghcr.io/weaveworks/charts/weave-gitops
       chart: weave-gitops
       version: 4.0.32
   interval: 1h
