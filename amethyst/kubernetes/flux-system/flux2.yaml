@@ -10,7 +10,7 @@ spec:
   url: https://github.com/fluxcd/flux2
   ref:
     # renovate: github-repo=fluxcd/flux2
-    tag: v2.0.0-rc.5
+    tag: v2.2.2
   ignore: |
     /*
     !/manifests/bases/source-controller
