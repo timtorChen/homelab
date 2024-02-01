@@ -97,20 +97,6 @@ spec:
   path: /amethyst/kubernetes/aws-identity-webhook
   prune: true
 ---
-# external-secrets
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  namespace: flux-system
-  name: 1-external-secrets
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: homelab
-  interval: 10m0s
-  path: /amethyst/kubernetes/external-secrets
-  prune: false
----
 # cloudflared
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
