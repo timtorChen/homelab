@@ -9,7 +9,7 @@ spec:
   url: https://metallb.github.io/metallb
   interval: 24h
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   namespace: metallb-system
