@@ -25,6 +25,14 @@
       "matchStrings": [
         "# renovate: packageName=(?<packageName>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n"
       ]
+    },
+    {
+      // GitRepository
+      "fileMatch": [".*\\.yaml"],
+      "datasourceTemplate": "github-tags",
+      "matchStrings": [
+        "# renovate: github-repo=(?<depName>.*?)\n *tag: (?<currentValue>\\S+)"
+      ]
     }
   ]
 }

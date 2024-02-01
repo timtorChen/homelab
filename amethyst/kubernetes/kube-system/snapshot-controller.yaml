@@ -10,7 +10,7 @@ spec:
   interval: 5m
   url: https://github.com/kubernetes-csi/external-snapshotter
   ref:
-    # renovate repo=kubernetes-csi/external-snapshotter
+    # renovate: github-repo=kubernetes-csi/external-snapshotter
     tag: v6.2.2
   ignore: |
     /*
@@ -39,7 +39,7 @@ spec:
   interval: 5m
   url: https://github.com/kubernetes-csi/external-snapshotter
   ref:
-    # renovate repo=kubernetes-csi/external-snapshotter
+    # renovate: github-repo=kubernetes-csi/external-snapshotter
     tag: v6.2.2
   ignore: |
     /*
