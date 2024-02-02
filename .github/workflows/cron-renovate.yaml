@@ -5,7 +5,7 @@ name: cron-renovate
     branches:
       - "main"
   schedule:
-    - cron: "0 16 * * *" # every 08:00 UTC+8
+    - cron: "0 0 * * *" # every 08:00 UTC+8
 jobs:
   renovate:
     runs-on: ubuntu-latest
