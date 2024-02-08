@@ -21,7 +21,7 @@ spec:
         name: stakater
       # renovate: registryUrl=https://stakater.github.io/stakater-charts
       chart: reloader
-      version: 1.0.39
+      version: 1.0.67
   interval: 1h
   maxHistory: 1
   values:
