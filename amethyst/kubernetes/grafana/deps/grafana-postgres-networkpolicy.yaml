@@ -25,6 +25,15 @@ spec:
         - ports:
             - protocol: TCP
               port: "5432"
+    - # connection from cnpg
+      fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cnpg
+            app.kubernetes.io/instance: cnpg
+      toPorts:
+        - ports:
+            - protocol: TCP
+              port: "8000"
   egress:
     - # dns resolution
       toEndpoints:
