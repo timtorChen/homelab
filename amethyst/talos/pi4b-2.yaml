@@ -1,4 +1,7 @@
 ---
+## Header for task scripts
+# ip: 192.168.253.2
 machine:
+  type: controlplane
   network:
     hostname: amethyst-pi4b-2

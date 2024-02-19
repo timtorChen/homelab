@@ -11,13 +11,20 @@ machine:
     certSANs: []
     install:
         disk: /dev/sda
-        image: ghcr.io/siderolabs/installer:v1.4.5
-        bootloader: true
+        image: ghcr.io/siderolabs/installer:v1.6.4
         wipe: false
+        extraKernelArgs:
+            - talos.logging.kernel=tcp://192.168.253.100:3001
+            # disable predictable interface naming
+            - net.ifnames=0
     network: {}
+    logging:
+        destinations:
+            - endpoint: tcp://192.168.253.100:3002
+              format: json_lines
     # -- Services
     kubelet:
-        image: ghcr.io/siderolabs/kubelet:v1.27.2
+        image: ghcr.io/siderolabs/kubelet:v1.29.1
         defaultRuntimeSeccompProfileEnabled: true
         disableManifestsDirectory: true
     # -- Talos features
@@ -25,6 +32,9 @@ machine:
         rbac: true
         stableHostname: true
         apidCheckExtKeyUsage: true
+        kubePrism:
+            enabled: true
+            port: 7745
 cluster:
     # -- Setup
     controlPlane:
@@ -55,8 +65,8 @@ sops:
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2023-06-24T18:32:59Z"
-    mac: ENC[AES256_GCM,data:Kzocj7S0rXBAPdDcYn/tJ8YGzXhmpBIhmrRwFvJKI1cMA/AZ88DPiOpJ0Wtg5dsXgB8Zg5H+egQ85JsgkGGwfCypzIlXh6BQvjoiv2qCivwe2kStPhmD3/DhLrpVoqllqnD9oIbkDJHUa7BBLSgQnjngifTpob4S+OwdxSmEplI=,iv:/UyixpD71U2I9T8jsCgLGRFsfM3CH+d9M++pOTq2xAw=,tag:hDSldU+7Q3Fr+rFX4ApdaQ==,type:str]
+    lastmodified: "2024-02-15T10:00:01Z"
+    mac: ENC[AES256_GCM,data:Cry1GKHyT7TIjvV37LFQrhP4ClD4tDe3JdY02VVPZt6GZ1B+t9o9tMLLA6tAVqMigdOXAU5FWqrCM+8JdiElV1qyenIfYG9mxvT0lKO1a9+f+gc6Oas2qJn3JPrNa2j1k9sxnYfvozAWRIXsKQX0ccgV9r0Hpk8SrPWR/uJXAtQ=,iv:j6TERBT1HNbKg6YTr9Th4/cSV6lcaQUW5SxyqYITFg0=,tag:efTXpl78ApzqPAzl+XmIfA==,type:str]
     pgp:
         - created_at: "2023-06-19T09:28:13Z"
           enc: |
@@ -77,4 +87,4 @@ sops:
             -----END PGP MESSAGE-----
           fp: 1CFC8FF236EC0896
     encrypted_regex: ^(token|key|secret)
-    version: 3.7.3
+    version: 3.8.1

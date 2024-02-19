@@ -1,8 +1,12 @@
 ---
+## Header for task scripts
+# ip: 192.168.253.12
 machine:
+  type: worker
   network:
     hostname: amethyst-nuc11tnhi50l-2
   udev:
+    # check /usr/etc/udev/rules.d/99-talos.rules
     rules:
       - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:33:47:9d", NAME="eth0"
       - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:2c:f3:9b", NAME="eth1"

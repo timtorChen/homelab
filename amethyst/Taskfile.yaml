@@ -7,79 +7,62 @@ tasks:
     cmds:
       - task: talos:apply
         vars:
-          RoleFile: "controlplane.sops.yaml"
-          PatchFile: "pi4b-1.yaml"
-          Node: "192.168.253.1"
-  talos:reset-pi4b-1:
+          NODE: pi4b-1
+  talos:upgrade-pi4b-1:
     cmds:
-      - task: talos:reset
+      - task: talos:upgrade
         vars:
-          Node: "192.168.253.1"
-
+          NODE: pi4b-1
   talos:apply-pi4b-2:
     cmds:
       - task: talos:apply
         vars:
-          RoleFile: "controlplane.sops.yaml"
-          PatchFile: "pi4b-2.yaml"
-          Node: "192.168.253.2"
-  talos:reset-pi4b-2:
+          NODE: pi4b-2
+  talos:upgrade-pi4b-2:
     cmds:
-      - task: talos:reset
+      - task: talos:upgrade
         vars:
-          Node: "192.168.253.2"
-
+          NODE: pi4b-2
   talos:apply-pi4b-3:
     cmds:
       - task: talos:apply
         vars:
-          RoleFile: "controlplane.sops.yaml"
-          PatchFile: "pi4b-3.yaml"
-          Node: "192.168.253.3"
-  talos:reset-pi4b-3:
+          NODE: pi4b-3
+  talos:upgrade-pi4b-3:
     cmds:
-      - task: talos:reset
+      - task: talos:upgrade
         vars:
-          Node: "192.168.253.3"
-
+          NODE: pi4b-3
   talos:apply-nuc11tnhi50l-1:
     cmds:
       - task: talos:apply
         vars:
-          RoleFile: "worker.sops.yaml"
-          PatchFile: "nuc11tnhi50l-1.yaml"
-          Node: "192.168.253.11"
-  talos:reset-nuc11tnhi50l-1:
+          NODE: nuc11tnhi50l-1
+  talos:upgrade-nuc11tnhi50l-1:
     cmds:
-      - task: talos:reset
+      - task: talos:upgrade
         vars:
-          Node: "192.168.253.11"
-
+          NODE: nuc11tnhi50l-1
   talos:apply-nuc11tnhi50l-2:
     cmds:
       - task: talos:apply
         vars:
-          RoleFile: "worker.sops.yaml"
-          PatchFile: "nuc11tnhi50l-2.yaml"
-          Node: "192.168.253.12"
-  talos:reset-nuc11tnhi50l-2:
+          NODE: nuc11tnhi50l-2
+  talos:upgrade-nuc11tnhi50l-2:
     cmds:
-      - task: talos:reset
+      - task: talos:upgrade
         vars:
-          Node: "192.168.253.12"
-
+          NODE: nuc11tnhi50l-2
   talos:apply-nuc11tnhi50l-3:
     cmds:
       - task: talos:apply
         vars:
-          RoleFile: "worker.sops.yaml"
-          PatchFile: "nuc11tnhi50l-3.yaml"
-          Node: "192.168.253.13"
-  talos:reset-nuc11tnhi50l-3:
+          NODE: nuc11tnhi50l-3
+  talos:upgrade-nuc11tnhi50l-3:
     cmds:
-      - task: talos:reset
+      - task: talos:upgrade
         vars:
-          Node: "192.168.253.13"
+          NODE: nuc11tnhi50l-3
 
   # -- Kubernetes
   # yamllint disable rule:line-length
@@ -97,22 +80,15 @@ tasks:
         --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
         --set cgroup.autoMount.enabled=false \
         --set cgroup.hostRoot=/sys/fs/cgroup \
-        --set k8sServiceHost="192.168.253.10" \
-        --set k8sServicePort="6443"
+        --set k8sServiceHost="localhost" \
+        --set k8sServicePort="7745"
 
       - echo "Install Flux on flux-system namespace (manifests)"
       # flux install creates a flux-system namespace
       - flux install --version v2.0.0-rc.5
       - kubectl apply -f ./kubernetes/flux-system/boostrap.yaml
 
-      - echo "Prepare External Secrets provider secret on external-secrets namespace"
-      # create external-secrets if not existed
-      - kubectl get namespace | grep -q external-secrets || kubectl create ns external-secrets
-      - |
-        sops -d ./kubernetes/external-secrets/provider-secret.sops.yaml | \
-        kubectl apply -f -
   # yamllint enable
-
   # yamllint disable rule:line-length
   kubernetes:pv:delete-unused:
     silent: true
@@ -123,7 +99,6 @@ tasks:
         yq '.items[] | select(.status.phase != "Bound" ) | .spec.persistentVolumeReclaimPolicy = "Delete" | split_doc' | \
         kubectl apply -f -
   # yamllint enable
-
   kubernetes:ceph:debug:
     silent: true
     cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- /bin/bash
@@ -193,23 +168,52 @@ tasks:
 
   # -- Functions
   talos:apply:
-    internal: true
+    silent: true
     dir: talos
     cmds:
       - |
-        export RoleConfig="$(sops -d {{.RoleFile}})"
-        export Config="$(yq '. *= env(RoleConfig)' {{.PatchFile}})"
-        talosctl apply-config -f <(echo -n "$Config") -n {{.Node}} {{.CLI_ARGS}}
+        NODE={{.NODE}}
+        [ -z "$NODE" ] && echo -n "Apply node: " && read NODE
+        export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
+        [ -z "$IP" ] && exit 1
+        export TYPE="$(yq '.machine.type' "${NODE}.yaml")"
+        export TYPE_CONFIG="$(sops -d "${TYPE}.sops.yaml")"
+        export CONFIG="$(yq '. *= env(TYPE_CONFIG)' "${NODE}.yaml")"
+        talosctl apply-config -f <(echo -n "$CONFIG") -n "$IP" {{.CLI_ARGS}}
+
+  talos:upgrade:
+    silent: true
+    dir: talos
+    prompt: The upgrade process will cause a reboot... continue?
+    cmds:
+      - |
+        NODE={{.NODE}}
+        [ -z "$NODE" ] && echo -n "Upgrade node: " && read NODE
+        export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
+        [ -z "$IP" ] && exit 1
+        export TYPE="$(yq '.machine.type' "${NODE}.yaml")"
+        export IMAGE="$(yq '.machine.install.image' "${TYPE}.sops.yaml")"
+        export TYPE_CONFIG="$(sops -d "${TYPE}.sops.yaml")"
+        export CONFIG="$(yq '. *= env(TYPE_CONFIG)' "${NODE}.yaml")"
+
+        echo "> Apply configuration"
+        talosctl apply-config -f <(echo -n "$CONFIG") -n "$IP"
+
+        echo "> Start talos OS upgrade"
+        talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
 
   talos:reset:
-    internal: true
+    silent: true
     dir: talos
+    prompt: Reset the node and ALL data will be removed... continue?
     cmds:
-      - >
-        talosctl reset
-        --system-labels-to-wipe=STATE
-        --system-labels-to-wipe=EPHEMERAL
-        --system-labels-to-wipe=META
-        --reboot
-        --graceful
-        -n {{.Node}} {{.CLI_ARGS}}
+      - |
+        NODE={{.NODE}}
+        [ -z "$NODE" ] && echo -n "Reset node: " && read NODE
+        export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
+        [ -z "$IP" ] && exit 1
+        talosctl reset \
+        --system-labels-to-wipe=STATE \
+        --system-labels-to-wipe=EPHEMERAL \
+        --system-labels-to-wipe=META \
+        --reboot --graceful -n $IP
