@@ -19,3 +19,12 @@ metadata:
 spec:
   store: fast
   displayName: loki
+---
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStoreUser
+metadata:
+  name: mimir
+  namespace: rook-ceph
+spec:
+  store: fast
+  displayName: mimir
