@@ -21,7 +21,7 @@ spec:
         name: grafana
       # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: promtail
-      version: 6.11.9
+      version: 6.15.5
   interval: 1h
   maxHistory: 1
   values:
