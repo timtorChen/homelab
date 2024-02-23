@@ -21,7 +21,7 @@ spec:
         name: bjw-s
       # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 1.5.1
+      version: 2.6.0
   interval: 1h
   maxHistory: 1
   values:
@@ -79,7 +79,7 @@ spec:
         name: bjw-s
       # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 1.5.1
+      version: 2.6.0
   interval: 1h
   maxHistory: 1
   values:
@@ -185,7 +185,7 @@ spec:
         name: bjw-s
       # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 1.5.1
+      version: 2.6.0
   interval: 1h
   maxHistory: 1
   values:
@@ -285,7 +285,7 @@ spec:
         name: bjw-s
       # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 1.5.1
+      version: 2.6.0
   interval: 1h
   maxHistory: 1
   values:
