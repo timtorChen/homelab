@@ -2,30 +2,40 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: grafana
-  name: grafana-postgres-policy
+  namespace: mydata
+  name: nextcloud-deps-policy
 specs:
-  # allow connection from grafana
-  - endpointSelector: &self
+  # allow postgres connection from nextcloud
+  - endpointSelector: &postgres
       matchLabels:
-        cnpg.io/cluster: grafana-postgres
+        cnpg.io/cluster: nextcloud-postgres
     ingress:
-      - fromEndpoints:
+      - fromEndpoints: &nextcloud
           - matchLabels:
-              app.kubernetes.io/name: grafana
+              app.kubernetes.io/name: nextcloud
         toPorts:
           - ports:
               - protocol: TCP
                 port: "5432"
+  # allow redis connection from nextcloud
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: nextcloud-dragonfly
+    ingress:
+      - fromEndpoints: *nextcloud
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6379"
   # allow postgres internal components
   # - dns resolution to primary
   # - replica connect to primary
   # - health check probe from cnpg operator
   # - get information from kube-apiserver
-  - endpointSelector: *self
+  - endpointSelector: *postgres
     ingress:
       - fromEndpoints:
-          - *self
+          - *postgres
         toPorts:
           - ports:
               - protocol: TCP
@@ -40,7 +50,7 @@ specs:
                 port: "8000"
     egress:
       - toEndpoints:
-          - *self
+          - *postgres
         toPorts:
           - ports:
               - protocol: TCP
@@ -60,9 +70,9 @@ specs:
                 port: "53"
             rules:
               dns:
-                - matchName: "grafana-postgres-rw.grafana.svc.cluster.local."
+                - matchName: "nextcloud-postgres-rw.mydata.svc.cluster.local."
   # backup and restore
-  - endpointSelector: *self
+  - endpointSelector: *postgres
     egress:
       - toEndpoints:
           - matchLabels:
@@ -73,10 +83,9 @@ specs:
               - protocol: ANY
                 port: "53"
             rules:
-              dns:
-                - matchName: &b2 s3.us-east-005.backblazeb2.com
-      - toFQDNs:
-          - matchName: *b2
+              dns: &b2
+                - matchName: s3.us-east-005.backblazeb2.com
+      - toFQDNs: *b2
         toPorts:
           - ports:
               - protocol: TCP

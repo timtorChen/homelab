@@ -31,7 +31,6 @@ spec:
     udp:
       "4001": vector/vector:4001  # mikrotik remote write
       "5001": vector/vector:5001  # unifi remote write
-      "3478": unifi-controller/unifi-controller:3478  # unifi webrtc
     controller:
       config:
         use-gzip: "true"

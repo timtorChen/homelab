@@ -8,3 +8,4 @@ resources:
   - vaultwarden-secret.yaml
   - vaultwarden-data.yaml
   - vaultwarden.yaml
+  - networkpolicy.yaml

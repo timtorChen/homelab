@@ -1,0 +1,104 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: mimir
+  name: mimir-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: mimir
+  name: mimir-policy
+specs:
+  # allow mimir to resolve dns records
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: mimir
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "*.mimir.svc.cluster.local."
+                - matchName: "rook-ceph-rgw-fast.rook-ceph.svc.cluster.local."
+  # allow mimir internal components
+  - endpointSelector: *self
+    ingress:
+      - toPorts:
+          - ports:
+              - protocol: TCP
+                port: "9095"
+              - protocol: TCP
+                port: "7946"
+    egress:
+      - toPorts:
+          - ports:
+              - protocol: TCP
+                port: "9095"
+              - protocol: TCP
+                port: "7946"
+  # allow mimir to rook-ceph rgw
+  - endpointSelector: *self
+    egress:
+      - toEntities: ["host", "remote-node"]
+        toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: rook-ceph
+              app.kubernetes.io/name: ceph-rgw
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow mimir-write from prometheus
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/component: distributor
+        app.kubernetes.io/name: mimir
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: prometheus
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow mimir metrics from prometheus
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: prometheus
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow mimir-read from grafana
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: mimir
+        app.kubernetes.io/component: query-frontend
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: grafana
+              app.kubernetes.io/name: grafana
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"

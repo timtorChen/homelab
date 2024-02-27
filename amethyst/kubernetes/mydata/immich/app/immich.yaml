@@ -24,6 +24,10 @@ spec:
   interval: 1h
   maxHistory: 1
   values:
+    global:
+      nameOverride: immich
+    podLabels:
+      app.kubernetes.io/component: server
     controller:
       strategy: RollingUpdate
     image:
@@ -40,6 +44,7 @@ spec:
     env:
       SERVER_PORT: &port 3001
       IMMICH_MEDIA_LOCATION: &data /data
+      IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
       REDIS_HOSTNAME: immich-dragonfly
       DB_VECTOR_EXTENSION: pgvector
       DB_URL:
@@ -121,6 +126,10 @@ spec:
   interval: 1h
   maxHistory: 1
   values:
+    global:
+      nameOverride: immich
+    podLabels:
+      app.kubernetes.io/component: microservices
     controller:
       strategy: RollingUpdate
     image:
@@ -137,6 +146,7 @@ spec:
     env:
       SERVER_PORT: &port 3002
       IMMICH_MEDIA_LOCATION: &media /data
+      IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
       REVERSE_GEOCODING_DUMP_DIRECTORY: &dump /geocode
       REDIS_HOSTNAME: immich-dragonfly
       DB_VECTOR_EXTENSION: pgvector
@@ -215,6 +225,10 @@ spec:
   interval: 1h
   maxHistory: 1
   values:
+    global:
+      nameOverride: immich
+    podLabels:
+      app.kubernetes.io/component: machine-learning
     image:
       repository: ghcr.io/immich-app/immich-machine-learning
       tag: v1.100.0
