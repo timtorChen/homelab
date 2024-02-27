@@ -6,3 +6,4 @@ resources:
   - unpoller-config.yaml
   - unpoller-secret.yaml
   - unpoller.yaml
+  - networkpolicy.yaml

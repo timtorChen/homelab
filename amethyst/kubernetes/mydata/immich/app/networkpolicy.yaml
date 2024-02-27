@@ -1,0 +1,122 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: mydata
+  name: immich-app-policy
+specs:
+  # allow immich-server connection from ingress-nginx
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: immich
+        app.kubernetes.io/component: server
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: ingress-nginx
+              app.kubernetes.io/name: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3001"
+  # allow immich internal components
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: immich
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "immich-machine-learning.mydata.svc.cluster.local."
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3003"
+    egress:
+      - toEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3003"
+  # allow immich to postgres, redis
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "immich-postgres-rw.mydata.svc.cluster.local."
+                - matchName: "immich-dragonfly.mydata.svc.cluster.local."
+      - toEndpoints:
+          - matchLabels:
+              cnpg.io/cluster: immich-postgres
+          - matchLabels:
+              app.kubernetes.io/name: immich-dragonfly
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+              - protocol: TCP
+                port: "6379"
+  # allow machine-learning download model from huggingface.co
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: immich
+        app.kubernetes.io/component: machine-learning
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &model
+                - matchPattern: "*huggingface.co"
+      - toFQDNs: *model
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
+  # backup and restore
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/created-by: volsync
+        job-name: volsync-src-immich-data-backup
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &b2
+                - matchName: s3.us-east-005.backblazeb2.com
+      - toFQDNs: *b2
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"

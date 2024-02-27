@@ -1,0 +1,104 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: loki
+  name: loki-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: loki
+  name: loki-policy
+specs:
+  # allow loki to resolve dns records
+  - endpointSelector: &loki
+      matchLabels:
+        app.kubernetes.io/name: loki
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "*.loki.svc.cluster.local."
+                - matchName: "rook-ceph-rgw-fast.rook-ceph.svc.cluster.local."
+  # allow loki internal components
+  - endpointSelector: *loki
+    ingress:
+      - toPorts:
+          - ports:
+              - protocol: TCP
+                port: "9095"
+              - protocol: TCP
+                port: "7946"
+    egress:
+      - toPorts:
+          - ports:
+              - protocol: TCP
+                port: "9095"
+              - protocol: TCP
+                port: "7946"
+  # allow loki to rook-ceph rgw
+  - endpointSelector: *loki
+    egress:
+      - toEntities: ["host", "remote-node"]
+        toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: rook-ceph
+              app.kubernetes.io/name: ceph-rgw
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow loki-write from promtail
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/component: write
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: promtail
+              app.kubernetes.io/name: promtail
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3100"
+  # allow loki metrics from prometheus serviceMonitor
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: prometheus
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3100"
+  # allow loki-read from grafana
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/component: read
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: grafana
+              app.kubernetes.io/name: grafana
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3100"

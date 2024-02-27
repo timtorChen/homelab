@@ -5,3 +5,4 @@ resources:
   - namespace.yaml
   - loki-secret.yaml
   - loki.yaml
+  - networkpolicy.yaml

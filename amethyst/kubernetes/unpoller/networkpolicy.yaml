@@ -1,0 +1,55 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: unpoller
+  name: unpoller-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: unpoller
+  name: unpoller-policy
+specs:
+  # allow unpoller to unifi-controller
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: unpoller
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "unifi-controller.unifi-controller.svc.cluster.local."
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: unifi-controller
+              app.kubernetes.io/name: unifi-controller
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8443"
+  # allow metrcis probe from prometheus
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: prometheus
+              app.kubernetes.io/name: prometheus
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "9130"
