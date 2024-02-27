@@ -7,3 +7,4 @@ resources:
   - unifi-controller-data-backup.yaml
   - unifi-controller-data.yaml
   - unifi-controller.yaml
+  - networkpolicy.yaml

@@ -1,0 +1,73 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden-policy
+specs:
+  # allow connection from ingress-nginx
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: vaultwarden
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow connection to push notification server
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &push
+                - matchName: push.bitwarden.com
+      - toFQDNs: *push
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
+  # backup and restore
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/created-by: volsync
+        job-name: volsync-src-vaultwarden-backup
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &b2
+                - matchPattern: s3.us-east-005.backblazeb2.com
+      - toFQDNs: *b2
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"

@@ -77,9 +77,6 @@ spec:
           inform:
             prototol: TCP
             port: &inform 8080
-          stun:
-            protocol: UDP
-            port: 3478
 
     ingress:
       main:

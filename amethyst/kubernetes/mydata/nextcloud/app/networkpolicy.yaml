@@ -1,0 +1,75 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: mydata
+  name: nextcloud-app-policy
+specs:
+  # allow connection from ingress-nginx
+  - endpointSelector: &self
+      matchLabels: 
+        app.kubernetes.io/name: nextcloud
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: ingress-nginx
+              app.kubernetes.io/name: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow nextcloud to postgres and redis
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "nextcloud-postgres-rw.mydata.svc.cluster.local."
+                - matchName: "nextcloud-dragonfly.mydata.svc.cluster.local."
+      - toEndpoints:
+          - matchLabels:
+              cnpg.io/cluster: nextcloud-postgres
+          - matchLabels:
+              app.kubernetes.io/name: nextcloud-dragonfly
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+              - protocol: TCP
+                port: "6379"
+  # backup and restore
+  - &backup-restore-b2
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/created-by: volsync
+        job-name: volsync-src-nextcloud-install-backup
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: &b2 s3.us-east-005.backblazeb2.com
+      - toFQDNs:
+          - matchName: *b2
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
+  - <<: *backup-restore-b2
+    endpointSelector:
+      matchLabels:
+        app.kubernetes.io/created-by: volsync
+        job-name: volsync-src-nextcloud-data-backup

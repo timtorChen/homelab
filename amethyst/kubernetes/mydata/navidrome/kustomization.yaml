@@ -8,3 +8,4 @@ resources:
   - navidrome-data.yaml
   - navidrome-db.yaml
   - navidrome.yaml
+  - networkpolicy.yaml
