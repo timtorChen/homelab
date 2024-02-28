@@ -353,21 +353,6 @@ spec:
   path: /amethyst/kubernetes/unpoller
   prune: true
 ---
-# --- 6 - Application Namespaces ---
-# wego
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  namespace: flux-system
-  name: 6-wego
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: homelab
-  interval: 10m0s
-  path: /amethyst/kubernetes/wego
-  prune: true
----
 # vaultwarden
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
