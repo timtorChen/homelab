@@ -20,7 +20,6 @@ amethyst
 
 - [Talos](https://github.com/siderolabs/talos): Kubernetes distributions for immutable OS.
 - [Flux](https://github.com/fluxcd/flux2): gitops tool reconcile manifests from Git repository to Kubernetes.
-- [Wego](https://github.com/weaveworks/weave-gitops): Flux UI.
 - [Cilium](https://github.com/cilium/cilium): advanced networking, but I merely use NetworkPolicy.
 - [Metallb](https://github.com/metallb/metallb): IP address announcement and allocation for Kubernetes LoadBalancer Service.
 - [Cloudflared](https://github.com/cloudflare/cloudflared): encrypted tunnel between server and Cloudflare.
