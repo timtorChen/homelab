@@ -21,7 +21,7 @@ spec:
         name: prometheus-community
       # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
-      version: 48.2.1
+      version: 56.21.4
   install:
     crds: CreateReplace
   upgrade:
