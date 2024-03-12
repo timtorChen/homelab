@@ -30,7 +30,7 @@ machine:
               format: json_lines
     # -- Services
     kubelet:
-        image: ghcr.io/siderolabs/kubelet:v1.29.1
+        image: ghcr.io/siderolabs/kubelet:v1.29.2
         defaultRuntimeSeccompProfileEnabled: true
         disableManifestsDirectory: true
     # -- Talos features
