@@ -24,7 +24,7 @@ spec:
     image:
       # renovate:
       repository: nextcloud
-      tag: 25.0.9-apache
+      tag: 25.0.13-apache
     serviceAccount:
       create: true
       annotations:
