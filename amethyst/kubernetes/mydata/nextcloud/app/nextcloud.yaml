@@ -22,9 +22,9 @@ spec:
       rollingUpdate:
         unavailable: 1
     image:
+      # renovate:
       repository: nextcloud
       tag: 25.0.9-apache
-
     serviceAccount:
       create: true
       annotations:

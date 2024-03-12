@@ -19,6 +19,7 @@ spec:
       type: statefulset
       replicas: 1
     image:
+      # renovate:
       repository: ghcr.io/dragonflydb/dragonfly
       tag: v1.6.2
     args:

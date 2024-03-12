@@ -19,6 +19,14 @@
       ]
     },
     {
+      // HelmRelease image tag
+      "fileMatch": [".*\\.yaml$"],
+      "datasourceTemplate": "docker",
+      "matchStrings": [
+        "# renovate:\n *repository: (?<depName>.*?)\n *tag: (?<currentValue>.*?)\n"
+      ]
+    },
+    {
       // OCI based HelmRelease
       "fileMatch": [".*\\.yaml$"],
       "datasourceTemplate": "docker",

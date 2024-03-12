@@ -28,6 +28,7 @@ spec:
     controller:
       replicas: 1
     image:
+      # renovate:
       repository: ghcr.io/unpoller/unpoller
       tag: v2.9.2
     command: ["unpoller", "--config", "/config/unpoller.yaml"]

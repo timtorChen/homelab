@@ -29,6 +29,7 @@ spec:
       replicas: 1
       strategy: RollingUpdate
     image:
+      # renovate:
       repository: prom/snmp-exporter
       tag: v0.24.1
     args:

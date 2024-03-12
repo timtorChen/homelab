@@ -30,6 +30,7 @@ spec:
       replicas: 1
       strategy: Recreate
     image:
+      # renovate:
       repository: jacobalberty/unifi
       tag: v7.5
 

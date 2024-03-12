@@ -18,6 +18,7 @@ spec:
   maxHistory: 1
   values:
     image:
+      # renovate:
       repository: deluan/navidrome
       tag: 0.48.0
 

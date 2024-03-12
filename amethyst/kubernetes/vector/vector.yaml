@@ -29,6 +29,7 @@ spec:
       replicas: 2
       strategy: RollingUpdate
     image:
+      # renovate:
       repository: timberio/vector
       tag: 0.33.0-distroless-libc
     podAnnotations:

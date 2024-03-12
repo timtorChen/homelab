@@ -26,6 +26,7 @@ spec:
   maxHistory: 1
   values:
     image:
+      # renovate:
       repository: ghcr.io/dani-garcia/vaultwarden
       tag: 1.29.0-alpine
 

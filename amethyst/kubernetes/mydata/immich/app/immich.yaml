@@ -26,6 +26,7 @@ spec:
   maxHistory: 1
   values:
     image:
+      # renovate:
       repository: ghcr.io/immich-app/immich-web
       tag: v1.71.0
     env:
@@ -86,6 +87,7 @@ spec:
     controller:
       strategy: RollingUpdate
     image:
+      # renovate:
       repository: ghcr.io/immich-app/immich-server
       tag: v1.71.0
     command: ["./start.sh", "immich"]
@@ -192,6 +194,7 @@ spec:
     controller:
       strategy: RollingUpdate
     image:
+      # renovate:
       repository: ghcr.io/immich-app/immich-server
       tag: v1.71.0
     command: ["./start.sh", "microservices"]
@@ -290,6 +293,7 @@ spec:
   maxHistory: 1
   values:
     image:
+      # renovate:
       repository: ghcr.io/immich-app/immich-machine-learning
       tag: v1.71.0
     env:

@@ -31,6 +31,7 @@ spec:
       rollingUpdate:
         unavailable: 1
     image:
+      # renovate:
       repository: cloudflare/cloudflared
       tag: 2023.8.2
     args:
