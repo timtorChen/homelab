@@ -20,6 +20,7 @@ spec:
       type: deployment
       replicas: 1
     image:
+      # renovate:
       repository: typesense/typesense
       tag: 0.24.1
 

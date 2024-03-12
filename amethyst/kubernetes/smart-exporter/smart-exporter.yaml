@@ -28,6 +28,7 @@ spec:
     controller:
       type: daemonset
     image:
+      # renovate:
       repository: matusnovak/prometheus-smartctl
       tag: v2.2.0
     env:
