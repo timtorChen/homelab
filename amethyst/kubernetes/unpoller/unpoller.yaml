@@ -30,7 +30,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/unpoller/unpoller
-      tag: v2.9.2
+      tag: v2.10.0
     command: ["unpoller", "--config", "/config/unpoller.yaml"]
     serviceAccount:
       create: true
