@@ -22,7 +22,7 @@ spec:
     image:
       # renovate:
       repository: typesense/typesense
-      tag: 0.24.1
+      tag: 0.25.2
 
     serviceAccount:
       create: true
