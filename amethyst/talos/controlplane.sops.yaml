@@ -11,7 +11,7 @@ machine:
         key: ENC[AES256_GCM,data:sPOfywnHeBjo2MMexp2ulZWU80tONJAhYrhUVUZ438uX9BrWFJKP1nllc0wK0dpF0WLhD5ufd4V+lHHNXQ99YY6dQ6EcpBvLNJ7Kjwv3VomASNl6TGknZMp7PHA9w1jBDZcVOujrNdkw479gf3XUzxZyYg73pt2lTzVvIRwT1aejSy8uEtDtY7CilxiREh8FT721dxDBMJb7qF+3KL7QTY902Ya/EAt4+Uwjk6dKJpfZ5jxV,iv:MMoJHl5sTFVRtjahC5D2RwjndKuvmhjxzLPnl79qT4I=,tag:0Tb6i6lDy4jkTLWHoiJAug==,type:str]
     certSANs: []
     install:
-        image: ghcr.io/siderolabs/installer:v1.6.4
+        image: ghcr.io/siderolabs/installer:v1.6.6
         disk: /dev/sda
         wipe: false
         extraKernelArgs:
