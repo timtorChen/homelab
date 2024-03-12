@@ -47,17 +47,30 @@ spec:
     # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
     env:
       DATA_FOLDER: &dir /data
-      ROCKET_PORT: &p1 8080
-      WEBSOCKET_ENABLED: true
-      WEBSOCKET_PORT: &p2 3012
+      ROCKET_PORT: &p 8080
       SIGNUP_ALLOWED: true
       DISABLE_ADMIN_TOKEN: false
+      ## Push notification server
+      ## Generate the token on https://bitwarden.com/host/
+      PUSH_ENABLED: true
+      PUSH_RELAY_URI: https://push.bitwarden.com
+      PUSH_IDENTITY_URI: https://identity.bitwarden.com
+      PUSH_INSTALLATION_ID:
+        valueFrom:
+          secretKeyRef:
+            name: &s vaultwarden-secret
+            key: PUSH_INSTALLATION_ID
+      PUSH_INSTALLATION_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: *s
+            key: PUSH_INSTALLATION_KEY
       ## Generate the admin token hash with command
       ## `echo -n "admin-password" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4`
       ADMIN_TOKEN:
         valueFrom:
           secretKeyRef:
-            name: &s vaultwarden-secret
+            name: *s
             key: ADMIN_TOKEN
 
     persistence:
@@ -108,10 +121,7 @@ spec:
         ports:
           http:
             enabled: true
-            port: *p1
-          websocket:
-            enabled: true
-            port: *p2
+            port: *p
 
     ingress:
       main:
@@ -123,8 +133,8 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  port: *p1
+                  port: *p
               - path: /notifications/hub
                 pathType: Prefix
                 service:
-                  port: *p2
+                  port: *p
