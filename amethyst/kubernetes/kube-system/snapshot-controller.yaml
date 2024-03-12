@@ -11,7 +11,7 @@ spec:
   url: https://github.com/kubernetes-csi/external-snapshotter
   ref:
     # renovate: github-repo=kubernetes-csi/external-snapshotter
-    tag: v6.2.2
+    tag: v6.3.3
   ignore: |
     /*
     # include the crd folder
@@ -40,7 +40,7 @@ spec:
   url: https://github.com/kubernetes-csi/external-snapshotter
   ref:
     # renovate: github-repo=kubernetes-csi/external-snapshotter
-    tag: v6.2.2
+    tag: v6.3.3
   ignore: |
     /*
     # include the manifest folder
