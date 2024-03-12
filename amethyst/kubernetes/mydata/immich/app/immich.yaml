@@ -28,7 +28,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-web
-      tag: v1.71.0
+      tag: v1.87.0
     env:
       IMMICH_API_URL_EXTERNAL: https://photo.timtor.dev/api
     probes:
