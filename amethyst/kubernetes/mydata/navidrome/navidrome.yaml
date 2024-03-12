@@ -20,7 +20,7 @@ spec:
     image:
       # renovate:
       repository: deluan/navidrome
-      tag: 0.48.0
+      tag: 0.51.1
 
     ## debug only
     # command: ["sleep", "infinity"]
