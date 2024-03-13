@@ -30,7 +30,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.95.1
+      tag: v1.98.2
     command: ["./start.sh", "immich"]
 
     serviceAccount:
@@ -129,7 +129,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.95.1
+      tag: v1.98.2
     command: ["./start.sh", "microservices"]
 
     serviceAccount:
