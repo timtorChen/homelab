@@ -223,7 +223,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-machine-learning
-      tag: v1.95.1
+      tag: v1.98.2
     env:
       MACHINE_LEARNING_CACHE_FOLDER: &cache /cache
       TRANSFORMERS_CACHE: *cache
