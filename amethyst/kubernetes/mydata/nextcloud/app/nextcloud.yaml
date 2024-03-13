@@ -24,7 +24,7 @@ spec:
     image:
       # renovate:
       repository: nextcloud
-      tag: 25.0.9-apache
+      tag: 28.0.3-apache
     serviceAccount:
       create: true
       annotations:
@@ -61,7 +61,8 @@ spec:
           secretKeyRef:
             name: *s
             key: POSTGRES_PASSWORD
-      REDIS_HOST: nextcloud-dragonfly
+      #! the underscore is intended to by pass the annoying entrypoint.sh
+      _REDIS_HOST: nextcloud-dragonfly
       REDIS_HOST_PORT: 6379
       REDIS_HOST_PASSWORD:
         valueFrom:
