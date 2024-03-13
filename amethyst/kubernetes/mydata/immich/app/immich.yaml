@@ -12,65 +12,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   namespace: mydata
-  name: immich-web
-spec:
-  chart:
-    spec:
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
-      chart: app-template
-      version: 1.5.1
-  interval: 1h
-  maxHistory: 1
-  values:
-    image:
-      # renovate:
-      repository: ghcr.io/immich-app/immich-web
-      tag: v1.71.0
-    env:
-      IMMICH_API_URL_EXTERNAL: https://photo.timtor.dev/api
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    service:
-      main:
-        enabled: true
-        ports:
-          http:
-            port: 3000
-
-    ingress:
-      main:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - host: photo.timtor.dev
-            paths:
-              - path: /
-                pathType: Prefix
----
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
-kind: HelmRelease
-metadata:
-  namespace: mydata
   name: immich-server
 spec:
   chart:
@@ -89,7 +30,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.71.0
+      tag: v1.95.1
     command: ["./start.sh", "immich"]
 
     serviceAccount:
@@ -102,7 +43,7 @@ spec:
       SERVER_PORT: &port 3001
       IMMICH_MEDIA_LOCATION: &data /data
       REDIS_HOSTNAME: immich-dragonfly
-      TYPESENSE_HOST: immich-typesense
+      DB_VECTOR_EXTENSION: pgvector
       DB_URL:
         valueFrom:
           secretKeyRef:
@@ -113,11 +54,6 @@ spec:
           secretKeyRef:
             name: *s
             key: REDIS_PASSWORD
-      TYPESENSE_API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: TYPESENSE_API_KEY
 
     persistence:
       data:
@@ -165,13 +101,10 @@ spec:
       main:
         enabled: true
         ingressClassName: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/rewrite-target: /$1
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
           - host: photo.timtor.dev
             paths:
-              - path: /api/(.*)
+              - path: /
                 pathType: Prefix
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
@@ -196,7 +129,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.71.0
+      tag: v1.95.1
     command: ["./start.sh", "microservices"]
 
     serviceAccount:
@@ -210,7 +143,7 @@ spec:
       IMMICH_MEDIA_LOCATION: &media /data
       REVERSE_GEOCODING_DUMP_DIRECTORY: &dump /geocode
       REDIS_HOSTNAME: immich-dragonfly
-      TYPESENSE_HOST: immich-typesense
+      DB_VECTOR_EXTENSION: pgvector
       DB_URL:
         valueFrom:
           secretKeyRef:
@@ -221,11 +154,6 @@ spec:
           secretKeyRef:
             name: *s
             key: REDIS_PASSWORD
-      TYPESENSE_API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: TYPESENSE_API_KEY
 
     persistence:
       media:
@@ -295,7 +223,7 @@ spec:
     image:
       # renovate:
       repository: ghcr.io/immich-app/immich-machine-learning
-      tag: v1.71.0
+      tag: v1.95.1
     env:
       MACHINE_LEARNING_CACHE_FOLDER: &cache /cache
       TRANSFORMERS_CACHE: *cache
