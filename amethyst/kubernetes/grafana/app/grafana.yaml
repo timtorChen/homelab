@@ -22,7 +22,7 @@ spec:
         name: grafana
       # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
-      version: 6.61.2
+      version: 7.3.7
   interval: 1h
   maxHistory: 1
   values:
