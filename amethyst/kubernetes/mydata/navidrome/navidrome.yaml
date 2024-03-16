@@ -11,14 +11,12 @@ spec:
         kind: HelmRepository
         namespace: mydata
         name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
       version: 1.5.1
   interval: 1h
   maxHistory: 1
   values:
     image:
-      # renovate:
       repository: deluan/navidrome
       tag: 0.51.1
 

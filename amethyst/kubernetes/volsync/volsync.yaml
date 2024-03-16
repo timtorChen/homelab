@@ -20,7 +20,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: backube
-      # renovate: registryUrl=https://backube.github.io/helm-charts/
       chart: volsync
       version: 0.7.1
   install:

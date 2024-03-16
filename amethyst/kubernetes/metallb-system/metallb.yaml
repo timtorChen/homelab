@@ -21,7 +21,6 @@ spec:
         kind: HelmRepository
         name: metallb
       version: 0.13.10
-      # renovate: registryUrl=https://metallb.github.io/metallb
       chart: metallb
   interval: 1h
   maxHistory: 1

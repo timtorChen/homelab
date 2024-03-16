@@ -21,7 +21,6 @@ spec:
         kind: HelmRepository
         namespace: cnpg
         name: cnpg
-      # renovate: registryUrl=https://cloudnative-pg.github.io/charts
       chart: cloudnative-pg
       version: 0.18.1
   install:

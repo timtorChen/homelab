@@ -1,46 +1,22 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
   // configurations
   // https://docs.renovatebot.com/configuration-options
-  "extends": ["config:recommended"],
-  "timezone": "Asia/Taipei",
-  "dependencyDashboard": true,
-  "commitMessagePrefix": "chore({{{replace '(.*?)\\/.*' '$1' packageFileDir }}}):",
-  "kubernetes": {
-    "fileMatch": [".*\\.yaml$"]
+  extends: [
+    "config:recommended",
+    ":disableRateLimiting",
+    "github>timtorChen/homelab//amethyst/renovate.json5",
+  ],
+  timezone: "Asia/Taipei",
+  dependencyDashboard: true,
+  commitMessagePrefix: "chore({{{replace '(.*?)\\/.*' '$1' packageFileDir }}}):",
+  kubernetes: {
+    fileMatch: ["^amethyst/kubernetes/.*\\.yaml$"],
   },
-  "customManagers": [
-    {
-      // HelmRelease
-      "fileMatch": [".*\\.yaml$"],
-      "datasourceTemplate": "helm",
-      "matchStrings": [
-        "# renovate: registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n"
-      ]
-    },
-    {
-      // HelmRelease image tag
-      "fileMatch": [".*\\.yaml$"],
-      "datasourceTemplate": "docker",
-      "matchStrings": [
-        "# renovate:\n *repository: (?<depName>.*?)\n *tag: (?<currentValue>.*?)\n"
-      ]
-    },
-    {
-      // OCI based HelmRelease
-      "fileMatch": [".*\\.yaml$"],
-      "datasourceTemplate": "docker",
-      "matchStrings": [
-        "# renovate: packageName=(?<packageName>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*?)\n"
-      ]
-    },
-    {
-      // GitRepository
-      "fileMatch": [".*\\.yaml"],
-      "datasourceTemplate": "github-tags",
-      "matchStrings": [
-        "# renovate: github-repo=(?<depName>.*?)\n *tag: (?<currentValue>\\S+)"
-      ]
-    }
-  ]
+  flux: {
+    fileMatch: ["^amethyst/kubernetes/.*\\.yaml$"],
+  },
+  "helm-values": {
+    fileMatch: ["^amethyst/(kubernetes|talos)/.*\\.yaml$"],
+  },
 }

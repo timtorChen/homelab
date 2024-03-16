@@ -1,9 +1,13 @@
 ---
-name: cron-renovate
+name: renovate
 "on":
+  workflow_dispatch:
   push:
     branches:
       - "main"
+    paths:
+      - "renovate.json5"
+      - "**/renovate.json5"
   schedule:
     - cron: "0 0 * * *" # every 08:00 UTC+8
 jobs:

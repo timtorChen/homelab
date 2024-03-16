@@ -21,7 +21,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: wego
-      # renovate: packageName=ghcr.io/weaveworks/charts/weave-gitops
       chart: weave-gitops
       version: 4.0.36
   interval: 1h

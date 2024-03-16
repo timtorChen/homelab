@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
-      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
       chart: prometheus-node-exporter
       version: 4.31.0
   interval: 1h

@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
       version: 1.5.1
   interval: 1h
@@ -31,7 +30,6 @@ spec:
       rollingUpdate:
         unavailable: 1
     image:
-      # renovate:
       repository: cloudflare/cloudflared
       tag: 2024.2.1
     args:

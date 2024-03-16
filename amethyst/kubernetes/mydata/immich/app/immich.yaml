@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
       version: 1.5.1
   interval: 1h
@@ -28,7 +27,6 @@ spec:
     controller:
       strategy: RollingUpdate
     image:
-      # renovate:
       repository: ghcr.io/immich-app/immich-server
       tag: v1.98.2
     command: ["./start.sh", "immich"]
@@ -118,7 +116,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
       version: 1.5.1
   interval: 1h
@@ -127,7 +124,6 @@ spec:
     controller:
       strategy: RollingUpdate
     image:
-      # renovate:
       repository: ghcr.io/immich-app/immich-server
       tag: v1.98.2
     command: ["./start.sh", "microservices"]
@@ -214,14 +210,12 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
       version: 1.5.1
   interval: 1h
   maxHistory: 1
   values:
     image:
-      # renovate:
       repository: ghcr.io/immich-app/immich-machine-learning
       tag: v1.98.2
     env:

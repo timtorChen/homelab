@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: grafana
-      # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: loki
       version: 5.26.0
   interval: 1h

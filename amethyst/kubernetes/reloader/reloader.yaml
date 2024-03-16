@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: stakater
-      # renovate: registryUrl=https://stakater.github.io/stakater-charts
       chart: reloader
       version: 1.0.67
   interval: 1h

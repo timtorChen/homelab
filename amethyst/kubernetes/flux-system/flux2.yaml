@@ -9,7 +9,6 @@ spec:
   interval: 1m
   url: https://github.com/fluxcd/flux2
   ref:
-    # renovate: github-repo=fluxcd/flux2
     tag: v2.2.3
   ignore: |
     /*

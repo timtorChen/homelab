@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
       version: 1.5.1
   interval: 1h
@@ -28,7 +27,6 @@ spec:
     controller:
       type: daemonset
     image:
-      # renovate:
       repository: matusnovak/prometheus-smartctl
       tag: v2.3.0
     env:

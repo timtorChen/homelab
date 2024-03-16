@@ -1,0 +1,62 @@
+---
+version: v1alpha1
+debug: false
+persist: true
+machine:
+  # -- Setup
+  type: worker
+  token: ${machine_token}
+  ca:
+    crt: ${machine_ca_crt}
+    key: ""
+  certSANs: []
+  install:
+    disk: /dev/sda
+    image: ghcr.io/siderolabs/installer:v1.6.4
+    wipe: false
+    extraKernelArgs:
+      - talos.logging.kernel=tcp://192.168.253.100:3001
+      # disable predictable interface naming
+      - net.ifnames=0
+  network: {}
+  logging:
+    destinations:
+      - endpoint: tcp://192.168.253.100:3002
+        format: json_lines
+  # -- Services
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.29.1
+    defaultRuntimeSeccompProfileEnabled: true
+    disableManifestsDirectory: true
+  # -- Talos features
+  features:
+    rbac: true
+    stableHostname: true
+    apidCheckExtKeyUsage: true
+    kubePrism:
+      enabled: true
+      port: 7745
+cluster:
+  # -- Setup
+  controlPlane:
+    endpoint: https://192.168.253.10:6443
+  network:
+    cni:
+      name: none
+    dnsDomain: cluster.local
+    podSubnets:
+      - 10.244.0.0/16
+    serviceSubnets:
+      - 10.96.0.0/12
+  id: ${cluster_id}
+  secret: ${cluster_secret}
+  token: ${cluster_token}
+  ca:
+    crt: ${cluster_ca_crt}
+    key: ""
+  # -- Service
+  proxy:
+    disabled: true
+  # -- Extras
+  discovery:
+    enabled: false

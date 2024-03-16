@@ -19,7 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: cert-manager
-      # renovate: registryUrl=https://charts.jetstack.io
       chart: cert-manager
       version: v1.12.2
   install:

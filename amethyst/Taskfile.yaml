@@ -170,31 +170,43 @@ tasks:
   talos:apply:
     silent: true
     dir: talos
+    env: &talos-env
+      SECRET_ENV:
+        sh: |
+          export AWS_PROFILE=sso-admin@aws-homelab
+          aws ssm get-parameters --with-decryption \
+          --names /amethyst/talos-machine /amethyst/talos-cluster |\
+          jq -r '.Parameters[].Value | fromjson | to_entries[] | "\(.key)=\(.value)"'
     cmds:
       - |
         NODE={{.NODE}}
         [ -z "$NODE" ] && echo -n "Apply node: " && read NODE
         export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
         [ -z "$IP" ] && exit 1
+
         export TYPE="$(yq '.machine.type' "${NODE}.yaml")"
-        export TYPE_CONFIG="$(sops -d "${TYPE}.sops.yaml")"
-        export CONFIG="$(yq '. *= env(TYPE_CONFIG)' "${NODE}.yaml")"
+        export CONFIG="$(yq ea '. as $item ireduce ({}; . * $item)' "${TYPE}.yaml" "${NODE}.yaml")"
+        export $SECRET_ENV
+        export CONFIG="$(echo "$CONFIG" | envsubst)"
         talosctl apply-config -f <(echo -n "$CONFIG") -n "$IP" {{.CLI_ARGS}}
 
   talos:upgrade:
     silent: true
     dir: talos
     prompt: The upgrade process will cause a reboot... continue?
+    env: *talos-env
     cmds:
       - |
         NODE={{.NODE}}
         [ -z "$NODE" ] && echo -n "Upgrade node: " && read NODE
         export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
         [ -z "$IP" ] && exit 1
+
         export TYPE="$(yq '.machine.type' "${NODE}.yaml")"
-        export IMAGE="$(yq '.machine.install.image' "${TYPE}.sops.yaml")"
-        export TYPE_CONFIG="$(sops -d "${TYPE}.sops.yaml")"
-        export CONFIG="$(yq '. *= env(TYPE_CONFIG)' "${NODE}.yaml")"
+        export IMAGE="$(yq '.machine.install.image' "${TYPE}.yaml")"
+        export CONFIG="$(yq ea '. as $item ireduce ({}; . * $item)' "${TYPE}.yaml" "${NODE}.yaml")"
+        export $SECRET_ENV
+        export CONFIG="$(echo "$CONFIG" | envsubst)"
 
         echo "> Apply configuration"
         talosctl apply-config -f <(echo -n "$CONFIG") -n "$IP"

@@ -1,0 +1,139 @@
+---
+version: v1alpha1
+debug: false
+persist: true
+machine:
+  # -- Setup
+  type: controlplane
+  token: ${machine_token}
+  # Talos CA
+  ca:
+    crt: ${machine_ca_crt}
+    key: ${machine_ca_key}
+  certSANs: []
+  install:
+    image: ghcr.io/siderolabs/installer:v1.6.4
+    disk: /dev/sda
+    wipe: false
+    extraKernelArgs:
+      - talos.logging.kernel=tcp://192.168.253.100:3001
+      # disable predictable interface naming
+      - net.ifnames=0
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: true
+        vip:
+          ip: 192.168.253.10
+  logging:
+    destinations:
+      - endpoint: tcp://192.168.253.100:3002
+        format: json_lines
+  # -- Services
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.29.1
+    defaultRuntimeSeccompProfileEnabled: true
+    disableManifestsDirectory: true
+  # -- Talos features
+  features:
+    rbac: true
+    stableHostname: true
+    apidCheckExtKeyUsage: true
+    kubePrism:
+      enabled: true
+      port: 7745
+cluster:
+  # -- Setup
+  clusterName: amethyst
+  controlPlane:
+    endpoint: https://192.168.253.10:6443
+  network:
+    cni:
+      name: none
+    dnsDomain: cluster.local
+    podSubnets:
+      - 10.244.0.0/16
+    serviceSubnets:
+      - 10.96.0.0/12
+  # Cluster id
+  id: ${cluster_id}
+  # Cluster shared secret
+  secret: ${cluster_secret}
+  # Boostrap token used to join the cluster
+  token: ${cluster_token}
+  # Etcd encryption at rest
+  secretboxEncryptionSecret: ${cluster_secretboxEncryptionSecret}
+  # Kubernetes CA
+  ca:
+    crt: ${cluster_ca_crt}
+    key: ${cluster_ca_key}
+  # Aggregator CA for generating fortned-proxy certificate
+  aggregatorCA:
+    crt: ${cluster_aggregatorCA_crt}
+    key: ${cluster_aggregatorCA_key}
+  # Private key for generating serviceAccount token (JWT)
+  # Talos generates ECDSA key by default
+  # Change to RSA for AWS IAM identity provider
+  serviceAccount:
+    key: ${cluster_serviceAccount_key}
+  # -- Services
+  proxy:
+    disabled: true
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.29.1
+    extraArgs:
+      oidc-issuer-url: https://oauth.id.jumpcloud.com/
+      oidc-client-id: ${cluster_apiServer_extraArgs_oidc-client-id}
+      oidc-username-claim: email
+      oidc-groups-claim: groups
+      service-account-issuer: https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst
+      service-account-jwks-uri: https://192.168.253.10:6443/openid/v1/jwks
+    # Certificae SANs for API server CA signing certificate
+    certSANs:
+      - 192.168.253.10
+    disablePodSecurityPolicy: true
+    admissionControl:
+      - name: PodSecurity
+        configuration:
+          apiVersion: pod-security.admission.config.k8s.io/v1
+          kind: PodSecurityConfiguration
+          defaults:
+            enforce: restricted
+            enforce-version: latest
+            audit: restricted
+            audit-version: latest
+            warn: restricted
+            warn-version: latest
+          exemptions:
+            namespaces:
+              - kube-system
+            runtimeClasses: []
+            usernames: []
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+        - level: Metadata
+  etcd:
+    image: gcr.io/etcd-development/etcd:v3.5.9-arm64
+    # Etcd CA
+    ca:
+      crt: ${cluster_etcd_ca_crt}
+      key: ${cluster_etcd_ca_key}
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+  controllerManager:
+    image: registry.k8s.io/kube-controller-manager:v1.29.1
+    extraArgs:
+      bind-address: 0.0.0.0
+  scheduler:
+    image: registry.k8s.io/kube-scheduler:v1.29.1
+    extraArgs:
+      bind-address: 0.0.0.0
+  coreDNS:
+    image: docker.io/coredns/coredns:1.11.1
+  # -- Extras
+  extraManifests: []
+  inlineManifests: []
+  discovery:
+    enabled: false

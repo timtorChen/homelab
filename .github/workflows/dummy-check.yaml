@@ -1,0 +1,11 @@
+---
+name: dummy-check
+"on":
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  echo:
+    runs-on: "ubuntu-latest"
+    steps:
+      - run: echo "dummy-check"

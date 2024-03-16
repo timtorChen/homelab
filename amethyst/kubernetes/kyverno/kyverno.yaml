@@ -21,7 +21,6 @@ spec:
         kind: HelmRepository
         name: kyverno
       version: 3.0.1
-      # renovate: registryUrl=https://kyverno.github.io/kyverno
       chart: kyverno
   install:
     crds: CreateReplace
