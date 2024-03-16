@@ -80,7 +80,7 @@ cluster:
     proxy:
         disabled: true
     apiServer:
-        image: registry.k8s.io/kube-apiserver:v1.29.1
+        image: registry.k8s.io/kube-apiserver:v1.29.3
         extraArgs:
             oidc-issuer-url: https://oauth.id.jumpcloud.com/
             oidc-client-id: ENC[AES256_GCM,data:r7e1pbQnu7750T/TVfNjeaurw8BAi1bCyZozaOn3gAJEog7y,iv:YKU+PtGFks2ZjKZGKaCXS+V/1n5/EUviEO4hFiF6BZM=,tag:XWlIq6/VZUPuyms71JxIdA==,type:str]
