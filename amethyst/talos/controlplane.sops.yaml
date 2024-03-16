@@ -123,7 +123,7 @@ cluster:
         extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
     controllerManager:
-        image: registry.k8s.io/kube-controller-manager:v1.29.1
+        image: registry.k8s.io/kube-controller-manager:v1.29.3
         extraArgs:
             bind-address: 0.0.0.0
     scheduler:
