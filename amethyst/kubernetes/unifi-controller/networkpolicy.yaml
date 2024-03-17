@@ -59,10 +59,9 @@ specs:
               - protocol: ANY
                 port: "53"
             rules:
-              dns:
-                - matchPattern: &b2 s3.us-east-005.backblazeb2.com
-      - toFQDNs:
-          - matchName: *b2
+              dns: &b2
+                - matchPattern: s3.us-east-005.backblazeb2.com
+      - toFQDNs: *b2
         toPorts:
           - ports:
               - protocol: TCP
