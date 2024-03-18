@@ -135,6 +135,36 @@ tasks:
       - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/data
       # TODO: database backup list
 
+  kubernetes:get-oidc-config:
+    silent: true
+    env:
+      CONFIG: &oidc-config
+        sh: |
+          kubectl get --raw /.well-known/openid-configuration |\
+          jq '.jwks_uri= .issuer + "/.well-known/jwks"'
+    cmds:
+      - echo "$CONFIG"
+
+  kubernetes:get-oidc-jwks:
+    silent: true
+    env:
+      JWKS: &oidc-jwks
+        sh: |
+          kubectl get --raw /openid/v1/jwks | jq
+    cmds:
+      - echo "$JWKS"
+
+  kubernetes:set-public-oidc:
+    silent: true
+    env:
+      CONFIG: *oidc-config
+      JWKS: *oidc-jwks
+    cmds:
+      - echo "Uploading openid-configuration to S3"
+      - echo "$CONFIG" | aws s3 cp - s3://amethyst-kubernetes-oidc/.well-known/openid-configuration
+      - echo "Uploading JWKs to S3"
+      - echo "$JWKS" | aws s3 cp - s3://amethyst-kubernetes-oidc/.well-known/jwks
+
   # -- Terraform
   terraform:remote-state:init:
     dir: terraform/_remote-state

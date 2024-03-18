@@ -2,10 +2,6 @@ data "aws_caller_identity" "main" {}
 
 data "aws_region" "main" {}
 
-data "tls_certificate" "main" {
-  url = local.oidc_issuer_url
-}
-
 # Parameter store secrets
 data "aws_ssm_parameter" "ceph-admin" {
   name = "/amethyst/ceph-admin"
