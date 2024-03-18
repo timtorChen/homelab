@@ -29,7 +29,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: prom/snmp-exporter
-      tag: v0.24.1
+      tag: v0.25.0
     args:
       - --config.file=/config/*.yml
       - --config.file=/secret/*.yml
