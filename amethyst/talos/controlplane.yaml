@@ -86,7 +86,7 @@ cluster:
       oidc-client-id: ${cluster_apiServer_extraArgs_oidc-client-id}
       oidc-username-claim: email
       oidc-groups-claim: groups
-      service-account-issuer: https://raw.githubusercontent.com/timtorChen/homelab/main/amethyst
+      service-account-issuer: https://amethyst-kubernetes-oidc.s3.us-west-2.amazonaws.com
       service-account-jwks-uri: https://192.168.253.10:6443/openid/v1/jwks
     # Certificae SANs for API server CA signing certificate
     certSANs:

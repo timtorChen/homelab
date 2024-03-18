@@ -1,9 +1,3 @@
-resource "aws_iam_openid_connect_provider" "main" {
-  url             = local.oidc_issuer_url
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.main.certificates[0].sha1_fingerprint]
-}
-
 resource "aws_iam_role" "cert-manager" {
   name = "${local.project}-cert-manager"
   assume_role_policy = jsonencode({
@@ -12,13 +6,13 @@ resource "aws_iam_role" "cert-manager" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:cert-manager:cert-manager",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:cert-manager:cert-manager",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -55,13 +49,13 @@ resource "aws_iam_role" "cloudflared" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:cloudflared:cloudflared",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:cloudflared:cloudflared",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -98,13 +92,13 @@ resource "aws_iam_role" "snmp-exporter-mikrotik" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:snmp-exporter-mikrotik:snmp-exporter-mikrotik",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:snmp-exporter-mikrotik:snmp-exporter-mikrotik",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -141,13 +135,13 @@ resource "aws_iam_role" "grafana" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:grafana:grafana",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:grafana:grafana",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -184,13 +178,13 @@ resource "aws_iam_role" "grafana-postgres-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:grafana:grafana-postgres-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:grafana:grafana-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -227,13 +221,13 @@ resource "aws_iam_role" "loki" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:loki:loki",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:loki:loki",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -270,13 +264,13 @@ resource "aws_iam_role" "mimir" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mimir:mimir",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mimir:mimir",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -313,13 +307,13 @@ resource "aws_iam_role" "unpoller" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:unpoller:unpoller",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:unpoller:unpoller",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -357,13 +351,13 @@ resource "aws_iam_role" "unifi-controller" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -400,13 +394,13 @@ resource "aws_iam_role" "unifi-controller-backup-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller-backup-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -443,13 +437,13 @@ resource "aws_iam_role" "wego" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:wego:wego",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:wego:wego",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -486,13 +480,13 @@ resource "aws_iam_role" "nextcloud" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:nextcloud",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -529,13 +523,13 @@ resource "aws_iam_role" "nextcloud-backup-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud-backup-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:nextcloud-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -572,13 +566,13 @@ resource "aws_iam_role" "nextcloud-postgres-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud-postgres-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:nextcloud-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -615,13 +609,13 @@ resource "aws_iam_role" "nextcloud-dragonfly" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:nextcloud-dragonfly",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:nextcloud-dragonfly",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -658,13 +652,13 @@ resource "aws_iam_role" "vaultwarden" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -701,13 +695,13 @@ resource "aws_iam_role" "vaultwarden-backup" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -744,13 +738,13 @@ resource "aws_iam_role" "navidrome" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:navidrome",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:navidrome",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -787,13 +781,13 @@ resource "aws_iam_role" "navidrome-backup-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:navidrome-backup-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:navidrome-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -830,13 +824,13 @@ resource "aws_iam_role" "immich" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -873,13 +867,13 @@ resource "aws_iam_role" "immich-backup-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-backup-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -916,13 +910,13 @@ resource "aws_iam_role" "immich-postgres-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-postgres-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -959,13 +953,13 @@ resource "aws_iam_role" "immich-dragonfly" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-dragonfly",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-dragonfly",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -1002,13 +996,13 @@ resource "aws_iam_role" "immich-typesense" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-typesense",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-typesense",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
@@ -1045,13 +1039,13 @@ resource "aws_iam_role" "immich-typesense-backup-secret-holder" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.main.arn}"
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.main.url}:sub" : "system:serviceaccount:mydata:immich-typesense-backup-secret-holder",
-            "${aws_iam_openid_connect_provider.main.url}:aud" : "sts.amazonaws.com"
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-typesense-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
       }
