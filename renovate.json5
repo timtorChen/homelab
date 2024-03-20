@@ -19,4 +19,5 @@
   "helm-values": {
     fileMatch: ["^amethyst/(kubernetes|talos)/.*\\.yaml$"],
   },
+  ignorePaths: ["**/archive/**"],
 }
