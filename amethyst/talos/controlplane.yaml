@@ -83,7 +83,7 @@ cluster:
     image: registry.k8s.io/kube-apiserver:v1.29.1
     extraArgs:
       oidc-issuer-url: https://oauth.id.jumpcloud.com/
-      oidc-client-id: ${cluster_apiServer_extraArgs_oidc-client-id}
+      oidc-client-id: ${cluster_apiServer_extraArgs_oidc_client_id}
       oidc-username-claim: email
       oidc-groups-claim: groups
       service-account-issuer: https://amethyst-kubernetes-oidc.s3.us-west-2.amazonaws.com
