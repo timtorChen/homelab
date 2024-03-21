@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kromgo
+  name: kromgo-config
+data:
+  config.yaml: |
+    debug: false
+    metrics:
+      - name: kubernetes_version
+        query: kubernetes_build_info
+        label: git_version
+      - name: talos_version
+        query: node_os_info
+        label: version_id
+      - name: node_age
+        query: floor(max((time() - kube_node_created)/86400))
+        suffix: "d"
+      - name: node_count
+        query: count(node_uname_info)
+      - name: pod_count
+        query: count(kube_pod_info)
+      - name: cpu_usage
+        query: round(100*avg(1 - rate(node_cpu_seconds_total{mode="idle"}[5m])), 0.1)
+        suffix: "%"
+        colors:
+        - color: "green"
+          min: 0
+          max: 60
+        - color: "orange"
+          min: 60
+          max: 75
+        - color: "red"
+          min: 75
+          max: 100
+      - name: memory_usage
+        query: round(100*avg(1 - node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes), 0.1)
+        suffix: "%"
+        colors:
+        - color: "green"
+          min: 0
+          max: 60
+        - color: "orange"
+          min: 60
+          max: 75
+        - color: "red"
+          min: 75
+          max: 100

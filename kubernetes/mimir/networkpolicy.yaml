@@ -98,3 +98,17 @@ specs:
           - ports:
               - protocol: TCP
                 port: "8080"
+  # allow mimir-read from kromgo
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: mimir
+        app.kubernetes.io/component: query-frontend
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kromgo
+              app.kubernetes.io/name: kromgo
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"

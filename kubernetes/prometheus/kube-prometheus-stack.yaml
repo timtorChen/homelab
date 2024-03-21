@@ -190,9 +190,25 @@ spec:
         metricRelabelings:
           - *drop-useless
 
-    # TODO: pick useful metrics
     kubelet:
-      enabled: false
+      enabled: true
+      http: false
+      cAdvisor: false
+      probes: false
+      resource: false
+      serviceMonitor:
+        cAdvisorMetricRelabelings:
+          - sourceLabels: [__name__]
+            regex: ".*"
+            action: drop
+        probesMetricRelabelings:
+          - sourceLabels: [__name__]
+            regex: ".*"
+            action: drop
+        metricRelabelings:
+          - sourceLabels: [__name__]
+            regex: ^(kubernetes_build_info)$
+            action: keep
 
     coreDns:
       enabled: true

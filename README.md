@@ -6,6 +6,27 @@
 
 </div>
 
+</div>
+
+<div align="center">
+
+[![Discord](https://img.shields.io/discord/673534664354430999?style=for-the-badge&label&logo=discord&logoColor=white&color=blue)](https://discord.gg/home-operations)&nbsp;&nbsp;
+[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dtalos_version&style=for-the-badge&logo=talos&logoColor=white&color=blue&label=%20)](https://www.talos.dev/)&nbsp;&nbsp;
+[![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dkubernetes_version&style=for-the-badge&logo=kubernetes&logoColor=white&color=blue&label=%20)](https://www.talos.dev/)&nbsp;&nbsp;
+[![Renovate](https://img.shields.io/github/actions/workflow/status/timtorChen/homelab/renovate.yaml?branch=main&label=&logo=renovatebot&style=for-the-badge&color=blue)](https://github.com/onedr0p/home-ops/actions/workflows/renovate.yaml)
+
+</div>
+
+<div align="center">
+
+[![Age](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dnode_age%26label%3D&style=flat-square&color=green&label=Age)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Node-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dnode_count%26label%3D&style=flat-square&color=green&label=Node)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Pod-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dpod_count%26label%3D&style=flat-square&color=green&label=Pod)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![CPU-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dcpu_usage%26label%3D&style=flat-square&label=CPU)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dmemory_usage%26label%3D&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+
+</div>
+
 ---
 
 ## 📖 Overview

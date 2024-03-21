@@ -1,0 +1,41 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: kromgo
+  name: kromgo-app-policy
+specs:
+  # allow connection from ingress-nginx
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: kromgo
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow kromgo to mimir
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "mimir-query-frontend.mimir.svc.cluster.local."
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: mimir
+              app.kubernetes.io/component: query-frontend
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
