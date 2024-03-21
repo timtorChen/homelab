@@ -2,66 +2,217 @@
 version: "3"
 
 tasks:
+  # -- AWS
+  aws:get-talos-secrets:
+    silent: true
+    env:
+      SECRET_ENV: &talos-secret
+        sh: |
+          VALUES="$(aws ssm get-parameters --with-decryption \
+            --names /amethyst/talos-machine /amethyst/talos-cluster)"
+          echo "$VALUES" | jq -r '.Parameters[].Value | fromjson | to_entries[] | "\(.key)=\(.value)"'
+    cmd: echo "$SECRET_ENV"
+
   # -- Talos
+  # controlplane
+  talos:apply-controlplane:
+    silent: true
+    cmds:
+      - for: [pi4b-1, pi4b-2, pi4b-3]
+        vars:
+          DIR: talos
+          NODE: "{{.ITEM}}"
+          SECRET_ENV: *talos-secret
+        task: talos:apply
+  talos:upgrade-controlplane:
+    silent: true
+    cmds:
+      - for: [pi4b-1, pi4b-2, pi4b-3]
+        vars:
+          DIR: talos
+          NODE: "{{.ITEM}}"
+          SECRET_ENV: *talos-secret
+        task: talos:upgrade
+  # worker
+  talos:apply-worker:
+    silent: true
+    cmds:
+      - for: [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
+        vars:
+          DIR: talos
+          NODE: "{{.ITEM}}"
+          SECRET_ENV: *talos-secret
+        task: talos:apply
+  talos:upgrade-worker:
+    silent: true
+    cmds:
+      - for: [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
+        vars:
+          DIR: talos
+          NODE: "{{.ITEM}}"
+          SECRET_ENV: *talos-secret
+        task: talos-upgrade
+
+  # pi4b-1
+  talos:render-pi4b-1:
+    cmds:
+      - task: talos:render
+        vars: &pi4b-1-vars
+          DIR: talos
+          NODE: pi4b-1
+          SECRET_ENV: *talos-secret
+  talos:plan-pi4b-1:
+    cmds:
+      - task: talos:plan
+        vars: *pi4b-1-vars
   talos:apply-pi4b-1:
     cmds:
       - task: talos:apply
-        vars:
-          NODE: pi4b-1
+        vars: *pi4b-1-vars
   talos:upgrade-pi4b-1:
     cmds:
       - task: talos:upgrade
+        vars: *pi4b-1-vars
+  talos:reset-pi4b-1:
+    cmds:
+      - task: talos:reset
         vars:
+          DIR: talos
           NODE: pi4b-1
+
+  # pi4b-2
+  talos:render-pi4b-2:
+    cmds:
+      - task: talos:render
+        vars: &pi4b-2-vars
+          DIR: talos
+          NODE: pi4b-2
+          SECRET_ENV: *talos-secret
+  talos:plan-pi4b-2:
+    cmds:
+      - task: talos:plan
+        vars: *pi4b-2-vars
   talos:apply-pi4b-2:
     cmds:
       - task: talos:apply
-        vars:
-          NODE: pi4b-2
+        vars: *pi4b-2-vars
   talos:upgrade-pi4b-2:
     cmds:
       - task: talos:upgrade
+        vars: *pi4b-2-vars
+  talos:reset-pi4b-2:
+    cmds:
+      - task: talos:reset
         vars:
+          DIR: talos
           NODE: pi4b-2
+
+  # pi4b-3
+  talos:render-pi4b-3:
+    cmds:
+      - task: talos:render
+        vars: &pi4b-3-vars
+          DIR: talos
+          NODE: pi4b-3
+          SECRET_ENV: *talos-secret
+  talos:plan-pi4b-3:
+    cmds:
+      - task: talos:plan
+        vars: *pi4b-3-vars
   talos:apply-pi4b-3:
     cmds:
       - task: talos:apply
-        vars:
-          NODE: pi4b-3
+        vars: *pi4b-3-vars
   talos:upgrade-pi4b-3:
     cmds:
       - task: talos:upgrade
+        vars: *pi4b-3-vars
+  talos:reset-pi4b-3:
+    cmds:
+      - task: talos:reset
         vars:
+          DIR: talos
           NODE: pi4b-3
+
+  # nuc11tnhi50l-1
+  talos:render-nuc11tnhi50l-1:
+    cmds:
+      - task: talos:render
+        vars: &nuc11tnhi50l-1-vars
+          DIR: talos
+          NODE: nuc11tnhi50l-1
+          SECRET_ENV: *talos-secret
+  talos:plan-nuc11tnhi50l-1:
+    cmds:
+      - task: talos:plan
+        vars: *nuc11tnhi50l-1-vars
   talos:apply-nuc11tnhi50l-1:
     cmds:
       - task: talos:apply
-        vars:
-          NODE: nuc11tnhi50l-1
+        vars: *nuc11tnhi50l-1-vars
   talos:upgrade-nuc11tnhi50l-1:
     cmds:
       - task: talos:upgrade
+        vars: *nuc11tnhi50l-1-vars
+  talos:reset-nuc11tnhi50l-1:
+    cmds:
+      - task: talos:reset
         vars:
+          DIR: talos
           NODE: nuc11tnhi50l-1
+
+  # nuc11tnhi50l-2
+  talos:render-nuc11tnhi50l-2:
+    cmds:
+      - task: talos:render
+        vars: &nuc11tnhi50l-2-vars
+          DIR: talos
+          NODE: nuc11tnhi50l-2
+          SECRET_ENV: *talos-secret
+  talos:plan-nuc11tnhi50l-2:
+    cmds:
+      - task: talos:plan
+        vars: *nuc11tnhi50l-2-vars
   talos:apply-nuc11tnhi50l-2:
     cmds:
       - task: talos:apply
-        vars:
-          NODE: nuc11tnhi50l-2
+        vars: *nuc11tnhi50l-2-vars
   talos:upgrade-nuc11tnhi50l-2:
     cmds:
       - task: talos:upgrade
+        vars: *nuc11tnhi50l-2-vars
+  talos:reset-nuc11tnhi50l-2:
+    cmds:
+      - task: talos:reset
         vars:
+          DIR: talos
           NODE: nuc11tnhi50l-2
+
+  # nuc11tnhi50l-3
+  talos:render-nuc11tnhi50l-3:
+    cmds:
+      - task: talos:render
+        vars: &nuc11tnhi50l-3-vars
+          DIR: talos
+          NODE: nuc11tnhi50l-3
+          SECRET_ENV: *talos-secret
+  talos:plan-nuc11tnhi50l-3:
+    cmds:
+      - task: talos:plan
+        vars: *nuc11tnhi50l-3-vars
   talos:apply-nuc11tnhi50l-3:
     cmds:
       - task: talos:apply
-        vars:
-          NODE: nuc11tnhi50l-3
+        vars: *nuc11tnhi50l-3-vars
   talos:upgrade-nuc11tnhi50l-3:
     cmds:
       - task: talos:upgrade
+        vars: *nuc11tnhi50l-3-vars
+  talos:reset-nuc11tnhi50l-3:
+    cmds:
+      - task: talos:reset
         vars:
+          DIR: talos
           NODE: nuc11tnhi50l-3
 
   # -- Kubernetes
@@ -197,65 +348,84 @@ tasks:
     cmd: terraform output
 
   # -- Functions
-  talos:apply:
+  talos:render:
+    internal: true
     silent: true
-    dir: talos
-    env: &talos-env
-      SECRET_ENV:
-        sh: |
-          export AWS_PROFILE=sso-admin@aws-homelab
-          aws ssm get-parameters --with-decryption \
-          --names /amethyst/talos-machine /amethyst/talos-cluster |\
-          jq -r '.Parameters[].Value | fromjson | to_entries[] | "\(.key)=\(.value)"'
-    cmds:
-      - |
-        NODE={{.NODE}}
-        [ -z "$NODE" ] && echo -n "Apply node: " && read NODE
-        export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
-        [ -z "$IP" ] && exit 1
+    dir: "{{.DIR}}"
+    cmd: &talos-render-config |
+      NODE="{{.NODE}}"
+      SECRET_ENV="{{.SECRET_ENV}}"
 
-        export TYPE="$(yq '.machine.type' "${NODE}.yaml")"
-        export CONFIG="$(yq ea '. as $item ireduce ({}; . * $item)' "${TYPE}.yaml" "${NODE}.yaml")"
-        export $SECRET_ENV
-        export CONFIG="$(echo "$CONFIG" | envsubst)"
-        talosctl apply-config -f <(echo -n "$CONFIG") -n "$IP" {{.CLI_ARGS}}
+      [ ! -f "${NODE}.yaml" ] && echo "Clound find ${NODE}.yaml" && exit 1
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      INCLUDES="$(echo "$HEADER"| yq '.includes[]')"
+
+      [ "$IP" == "null" ] && echo "Please add '# ip:' comment header on ${NODE}.yaml" && exit 1
+      CONFIG="$(yq ea '. as $item ireduce ({}; . * $item)' $INCLUDES "${NODE}.yaml")"
+      export $SECRET_ENV
+      echo "$CONFIG" | envsubst
+
+  talos:plan:
+    internal: true
+    silent: true
+    ignore_error: true
+    dir: "{{.DIR}}"
+    env:
+      CONFIG:
+        sh: *talos-render-config
+    cmd: |
+      NODE="{{.NODE}}"
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      talosctl apply-config -n "$IP" --dry-run -f <(echo "$CONFIG")
+
+  talos:apply:
+    prompt: The apply process may cause a reboot... continue?
+    internal: true
+    silent: true
+    dir: "{{.DIR}}"
+    env:
+      CONFIG:
+        sh: *talos-render-config
+    cmd: |
+      NODE="{{.NODE}}"
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
 
   talos:upgrade:
-    silent: true
-    dir: talos
     prompt: The upgrade process will cause a reboot... continue?
-    env: *talos-env
-    cmds:
-      - |
-        NODE={{.NODE}}
-        [ -z "$NODE" ] && echo -n "Upgrade node: " && read NODE
-        export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
-        [ -z "$IP" ] && exit 1
+    silent: true
+    internal: true
+    dir: "{{.DIR}}"
+    env:
+      CONFIG:
+        sh: *talos-render-config
+    cmd: |
+      NODE={{.NODE}}
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      IMAGE="$(echo "$CONFIG" | yq '.machine.install.image')"
 
-        export TYPE="$(yq '.machine.type' "${NODE}.yaml")"
-        export IMAGE="$(yq '.machine.install.image' "${TYPE}.yaml")"
-        export CONFIG="$(yq ea '. as $item ireduce ({}; . * $item)' "${TYPE}.yaml" "${NODE}.yaml")"
-        export $SECRET_ENV
-        export CONFIG="$(echo "$CONFIG" | envsubst)"
+      echo "> Apply configuration"
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
 
-        echo "> Apply configuration"
-        talosctl apply-config -f <(echo -n "$CONFIG") -n "$IP"
-
-        echo "> Start talos OS upgrade"
-        talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
+      echo "> Start talos OS upgrade"
+      talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
 
   talos:reset:
-    silent: true
-    dir: talos
     prompt: Reset the node and ALL data will be removed... continue?
-    cmds:
-      - |
-        NODE={{.NODE}}
-        [ -z "$NODE" ] && echo -n "Reset node: " && read NODE
-        export IP="$(yq 'head_comment' "${NODE}.yaml" | yq '.ip')"
-        [ -z "$IP" ] && exit 1
-        talosctl reset \
-        --system-labels-to-wipe=STATE \
-        --system-labels-to-wipe=EPHEMERAL \
-        --system-labels-to-wipe=META \
-        --reboot --graceful -n $IP
+    silent: true
+    internal: true
+    dir: "{{.DIR}}"
+    cmd: |
+      NODE="{{.NODE}}"
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+
+      talosctl reset \
+      --system-labels-to-wipe=STATE \
+      --system-labels-to-wipe=EPHEMERAL \
+      --system-labels-to-wipe=META \
+      --reboot --graceful -n $IP
