@@ -37,7 +37,7 @@ spec:
         eks.amazonaws.com/audience: sts.amazonaws.com
     podAnnotations:
       secret.reloader.stakater.com/reload: &s unpoller-secret
-      configmap.reloader.skaater.com/reload: &c unpoller-config
+      configmap.reloader.stakater.com/reload: &c unpoller-config
 
     env:
       UP_UNIFI_CONTROLLER_0_USER:
