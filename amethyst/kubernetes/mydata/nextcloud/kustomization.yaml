@@ -7,6 +7,7 @@ resources:
   - deps/nextcloud-postgres.yaml
   - deps/nextcloud-dragonfly-secret.yaml
   - deps/nextcloud-dragonfly.yaml
+  - deps/networkpolicy.yaml
   - app/nextcloud-backup-secret.yaml
   - app/nextcloud-backup.yaml
   - app/nextcloud-config.yaml
@@ -14,3 +15,4 @@ resources:
   - app/nextcloud-install.yaml
   - app/nextcloud-data.yaml
   - app/nextcloud.yaml
+  - app/networkpolicy.yaml

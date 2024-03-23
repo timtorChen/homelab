@@ -15,8 +15,8 @@ data:
       disable: true
     unifi:
       controllers:
-        - url: https://ui.timtor.dev
-          verify_ssl: true
+        - url: https://unifi-controller.unifi-controller.svc:8443
+          verify_ssl: false
           # user: APP_UP_UNIFI_CONTROLLER_0_USER
           # pass: APP_UP_UNIFI_CONTROLLER_0_PASS
           sites:

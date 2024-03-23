@@ -1,0 +1,68 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller-policy
+specs:
+  # allow connection from ingress-nginx
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: unifi-controller
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: ingress-nginx
+              app.kubernetes.io/name: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8443"
+              - protocol: TCP
+                port: "8080"
+  # allow connection from unpoller
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: unpoller
+              app.kubernetes.io/name: unpoller
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8443"
+  # backup and restore
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/created-by: volsync
+        job-name: volsync-src-unifi-controller-backup
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &b2
+                - matchPattern: s3.us-east-005.backblazeb2.com
+      - toFQDNs: *b2
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
