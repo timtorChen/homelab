@@ -8,3 +8,5 @@ resources:
   - metrics-server.yaml
   - secrets-store-csi-driver.yaml
   - secrets-store-csi-driver-provider-aws.yaml
+  - node-feature-discovery.yaml
+  - nodefeaturerule.yaml
