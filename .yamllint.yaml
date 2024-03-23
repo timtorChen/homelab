@@ -9,6 +9,9 @@ rules:
   indentation:
     spaces: 2
 
+  braces:
+    max-spaces-inside: 1
+
   truthy:
     allowed-values: ["true", "false"]
     check-keys: true

@@ -1,0 +1,38 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  namespace: kube-system
+  name: node-feature-discovery
+spec:
+  url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+  interval: 24h
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  namespace: kube-system
+  name: node-feature-discovery
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: node-feature-discovery
+      version: 0.15.3
+      chart: node-feature-discovery
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    enableNodeFeatureApi: true
+    master:
+      enable: true
+    worker:
+      enable: true
+    gc:
+      enable: true

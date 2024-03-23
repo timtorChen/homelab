@@ -1,0 +1,27 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  namespace: intel-device-system
+  name: intel-device-plugins-gpu
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: intel
+      version: 0.29.0
+      chart: intel-device-plugins-gpu
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+  values:
+    name: daemon
+    nodeSelector:
+      intel.feature.node.kubernetes.io/gpu: "true"
+    sharedDevNum: 4
+    resourceManager: true
