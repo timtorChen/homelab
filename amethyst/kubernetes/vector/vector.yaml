@@ -29,7 +29,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: timberio/vector
-      tag: 0.33.0-distroless-libc
+      tag: 0.37.0-distroless-libc
     podAnnotations:
       configmap.reloader.stakater.com/reload: &config vector-config
     env:
