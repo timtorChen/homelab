@@ -61,13 +61,16 @@ spec:
     crashcollector:
       requests:
         memory: 60Mi
-
   network:
     provider: host
   dashboard:
     enabled: true
   monitoring:
     enabled: false
+  disruptionManagement:
+    managePodBudgets: true
+    osdMaintenanceTimeout: 30 # max pg recovery duration
+    pgHealthCheckTimeout: 1 # wait 1 min after pgs become healthy
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
