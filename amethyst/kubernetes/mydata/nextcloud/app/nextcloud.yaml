@@ -22,7 +22,7 @@ spec:
         unavailable: 1
     image:
       repository: nextcloud
-      tag: 28.0.3-apache
+      tag: 28.0.4-apache
     serviceAccount:
       create: true
       annotations:
