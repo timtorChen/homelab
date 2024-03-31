@@ -19,7 +19,7 @@ metadata:
   name: loki-policy
 specs:
   # allow loki to resolve dns records
-  - endpointSelector: &loki
+  - endpointSelector: &self
       matchLabels:
         app.kubernetes.io/name: loki
     egress:
@@ -36,7 +36,7 @@ specs:
                 - matchPattern: "*.loki.svc.cluster.local."
                 - matchName: "rook-ceph-rgw-fast.rook-ceph.svc.cluster.local."
   # allow loki internal components
-  - endpointSelector: *loki
+  - endpointSelector: *self
     ingress:
       - toPorts:
           - ports:
@@ -52,7 +52,7 @@ specs:
               - protocol: TCP
                 port: "7946"
   # allow loki to rook-ceph rgw
-  - endpointSelector: *loki
+  - endpointSelector: *self
     egress:
       - toEntities: ["host", "remote-node"]
         toEndpoints:
