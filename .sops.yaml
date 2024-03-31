@@ -1,6 +1,0 @@
----
-creation_rules:
-  # amethyst
-  - pgp: 1CFC8FF236EC0896
-    path_regex: amethyst/.*\.sops\.yaml$
-    encrypted_regex: ^(token|key|secret|stringData|oidc-client-id)

@@ -1,0 +1,101 @@
+---
+version: "3"
+silent: true
+
+includes:
+  k8s:
+    taskfile: ../.tasks/kubernetes.yaml
+
+tasks:
+  clear-volume:
+    cmds:
+      - task: k8s:delete-unused-persistentvolume
+
+  # yamllint disable rule:line-length
+  init:
+    cmds:
+      - echo "Install Cilium on kube-system/cilium (helm)"
+      - |
+        helm upgrade --install cilium cilium/cilium \
+        --namespace kube-system \
+        --version 1.14.0-snapshot.4 \
+        --set ipam.mode=kubernetes \
+        --set kubeProxyReplacement=strict \
+        --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
+        --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
+        --set cgroup.autoMount.enabled=false \
+        --set cgroup.hostRoot=/sys/fs/cgroup \
+        --set k8sServiceHost="localhost" \
+        --set k8sServicePort="7745"
+
+      - echo "Install Flux on flux-system namespace (manifests)"
+      # flux install creates a flux-system namespace
+      - flux install --version v2.0.0-rc.5
+      - kubectl apply -f ./kubernetes/flux-system/boostrap.yaml
+
+  # yamllint enable
+  ceph:debug:
+    silent: true
+    cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- /bin/bash
+
+  ceph:crash:ls:
+    silent: true
+    cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- ceph crash ls
+
+  vautwarden:backup:
+    silent: true
+    cmd: restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-vaultwarden
+
+  navidrome:backup:
+    silent: true
+    cmds:
+      - echo "Data backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/data
+      - echo "Database backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/db
+
+  immich:backup:
+    silent: true
+    cmds:
+      - echo "Data backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-immich/app
+      # TODO: database backup list
+
+  nextcloud:backup:
+    silent: true
+    cmds:
+      - echo "Install backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/install
+      - echo "Data backup:"
+      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/data
+      # TODO: database backup list
+
+  get-oidc-config:
+    silent: true
+    env:
+      CONFIG: &oidc-config
+        sh: |
+          kubectl get --raw /.well-known/openid-configuration |\
+          jq '.jwks_uri= .issuer + "/.well-known/jwks"'
+    cmds:
+      - echo "$CONFIG"
+
+  get-oidc-jwks:
+    silent: true
+    env:
+      JWKS: &oidc-jwks
+        sh: |
+          kubectl get --raw /openid/v1/jwks | jq
+    cmds:
+      - echo "$JWKS"
+
+  set-public-oidc:
+    silent: true
+    env:
+      CONFIG: *oidc-config
+      JWKS: *oidc-jwks
+    cmds:
+      - echo "Uploading openid-configuration to S3"
+      - echo "$CONFIG" | aws s3 cp - s3://amethyst-kubernetes-oidc/.well-known/openid-configuration
+      - echo "Uploading JWKs to S3"
+      - echo "$JWKS" | aws s3 cp - s3://amethyst-kubernetes-oidc/.well-known/jwks

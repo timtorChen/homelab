@@ -1,0 +1,80 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  render:
+    internal: true
+    dir: "{{.DIR}}"
+    cmd: &talos-render-config |
+      NODE="{{.NODE}}"
+      SECRET_ENV="{{.SECRET_ENV}}"
+
+      [ ! -f "${NODE}.yaml" ] && echo "Clound find ${NODE}.yaml" && exit 1
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      INCLUDES="$(echo "$HEADER"| yq '.includes[]')"
+
+      [ "$IP" == "null" ] && echo "Please add '# ip:' comment header on ${NODE}.yaml" && exit 1
+      CONFIG="$(yq ea '. as $item ireduce ({}; . * $item)' $INCLUDES "${NODE}.yaml")"
+      export $SECRET_ENV
+      echo "$CONFIG" | envsubst
+
+  plan:
+    internal: true
+    dir: "{{.DIR}}"
+    env:
+      CONFIG:
+        sh: *talos-render-config
+    cmd: |
+      NODE="{{.NODE}}"
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      talosctl apply-config -n "$IP" --dry-run -f <(echo "$CONFIG")
+
+  apply:
+    prompt: The apply process may cause a reboot... continue?
+    internal: true
+    dir: "{{.DIR}}"
+    env:
+      CONFIG:
+        sh: *talos-render-config
+    cmd: |
+      NODE="{{.NODE}}"
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
+
+  upgrade:
+    prompt: The upgrade process will cause a reboot... continue?
+    internal: true
+    dir: "{{.DIR}}"
+    env:
+      CONFIG:
+        sh: *talos-render-config
+    cmd: |
+      NODE={{.NODE}}
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+      IMAGE="$(echo "$CONFIG" | yq '.machine.install.image')"
+
+      echo "> Apply configuration"
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
+
+      echo "> Start talos OS upgrade"
+      talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
+
+  reset:
+    prompt: Reset the node and ALL data will be removed... continue?
+    internal: true
+    dir: "{{.DIR}}"
+    cmd: |
+      NODE="{{.NODE}}"
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+
+      talosctl reset \
+      --system-labels-to-wipe=STATE \
+      --system-labels-to-wipe=EPHEMERAL \
+      --system-labels-to-wipe=META \
+      --reboot --graceful -n $IP
