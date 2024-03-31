@@ -1,0 +1,29 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  init:
+    internal: true
+    dir: "{{.DIR}}"
+    cmds:
+      - terraform init -upgrade
+  switch-init:
+    internal: true
+    dir: "{{.DIR}}"
+    cmds:
+      - pwd
+      - tfswitch
+      - terraform init -upgrade
+  plan:
+    internal: true
+    dir: "{{.DIR}}"
+    cmd: terraform plan
+  apply:
+    internal: true
+    dir: "{{.DIR}}"
+    cmd: terraform apply
+  output:
+    internal: true
+    dir: "{{.DIR}}"
+    cmd: terraform output

@@ -1,0 +1,49 @@
+---
+version: "3"
+
+includes:
+  tf: ../.tasks/terraform.yaml
+
+tasks:
+  ##  remote-state
+  remote-state-init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: terraform/_remote-state
+  remote-state-plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: terraform/_remote-state
+  remote-state-apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: terraform/_remote-state
+  remote-state-output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: terraform/_remote-state
+  ## this
+  init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: terraform
+  plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: terraform
+  apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: terraform
+  output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: terraform

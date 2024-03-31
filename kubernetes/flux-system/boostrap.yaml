@@ -23,7 +23,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/flux-system
+  path: /kubernetes/flux-system
   prune: false
 ---
 # --- 1 - Infra Namespaces ---
@@ -38,7 +38,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/kube-system
+  path: /kubernetes/kube-system
   prune: false
 ---
 # kyverno
@@ -52,7 +52,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/kyverno
+  path: /kubernetes/kyverno
   prune: false
 ---
 # metallb-system
@@ -66,7 +66,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/metallb-system
+  path: /kubernetes/metallb-system
   prune: false
 ---
 # cert-manager
@@ -80,7 +80,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/cert-manager
+  path: /kubernetes/cert-manager
   prune: false
 ---
 # intel-device-system
@@ -94,7 +94,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/intel-device-system
+  path: /kubernetes/intel-device-system
   prune: false
 ---
 # aws-identity-webhook
@@ -108,7 +108,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/aws-identity-webhook
+  path: /kubernetes/aws-identity-webhook
   prune: true
 ---
 # cloudflared
@@ -122,7 +122,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/cloudflared
+  path: /kubernetes/cloudflared
   prune: true
 ---
 # reloader
@@ -136,7 +136,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/reloader
+  path: /kubernetes/reloader
   prune: true
 ---
 # --- 2 - Storage Namespaces ---
@@ -151,7 +151,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/rook-ceph
+  path: /kubernetes/rook-ceph
   prune: false
 ---
 # snapscheduler
@@ -165,7 +165,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/snapscheduler
+  path: /kubernetes/snapscheduler
   prune: false
 ---
 # volsync
@@ -179,7 +179,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/volsync
+  path: /kubernetes/volsync
   prune: true
 ---
 # --- 3 - Ingress Namespaces ---
@@ -194,7 +194,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/ingress-nginx
+  path: /kubernetes/ingress-nginx
   prune: true
 ---
 # --- 4 - Database Namespaces ---
@@ -209,7 +209,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/cnpg
+  path: /kubernetes/cnpg
   prune: false
 ---
 # --- 5 - Monitor Namespaces ---
@@ -224,7 +224,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/grafana
+  path: /kubernetes/grafana
   prune: false
 ---
 # mimir
@@ -238,7 +238,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/mimir
+  path: /kubernetes/mimir
   prune: false
 ---
 # prometheus
@@ -252,7 +252,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/prometheus
+  path: /kubernetes/prometheus
   prune: true
 ---
 # loki
@@ -266,7 +266,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/loki
+  path: /kubernetes/loki
   prune: false
 ---
 # vector
@@ -280,7 +280,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/vector
+  path: /kubernetes/vector
   prune: true
 ---
 # promtail
@@ -294,7 +294,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/promtail
+  path: /kubernetes/promtail
   prune: true
 ---
 # node-exporter
@@ -308,7 +308,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/node-exporter
+  path: /kubernetes/node-exporter
   prune: true
 ---
 # smart-exporter
@@ -322,7 +322,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/smart-exporter
+  path: /kubernetes/smart-exporter
   prune: true
 ---
 # snmp-exporter-mikrotik
@@ -336,7 +336,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/snmp-exporter-mikrotik
+  path: /kubernetes/snmp-exporter-mikrotik
   prune: true
 ---
 # unifi-controller
@@ -350,7 +350,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/unifi-controller
+  path: /kubernetes/unifi-controller
   prune: false
 ---
 # unpoller
@@ -364,7 +364,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/unpoller
+  path: /kubernetes/unpoller
   prune: true
 ---
 # vaultwarden
@@ -378,7 +378,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/vaultwarden
+  path: /kubernetes/vaultwarden
   prune: false
 ---
 # navidrome
@@ -392,7 +392,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/mydata/navidrome
+  path: /kubernetes/mydata/navidrome
   prune: false
 ---
 # immich
@@ -406,7 +406,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/mydata/immich
+  path: /kubernetes/mydata/immich
   prune: false
 ---
 # nextcloud
@@ -420,5 +420,5 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /amethyst/kubernetes/mydata/nextcloud
+  path: /kubernetes/mydata/nextcloud
   prune: false

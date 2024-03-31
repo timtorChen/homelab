@@ -2,22 +2,69 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   // configurations
   // https://docs.renovatebot.com/configuration-options
-  extends: [
-    "config:recommended",
-    ":disableRateLimiting",
-    "github>timtorChen/homelab//amethyst/renovate.json5",
-  ],
+  extends: ["config:recommended", ":disableRateLimiting"],
   timezone: "Asia/Taipei",
   dependencyDashboard: true,
-  commitMessagePrefix: "chore({{{replace '(.*?)\\/.*' '$1' packageFileDir }}}):",
   kubernetes: {
-    fileMatch: ["^amethyst/kubernetes/.*\\.yaml$"],
+    fileMatch: ["^kubernetes/.*\\.yaml$"],
   },
   flux: {
-    fileMatch: ["^amethyst/kubernetes/.*\\.yaml$"],
+    fileMatch: ["^kubernetes/.*\\.yaml$"],
   },
   "helm-values": {
-    fileMatch: ["^amethyst/(kubernetes|talos)/.*\\.yaml$"],
+    fileMatch: ["^(kubernetes|talos)/.*\\.yaml$"],
   },
   ignorePaths: ["**/archive/**"],
+  packageRules: [
+    // Groups
+    {
+      matchDepPatterns: [
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning",
+      ],
+      groupName: "immich",
+    },
+    {
+      matchDepPatterns: [
+        "ghcr.io/siderolabs/kubelet",
+        "registry.k8s.io/kube-apiserver",
+        "registry.k8s.io/kube-controller-manager",
+        "registry.k8s.io/kube-scheduler",
+        "gcr.io/etcd-development/etcd",
+        "docker.io/coredns/coredns",
+      ],
+      groupName: "kubernetes",
+    },
+    {
+      matchDepPatterns: ["ghcr.io/siderolabs/installer"],
+      commitMessageTopic: "talos",
+      groupName: "talos",
+    },
+    {
+      matchPackagePatterns: ["hashicorp/terraform", "hashicorp/aws"],
+      groupName: "terraform",
+    },
+    // Auto merge
+    {
+      matchDepPatterns: [
+        "deluan/navidrome",
+        "ghcr.io/dani-garcia/vaultwarden",
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning",
+        "cloudflare/cloudflared",
+        "matusnovak/prometheus-smartctl",
+        "jacobalberty/unifi",
+        "ghcr.io/unpoller/unpoller",
+      ],
+      matchUpdateTypes: ["patch"],
+      automergeType: "branch",
+      automerge: true,
+    },
+    {
+      matchDepPatterns: ["grafana"],
+      matchUpdateTypes: ["minor", "patch"],
+      automergeType: "branch",
+      automerge: true,
+    },
+  ],
 }

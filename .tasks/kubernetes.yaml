@@ -1,0 +1,15 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  # yamllint enable
+  # yamllint disable rule:line-length
+  delete-unused-persistentvolume:
+    internal: true
+    prompt: "Delete of all unused Persistence Volume and its data... contiune?"
+    cmd: |
+      kubectl get pv -o yaml | \
+      yq '.items[] | select(.status.phase != "Bound" ) | .spec.persistentVolumeReclaimPolicy = "Delete" | split_doc' | \
+      kubectl apply -f -
+  # yamllint enable
