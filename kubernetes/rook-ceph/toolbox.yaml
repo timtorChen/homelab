@@ -19,7 +19,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: toolbox
-          image: quay.io/ceph/ceph:v17.2.6
+          image: quay.io/ceph/ceph:v18.2.2
           resources: {}
           command:
             - /bin/bash
