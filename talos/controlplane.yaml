@@ -12,7 +12,7 @@ machine:
     key: ${machine_ca_key}
   certSANs: []
   install:
-    image: ghcr.io/siderolabs/installer:v1.6.4
+    image: ghcr.io/siderolabs/installer:v1.6.7
     disk: /dev/sda
     wipe: false
     extraKernelArgs:
