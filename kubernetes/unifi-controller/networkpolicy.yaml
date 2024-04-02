@@ -48,7 +48,7 @@ specs:
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/created-by: volsync
-        job-name: volsync-src-unifi-controller-backup
+        job-name: volsync-src-unifi-controller-data-backup
     egress:
       - toEndpoints:
           - matchLabels:

@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: loki
+  namespace: grafana
   name: grafana-default-policy
 specs:
   - endpointSelector:

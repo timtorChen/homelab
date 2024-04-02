@@ -55,10 +55,6 @@ specs:
   - endpointSelector: *self
     egress:
       - toEntities: ["host", "remote-node"]
-        toEndpoints:
-          - matchLabels:
-              k8s:io.kubernetes.pod.namespace: rook-ceph
-              app.kubernetes.io/name: ceph-rgw
         toPorts:
           - ports:
               - protocol: TCP
