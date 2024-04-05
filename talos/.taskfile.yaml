@@ -54,7 +54,7 @@ tasks:
           DIR: talos
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
-        task: talos-upgrade
+        task: tal:upgrade
 
   # pi4b-1
   render-pi4b-1:
