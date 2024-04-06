@@ -32,7 +32,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.100.0
+      tag: v1.101.0
     command: ["./start.sh", "immich"]
 
     serviceAccount:
@@ -134,7 +134,7 @@ spec:
       strategy: RollingUpdate
     image:
       repository: ghcr.io/immich-app/immich-server
-      tag: v1.100.0
+      tag: v1.101.0
     command: ["./start.sh", "microservices"]
 
     serviceAccount:
@@ -231,7 +231,7 @@ spec:
       app.kubernetes.io/component: machine-learning
     image:
       repository: ghcr.io/immich-app/immich-machine-learning
-      tag: v1.100.0
+      tag: v1.101.0
     env:
       MACHINE_LEARNING_CACHE_FOLDER: &cache /cache
       TRANSFORMERS_CACHE: *cache
