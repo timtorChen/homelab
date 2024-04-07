@@ -372,7 +372,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   namespace: flux-system
-  name: 5-grafana
+  name: 5-kromgo
 spec:
   sourceRef:
     kind: GitRepository
