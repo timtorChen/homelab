@@ -687,8 +687,8 @@ resource "aws_iam_role_policy_attachment" "vaultwarden" {
   policy_arn = aws_iam_policy.vaultwarden.arn
 }
 
-resource "aws_iam_role" "vaultwarden-backup" {
-  name = "${local.project}-vaultwarden-backup"
+resource "aws_iam_role" "vaultwarden-backup-secret-holder" {
+  name = "${local.project}-vaultwarden-backup-secret-holder"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -700,7 +700,7 @@ resource "aws_iam_role" "vaultwarden-backup" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup-secret-holder",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -709,8 +709,8 @@ resource "aws_iam_role" "vaultwarden-backup" {
   })
 }
 
-resource "aws_iam_policy" "vaultwarden-backup" {
-  name = "${local.project}-vaultwarden-backup"
+resource "aws_iam_policy" "vaultwarden-backup-secret-holder" {
+  name = "${local.project}-vaultwarden-backup-secret-holder"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -725,9 +725,9 @@ resource "aws_iam_policy" "vaultwarden-backup" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "vaultwarden-backup" {
-  role       = aws_iam_role.vaultwarden-backup.name
-  policy_arn = aws_iam_policy.vaultwarden-backup.arn
+resource "aws_iam_role_policy_attachment" "vaultwarden-backup-secret-holder" {
+  role       = aws_iam_role.vaultwarden-backup-secret-holder.name
+  policy_arn = aws_iam_policy.vaultwarden-backup-secret-holder.arn
 }
 
 resource "aws_iam_role" "navidrome" {
