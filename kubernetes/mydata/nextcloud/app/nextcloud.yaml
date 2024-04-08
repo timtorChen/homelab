@@ -11,66 +11,91 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      replicas: 2
-      strategy: RollingUpdate
-      rollingUpdate:
-        unavailable: 1
-    image:
-      repository: nextcloud
-      tag: 28.0.4-apache
-    serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-nextcloud
-        eks.amazonaws.com/audience: sts.amazonaws.com
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s nextcloud-secret
-      configmap.reloader.stakater.com/reload: &c nextcloud-config
-
-    env:
-      OVERWRITECLIURL: https://drive.timtor.dev
-      OVERWRITEPROTOCOL: https
-      NEXTCLOUD_TRUSTED_DOMAINS: &host drive.timtor.dev
-      NEXTCLOUD_DATA_DIR: &data /data
-      NEXTCLOUD_ADMIN_USER:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: NEXTCLOUD_ADMIN_USER
-      NEXTCLOUD_ADMIN_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: NEXTCLOUD_ADMIN_PASSWORD
-      POSTGRES_HOST: nextcloud-postgres-rw
-      POSTGRES_DB: nextcloud
-      POSTGRES_USER:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: POSTGRES_USER
-      POSTGRES_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: POSTGRES_PASSWORD
-      #! the underscore is intended to by pass the annoying entrypoint.sh
-      _REDIS_HOST: nextcloud-dragonfly
-      REDIS_HOST_PORT: 6379
-      REDIS_HOST_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: REDIS_HOST_PASSWORD
+    controllers:
+      main:
+        type: deployment
+        replicas: 2
+        strategy: RollingUpdate
+        rollingUpdate:
+          unavailable: 1
+        annotations:
+          secret.reloader.stakater.com/reload: &s nextcloud-secret
+          configmap.reloader.stakater.com/reload: &c nextcloud-config
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 33
+        containers:
+          main:
+            image:
+              repository: nextcloud
+              tag: 28.0.4-apache
+            env:
+              OVERWRITECLIURL: https://drive.timtor.dev
+              OVERWRITEPROTOCOL: https
+              NEXTCLOUD_TRUSTED_DOMAINS: &host drive.timtor.dev
+              NEXTCLOUD_DATA_DIR: &data-dir /data
+              NEXTCLOUD_ADMIN_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: NEXTCLOUD_ADMIN_USER
+              NEXTCLOUD_ADMIN_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: NEXTCLOUD_ADMIN_PASSWORD
+              POSTGRES_HOST: nextcloud-postgres-rw
+              POSTGRES_DB: nextcloud
+              POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: POSTGRES_USER
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: POSTGRES_PASSWORD
+              #! the underscore is intended to by pass the annoying entrypoint.sh
+              _REDIS_HOST: nextcloud-dragonfly
+              REDIS_HOST_PORT: 6379
+              REDIS_HOST_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_HOST_PASSWORD
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 1Gi
+            probes:
+              startup:
+                enabled: false
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 33
+              runAsGroup: 33
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     persistence:
       secret:
-        enabled: true
         type: custom
         volumeSpec:
           csi:
@@ -79,101 +104,86 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
       apache-overwrite-port-1:
-        enabled: true
         type: configMap
         name: *c
-        mountPath: /etc/apache2/ports.conf
-        subPath: ports.conf
         items:
           - key: ports.conf
             path: ports.conf
+        globalMounts:
+          - path: /etc/apache2/ports.conf
+            subPath: ports.conf
       apache-overwrite-port-2:
-        enabled: true
         type: configMap
         name: *c
-        mountPath: /etc/apache2/sites-available/000-default.conf
-        subPath: 000-default.conf
         items:
           - key: 000-default.conf
             path: 000-default.conf
+        globalMounts:
+          - path: /etc/apache2/sites-available/000-default.conf
+            subPath: 000-default.conf
       apache-extra-config:
-        enabled: true
         type: configMap
         name: *c
-        mountPath: /etc/apache2/conf-enabled/extra.conf
-        subPath: extra.conf
         items:
           - key: extra.conf
             path: extra.conf
+        globalMounts:
+          - path: /etc/apache2/conf-enabled/extra.conf
+            subPath: extra.conf
       php-config:
-        enabled: true
         type: configMap
         name: *c
-        mountPath: /usr/local/etc/php/conf.d/php-config.ini
-        subPath: php-config.ini
         items:
           - key: php-config.ini
             path: php-config.ini
+        globalMounts:
+          - path: /usr/local/etc/php/conf.d/php-config.ini
+            subPath: php-config.ini
       nextcloud-extra-config:
-        enabled: true
         type: configMap
         name: *c
         defaultMode: 0644
-        mountPath: /var/www/html/config/extra.config.php
-        subPath: extra.config.php
         items:
           - key: extra.config.php
             path: extra.config.php
+        globalMounts:
+          - path: /var/www/html/config/extra.config.php
+            subPath: extra.config.php
       install:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         existingClaim: nextcloud-install
-        mountPath: /var/www/html
+        globalMounts:
+          - path: /var/www/html
       data:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         existingClaim: nextcloud-data
-        mountPath: *data
+        globalMounts:
+          - path: *data-dir
       music:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         existingClaim: navidrome-data
-        mountPath: /music
+        globalMounts:
+          - path: /music
 
-    podSecurityContext:
-      fsGroup: 33
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 33
-      runAsGroup: 33
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-nextcloud
+        eks.amazonaws.com/audience: sts.amazonaws.com
 
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: true
-            protocol: TCP
+            primary: true
             port: &port 8080
+            protocol: HTTP
 
     ingress:
       main:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
@@ -182,4 +192,5 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
+                  identifier: main
                   port: *port

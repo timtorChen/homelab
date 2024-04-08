@@ -20,46 +20,80 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      replicas: 2
-      strategy: RollingUpdate
-      rollingUpdate:
-        unavailable: 1
-    image:
-      repository: cloudflare/cloudflared
-      tag: 2024.3.0
-    args:
-      - tunnel
-      - --no-autoupdate
-      - --config
-      - /config/tunnel.yaml
-      - run
+    controllers:
+      main:
+        type: deployment
+        replicas: 2
+        strategy: RollingUpdate
+        rollingUpdate:
+          unavailable: 1
+        annotations:
+          secret.reloader.stakater.com/reload: &s cloudflared-secret
+          configmap.reloader.stakater.com/reload: &c cloudflared-config
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65532
+        containers:
+          main:
+            image:
+              repository: cloudflare/cloudflared
+              tag: 2024.3.0
+            args:
+              - tunnel
+              - --no-autoupdate
+              - --config
+              - /config/tunnel.yaml
+              - run
+            probes:
+              startup:
+                enabled: false
+              readiness:
+                enabled: false
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+                  httpGet:
+                    path: /ready
+                    port: 2000
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65532
+              runAsGroup: 65532
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     serviceAccount:
       create: true
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-cloudflared
         eks.amazonaws.com/audience: sts.amazonaws.com
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s cloudflared-secret
-      configmap.reloader.stakater.com/reload: &c cloudflared-config
 
     persistence:
       config:
-        enabled: true
         type: configMap
-        name: cloudflared-config
-        mountPath: /config
+        name: *c
+        globalMounts:
+          - path: /config
+            readOnly: true
       ## Get the secret with `cloudflared tunnel token <tunnel-nam> --cred-file credential.json`
       ## The tunnel token fetched on UI is generally the base64 compact version of credential.json
       secret:
-        enabled: true
         type: custom
-        mountPath: /secret
         volumeSpec:
           csi:
             driver: secrets-store.csi.k8s.io
@@ -67,44 +101,19 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
 
-    podSecurityContext:
-      fsGroup: 65532
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65532
-      runAsGroup: 65532
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    probes:
-      liveness:
-        enabled: true
-        custom: true
-        spec:
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-          httpGet:
-            path: /ready
-            port: 2000
-
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: true
-            protocol: TCP
+            primary: true
             port: 2000
+            protocol: TCP
 
     serviceMonitor:
       main:
-        enabled: true
+        serviceName: cloudflared
         endpoints:
           - port: http
             scheme: http

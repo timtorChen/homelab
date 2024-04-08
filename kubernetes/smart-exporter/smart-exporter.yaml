@@ -20,52 +20,65 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      type: daemonset
-    image:
-      repository: matusnovak/prometheus-smartctl
-      tag: v2.3.0
-    env:
-      SMARTCTL_EXPORTER_PORT: &port 9902
-      SMARTCTL_REFRESH_INTERVAL: 60
+    controllers:
+      main:
+        type: daemonset
+        strategy: RollingUpdate
+        pod:
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+        containers:
+          main:
+            image:
+              repository: matusnovak/prometheus-smartctl
+              tag: v2.3.0
+            env:
+              SMARTCTL_EXPORTER_PORT: &port 9902
+              SMARTCTL_REFRESH_INTERVAL: 60
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 64Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            securityContext:
+              privileged: true
 
     persistence:
       device:
-        enabled: true
         type: hostPath
         hostPath: /dev
-        mountPath: /dev
-
-    securityContext:
-      privileged: true
-
-    tolerations:
-      - effect: NoSchedule
-        operator: Exists
-
-    resources:
-      limits:
-        memory: 64Mi
-      requests:
-        cpu: 50m
-        memory: 64Mi
+        globalMounts:
+          - path: /dev
+            readOnly: true
 
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: true
-            protocol: TCP
+            primary: true
             port: *port
+            protocol: HTTP
 
     serviceMonitor:
       main:
-        enabled: true
+        serviceName: smart-exporter
         endpoints:
           - port: http
             scheme: http
@@ -79,11 +92,3 @@ spec:
               - action: drop
                 sourceLabels: [__name__]
                 regex: ^(python|process).*
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false

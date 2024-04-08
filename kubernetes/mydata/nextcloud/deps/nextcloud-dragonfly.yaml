@@ -11,43 +11,73 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      type: statefulset
-      replicas: 1
-    image:
-      repository: ghcr.io/dragonflydb/dragonfly
-      tag: v1.6.2
-    args:
-      - --default_lua_flags=allow-undeclared-keys
-      - --dir=/data
+    controllers:
+      main:
+        type: statefulset
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &s nextcloud-dragonfly-secret
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        statefulset:
+          volumeClaimTemplates:
+            - name: data
+              storageClass: rbd-fast
+              accessMode: ReadWriteOnce
+              size: 1Gi
+              globalMounts:
+                - path: /data
+        containers:
+          main:
+            image:
+              repository: ghcr.io/dragonflydb/dragonfly
+              tag: v1.6.2
+            args:
+              - --default_lua_flags=allow-undeclared-keys
+              - --dir=/data
+            env:
+              DFLY_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: DFLY_PASSWORD
+            resources:
+              requests:
+                cpu: 100m
+            probes:
+              startup:
+                enabled: false
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     serviceAccount:
       create: true
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-nextcloud-dragonfly
         eks.amazonaws.com/audience: sts.amazonaws.com
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s nextcloud-dragonfly-secret
 
-    env:
-      DFLY_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: DFLY_PASSWORD
-
-    volumeClaimTemplates:
-      - name: data
-        storageClass: rbd-fast
-        accessMode: ReadWriteOnce
-        mountPath: /data
-        size: 1Gi
     persistence:
       secret:
-        enabled: true
         type: custom
         volumeSpec:
           csi:
@@ -56,33 +86,12 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
 
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
-          http:
-            enabled: false
           redis:
+            primary: true
             protocol: TCP
             port: 6379
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false

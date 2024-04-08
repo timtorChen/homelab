@@ -12,87 +12,101 @@ spec:
         namespace: mydata
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    image:
-      repository: deluan/navidrome
-      tag: 0.51.1
-
-    ## debug only
-    # command: ["sleep", "infinity"]
-
-    env:
-      ND_MUSICFOLDER: &dir1 /data
-      ND_DATAFOLDER: &dir2 /db
-      # no such environment variable just for symmetry
-      ND_CACHEFOLDER: &dir3 /db/cache
-      ND_PORT: &p 4533
-      ND_ENABLETRANSCODINGCONFIG: "true"
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        pod:
+          securityContext:
+            fsGroup: 65534
+        containers:
+          main:
+            image:
+              repository: deluan/navidrome
+              tag: 0.51.1
+            ## debug only
+            # command: ["sleep", "infinity"]
+            env:
+              ND_MUSICFOLDER: &dir1 /data
+              ND_DATAFOLDER: &dir2 /db
+              # no such environment variable just for symmetry
+              ND_CACHEFOLDER: &dir3 /db/cache
+              ND_PORT: &p 4533
+              ND_ENABLETRANSCODINGCONFIG: "true"
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 256Mi
+              requests:
+                cpu: 10m
+                memory: 256Mi
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     persistence:
       data:
-        enabled: true
-        type: pvc
-        mountPath: *dir1
+        type: persistentVolumeClaim
         existingClaim: navidrome-data
+        advancedMounts:
+          main:
+            main:
+              - path: *dir1
       db:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         existingClaim: navidrome-db
-        mountPath: *dir2
+        advancedMounts:
+          main:
+            main:
+              - path: *dir2
       cache:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         storageClass: fs-fast-delete
         accessMode: ReadWriteOnce
         size: 1Gi
-        mountPath: *dir3
         retain: true
-
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 10m
-        memory: 256Mi
+        advancedMounts:
+          main:
+            main:
+              - path: *dir3
 
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: true
+            primary: true
             port: *p
+            protocol: HTTP
 
     ingress:
       main:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         hosts:
           - host: music.timtor.dev
             paths:
               - path: /
                 pathType: Prefix
                 service:
+                  identifier: main
                   port: *p

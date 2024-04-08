@@ -20,32 +20,61 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      replicas: 2
-      strategy: RollingUpdate
-    image:
-      repository: timberio/vector
-      tag: 0.33.0-distroless-libc
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: &config vector-config
-    env:
-      VECTOR_CONFIG_DIR: /config
+    controllers:
+      main:
+        type: deployment
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          configmap.reloader.stakater.com/reload: &config vector-config
+        containers:
+          main:
+            image:
+              repository: timberio/vector
+              tag: 0.33.0-distroless-libc
+            env:
+              VECTOR_CONFIG_DIR: &config-dir /config
+            resources:
+              limits:
+                memory: 64Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            probes:
+              startup:
+                enabled: false
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+
     persistence:
       config:
-        enabled: true
         type: configMap
         name: *config
-        mountPath: /config
+        globalMounts:
+          - path: *config-dir
 
     service:
       main:
+        controller: main
+        primary: true
         ports:
-          http:
-            enabled: false
           talos-kernel:
             protocol: TCP
             port: 3001
@@ -58,22 +87,3 @@ spec:
           unifi:
             protocol: UDP
             port: 5001
-
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false

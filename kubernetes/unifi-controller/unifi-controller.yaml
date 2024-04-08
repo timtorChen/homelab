@@ -20,68 +20,77 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    ##! Stateful application in Deployment
-    controller:
-      replicas: 1
-      strategy: Recreate
-    image:
-      repository: jacobalberty/unifi
-      tag: v8.1
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 999
+        containers:
+          main:
+            image:
+              repository: jacobalberty/unifi
+              tag: v8.1
+            probes:
+              startup:
+                enabled: true
+              readiness:
+                enabled: true
+              liveness:
+                enabled: true
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 50m
+                memory: 1Gi
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 999
+              runAsGroup: 999
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     persistence:
       data:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         existingClaim: unifi-controller-data
-        mountPath: /unifi
-        subPath: data
+        globalMounts:
+          - path: /unifi
+            subPath: data
       tmp:
-        enabled: true
         type: emptyDir
-        mountPath: /tmp
-
-    podSecurityContext:
-      fsGroup: 999
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 999
-      runAsGroup: 999
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
+        globalMounts:
+          - path: /tmp
 
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: false
-          web:
-            protcol: TCP
+            primary: true
             port: &web 8443
+            protocol: HTTP
           inform:
-            prototol: TCP
             port: &inform 8080
+            protocol: TCP
 
     ingress:
       main:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         hosts:
@@ -90,10 +99,10 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
+                  identifier: main
                   port: *web
       inform:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/ssl-redirect: "false"
         hosts:
@@ -102,4 +111,5 @@ spec:
               - path: /inform
                 pathType: Prefix
                 service:
+                  identifier: main
                   port: *inform

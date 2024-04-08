@@ -20,19 +20,64 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      replicas: 1
-      strategy: RollingUpdate
-    image:
-      repository: prom/snmp-exporter
-      tag: v0.24.1
-    args:
-      - --config.file=/config/*.yml
-      - --config.file=/secret/*.yml
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &s snmp-exporter-mikrotik-secret
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        initContainers:
+          download:
+            image:
+              repository: busybox
+              tag: 1.28
+            command: ["sh", "-c"]
+            args:
+              - |
+                wget https://raw.githubusercontent.com/IgorKha/Grafana-Mikrotik/master/snmp/snmp.yml \
+                  -O /config/snmp.yml
+            securityContext: &sc
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+        containers:
+          main:
+            image:
+              repository: prom/snmp-exporter
+              tag: v0.24.1
+            args:
+              - --config.file=/config/*.yml
+              - --config.file=/secret/*.yml
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 64Mi
+              requests:
+                cpu: 10m
+                memory: 64Mi
+            securityContext: *sc
 
     serviceAccount:
       create: true
@@ -40,17 +85,14 @@ spec:
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-snmp-exporter-mikrotik
         eks.amazonaws.com/audience: sts.amazonaws.com
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s snmp-exporter-mikrotik-secret
+
     persistence:
       config:
-        enabled: true
         type: emptyDir
-        mountPath: /config
+        globalMounts:
+          - path: /config
       secret:
-        enabled: true
         type: custom
-        mountPath: /secret
         volumeSpec:
           csi:
             driver: secrets-store.csi.k8s.io
@@ -58,52 +100,19 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
 
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext: &sc
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    initContainers:
-      download:
-        image: busybox:1.28
-        securityContext: *sc
-        volumeMounts:
-          - name: config
-            mountPath: /config
-        command: ["sh", "-c"]
-        args:
-          - |
-            wget https://raw.githubusercontent.com/IgorKha/Grafana-Mikrotik/master/snmp/snmp.yml \
-              -O /config/snmp.yml
-
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: true
-            protocol: TCP
+            primary: true
             port: 9116
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
+            protocol: HTTP
 
     serviceMonitor:
       main:
-        enabled: true
+        serviceName: snmp-exporter
         endpoints:
           - &mikrotik
             port: http

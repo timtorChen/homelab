@@ -20,65 +20,90 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    image:
-      repository: ghcr.io/dani-garcia/vaultwarden
-      tag: 1.30.5-alpine
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &s vaultwarden-secret
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        containers:
+          main:
+            image:
+              repository: ghcr.io/dani-garcia/vaultwarden
+              tag: 1.30.5-alpine
+            ## Debug only, uncomment
+            # command: ["sleep", "infinity"]
 
-    ## Debug only, uncomment
-    # command: ["sleep", "infinity"]
-
-    serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-vaultwarden
-        eks.amazonaws.com/audience: sts.amazonaws.com
-    podAnnotations:
-      secret.reloader.stakater.com/reload: >
-        vaultwarden-secret,
-        vaultwarden-backup-secret
-
-    ## Environment variables reference
-    # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
-    env:
-      DATA_FOLDER: &dir /data
-      ROCKET_PORT: &p 8080
-      SIGNUP_ALLOWED: true
-      DISABLE_ADMIN_TOKEN: false
-      ## Push notification server
-      ## Generate the token on https://bitwarden.com/host/
-      PUSH_ENABLED: true
-      PUSH_RELAY_URI: https://push.bitwarden.com
-      PUSH_IDENTITY_URI: https://identity.bitwarden.com
-      PUSH_INSTALLATION_ID:
-        valueFrom:
-          secretKeyRef:
-            name: &s vaultwarden-secret
-            key: PUSH_INSTALLATION_ID
-      PUSH_INSTALLATION_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: PUSH_INSTALLATION_KEY
-      ## Generate the admin token hash with command
-      ## `echo -n "admin-password" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4`
-      ADMIN_TOKEN:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: ADMIN_TOKEN
+            ## Environment variables reference
+            # https://github.com/dani-garcia/vaultwarden/blob/main/.env.template
+            env:
+              DATA_FOLDER: &dir /data
+              ROCKET_PORT: &p 8080
+              SIGNUP_ALLOWED: true
+              DISABLE_ADMIN_TOKEN: false
+              ## Push notification server
+              ## Generate the token on https://bitwarden.com/host/
+              PUSH_ENABLED: true
+              PUSH_RELAY_URI: https://push.bitwarden.com
+              PUSH_IDENTITY_URI: https://identity.bitwarden.com
+              PUSH_INSTALLATION_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: PUSH_INSTALLATION_ID
+              PUSH_INSTALLATION_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: PUSH_INSTALLATION_KEY
+              ## Generate the admin token hash with command
+              ## `echo -n "admin-password" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4`
+              ADMIN_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: ADMIN_TOKEN
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 128Mi
+              requests:
+                cpu: 10m
+                memory: 128Mi
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     persistence:
       data:
-        enabled: true
-        type: pvc
-        mountPath: *dir
+        type: persistentVolumeClaim
         existingClaim: vaultwarden-data
+        globalMounts:
+          - path: *dir
       secret:
-        enabled: true
         type: custom
         volumeSpec:
           csi:
@@ -87,52 +112,35 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
 
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-
-    resources:
-      limits:
-        memory: 128Mi
-      requests:
-        cpu: 10m
-        memory: 128Mi
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-vaultwarden
+        eks.amazonaws.com/audience: sts.amazonaws.com
 
     service:
       main:
-        enabled: true
+        controller: main
+        primary: true
         ports:
           http:
-            enabled: true
+            primary: true
             port: *p
+            protocol: HTTP
 
     ingress:
       main:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         hosts:
           - host: vault.timtor.dev
             paths:
               - path: /
                 pathType: Prefix
                 service:
+                  identifier: main
                   port: *p
               - path: /notifications/hub
                 pathType: Prefix
                 service:
+                  identifier: main
                   port: *p

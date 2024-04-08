@@ -1,18 +1,9 @@
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: mydata
-  name: immich
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich
-    eks.amazonaws.com/audience: sts.amazonaws.com
----
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   namespace: mydata
-  name: immich-server
+  name: immich
 spec:
   chart:
     spec:
@@ -20,52 +11,177 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
     global:
       nameOverride: immich
-    podLabels:
-      app.kubernetes.io/component: server
-    controller:
-      strategy: RollingUpdate
-    image:
-      repository: ghcr.io/immich-app/immich-server
-      tag: v1.101.0
-    command: ["./start.sh", "immich"]
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+
+    controllers:
+      server:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations: &annotations
+          secret.reloader.stakater.com/reload: &s immich-secret
+        labels:
+          app.kubernetes.io/component: server
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.101.0
+            command: ["./start.sh", "immich"]
+            env:
+              SERVER_PORT: &p1 3001
+              IMMICH_MEDIA_LOCATION: &data-dir /data
+              IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+              REDIS_HOSTNAME: immich-dragonfly
+              DB_VECTOR_EXTENSION: pgvector
+              DB_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: DB_URL
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_PASSWORD
+            probes: &probes
+              startup:
+                enabled: true
+              readiness:
+                enabled: true
+              liveness:
+                enabled: true
+            resources:
+              limits:
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 512Mi
+            securityContext: &sc
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+      microservices:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations: *annotations
+        labels:
+          app.kubernetes.io/component: microservices
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.101.0
+            command: ["./start.sh", "microservices"]
+            env:
+              SERVER_PORT: &p2 3002
+              IMMICH_MEDIA_LOCATION: *data-dir
+              IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+              REVERSE_GEOCODING_DUMP_DIRECTORY: &geo-dir /geocode
+              REDIS_HOSTNAME: immich-dragonfly
+              DB_VECTOR_EXTENSION: pgvector
+              DB_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: DB_URL
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_PASSWORD
+            probes: *probes
+            resources:
+              limits:
+                memory: 500Mi
+              requests:
+                cpu: 100m
+                memory: 500Mi
+            securityContext: *sc
+      machine-learning:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations: *annotations
+        labels:
+          app.kubernetes.io/component: machine-learning
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v1.101.0
+            env:
+              MACHINE_LEARNING_PORT: &p3 3003
+              MACHINE_LEARNING_CACHE_FOLDER: &cache-dir /cache
+              TRANSFORMERS_CACHE: *cache-dir
+            probes: *probes
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 1Gi
+            securityContext:
+              <<: *sc
+              # some python libraries need /var and /tmp
+              readOnlyRootFilesystem: false
 
     serviceAccount:
-      create: false
-      name: immich
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s immich-secret
-
-    env:
-      SERVER_PORT: &port 3001
-      IMMICH_MEDIA_LOCATION: &data /data
-      IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-      REDIS_HOSTNAME: immich-dragonfly
-      DB_VECTOR_EXTENSION: pgvector
-      DB_URL:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: DB_URL
-      REDIS_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: REDIS_PASSWORD
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich
+        eks.amazonaws.com/audience: sts.amazonaws.com
 
     persistence:
       data:
-        enabled: true
-        type: pvc
-        mountPath: *data
+        type: persistentVolumeClaim
         existingClaim: immich-data
+        advancedMounts:
+          server:
+            main:
+              - path: *data-dir
+          microservices:
+            main:
+              - path: *data-dir
+      geocode:
+        type: persistentVolumeClaim
+        storageClass: fs-fast-delete
+        accessMode: ReadWriteMany
+        size: 1Gi
+        retain: false
+        advancedMounts:
+          microservices:
+            main:
+              - path: *geo-dir
+      cache:
+        type: persistentVolumeClaim
+        storageClass: fs-fast-delete
+        accessMode: ReadWriteMany
+        size: 5Gi
+        retain: false
+        advancedMounts:
+          machine-learning:
+            main:
+              - path: *cache-dir
       secret:
-        enabled: true
         type: custom
         volumeSpec:
           csi:
@@ -74,196 +190,37 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
 
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
     service:
-      main:
-        enabled: true
+      server:
+        controller: server
+        primary: true
         ports:
           http:
-            port: *port
-
+            port: *p1
+            primary: true
+            protocol: HTTP
+      microservices:
+        controller: microservices
+        ports:
+          http:
+            port: *p2
+            primary: true
+            protocol: HTTP
+      machine-learning:
+        controller: machine-learning
+        ports:
+          http:
+            port: *p3
+            primary: true
+            protocol: HTTP
     ingress:
       main:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         hosts:
           - host: photo.timtor.dev
             paths:
               - path: /
                 pathType: Prefix
----
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
-kind: HelmRelease
-metadata:
-  namespace: mydata
-  name: immich-microservices
-spec:
-  chart:
-    spec:
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-      chart: app-template
-      version: 1.5.1
-  interval: 1h
-  maxHistory: 1
-  values:
-    global:
-      nameOverride: immich
-    podLabels:
-      app.kubernetes.io/component: microservices
-    controller:
-      strategy: RollingUpdate
-    image:
-      repository: ghcr.io/immich-app/immich-server
-      tag: v1.101.0
-    command: ["./start.sh", "microservices"]
-
-    serviceAccount:
-      create: false
-      name: immich
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s immich-secret
-
-    env:
-      SERVER_PORT: &port 3002
-      IMMICH_MEDIA_LOCATION: &media /data
-      IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-      REVERSE_GEOCODING_DUMP_DIRECTORY: &dump /geocode
-      REDIS_HOSTNAME: immich-dragonfly
-      DB_VECTOR_EXTENSION: pgvector
-      DB_URL:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: DB_URL
-      REDIS_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: REDIS_PASSWORD
-
-    persistence:
-      media:
-        enabled: true
-        type: pvc
-        mountPath: *media
-        existingClaim: immich-data
-      geocode:
-        enabled: true
-        type: pvc
-        mountPath: *dump
-        storageClass: fs-fast
-        accessMode: ReadWriteMany
-        size: 1Gi
-      secret:
-        enabled: true
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
-    service:
-      main:
-        enabled: true
-        ports:
-          http:
-            port: *port
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
----
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
-kind: HelmRelease
-metadata:
-  namespace: mydata
-  name: immich-machine-learning
-spec:
-  chart:
-    spec:
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-      chart: app-template
-      version: 1.5.1
-  interval: 1h
-  maxHistory: 1
-  values:
-    global:
-      nameOverride: immich
-    podLabels:
-      app.kubernetes.io/component: machine-learning
-    image:
-      repository: ghcr.io/immich-app/immich-machine-learning
-      tag: v1.101.0
-    env:
-      MACHINE_LEARNING_CACHE_FOLDER: &cache /cache
-      TRANSFORMERS_CACHE: *cache
-    persistence:
-      cache:
-        enabled: true
-        type: pvc
-        mountPath: *cache
-        storageClass: fs-fast
-        accessMode: ReadWriteMany
-        size: 5Gi
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      # some python libraries need /var and /tmp
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-    service:
-      main:
-        enabled: true
-        ports:
-          http:
-            port: 3003
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
+                service:
+                  identifier: server
+                  port: *p1

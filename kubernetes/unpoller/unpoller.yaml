@@ -20,43 +20,79 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
-    controller:
-      replicas: 1
-    image:
-      repository: ghcr.io/unpoller/unpoller
-      tag: v2.11.0
-    command: ["unpoller", "--config", "/config/unpoller.yaml"]
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &s unpoller-secret
+          configmap.reloader.stakater.com/reload: &c unpoller-config
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        containers:
+          main:
+            image:
+              repository: ghcr.io/unpoller/unpoller
+              tag: v2.11.0
+            command: ["unpoller", "--config", "/config/unpoller.yaml"]
+            env:
+              UP_UNIFI_CONTROLLER_0_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: UP_UNIFI_CONTROLLER_0_USER
+              UP_UNIFI_CONTROLLER_0_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: UP_UNIFI_CONTROLLER_0_PASS
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 64Mi
+              requests:
+                cpu: 10m
+                memory: 64Mi
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+
     serviceAccount:
       create: true
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-unpoller
         eks.amazonaws.com/audience: sts.amazonaws.com
-    podAnnotations:
-      secret.reloader.stakater.com/reload: &s unpoller-secret
-      configmap.reloader.stakater.com/reload: &c unpoller-config
 
-    env:
-      UP_UNIFI_CONTROLLER_0_USER:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: UP_UNIFI_CONTROLLER_0_USER
-      UP_UNIFI_CONTROLLER_0_PASS:
-        valueFrom:
-          secretKeyRef:
-            name: *s
-            key: UP_UNIFI_CONTROLLER_0_PASS
     persistence:
       config:
         enabled: true
         type: configMap
         name: *c
-        mountPath: /config
-      sync-secret:
+        globalMounts:
+          - path: /config
+            readOnly: true
+      secret:
         enabled: true
         type: custom
         volumeSpec:
@@ -66,39 +102,22 @@ spec:
             volumeAttributes:
               secretProviderClass: *s
 
-    podSecurityContext:
-      fsGroup: 65534
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: false
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: RuntimeDefault
-
     service:
       main:
         enabled: true
+        controller: main
+        primary: true
         ports:
           http:
             enabled: true
-            protocol: TCP
+            primary: true
             port: 9130
-
-    probes:
-      startup:
-        enabled: false
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
+            protocol: HTTP
 
     serviceMonitor:
       main:
         enabled: true
+        serviceName: unpoller
         endpoints:
           - port: http
             scheme: http
