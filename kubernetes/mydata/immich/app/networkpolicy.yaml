@@ -76,6 +76,28 @@ specs:
                 port: "5432"
               - protocol: TCP
                 port: "6379"
+  # allow immich-server to jumpcloud endpoint
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: immich
+        app.kubernetes.io/component: server
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &sso
+                - matchPattern: "oauth.id.jumpcloud.com"
+      - toFQDNs: *sso
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
   # allow machine-learning download model from huggingface.co
   - endpointSelector:
       matchLabels:
