@@ -72,6 +72,7 @@ spec:
     enabled: true
   monitoring:
     enabled: true
+    interval: 1m
   disruptionManagement:
     managePodBudgets: true
     osdMaintenanceTimeout: 30 # max pg recovery duration
