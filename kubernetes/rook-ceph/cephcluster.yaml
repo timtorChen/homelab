@@ -61,30 +61,18 @@ spec:
     crashcollector:
       requests:
         memory: 60Mi
+    exporter:
+      limits:
+        memory: 64Mi
+      requests:
+        memory: 64Mi
   network:
     provider: host
   dashboard:
     enabled: true
   monitoring:
-    enabled: false
+    enabled: true
   disruptionManagement:
     managePodBudgets: true
     osdMaintenanceTimeout: 30 # max pg recovery duration
     pgHealthCheckTimeout: 1 # wait 1 min after pgs become healthy
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  namespace: rook-ceph
-  name: rook-ceph
-spec:
-  namespaceSelector:
-    matchNames:
-      - rook-ceph
-  selector:
-    matchLabels:
-      app: rook-ceph-mgr
-      rook_cluster: rook-ceph
-  endpoints:
-    - port: http-metrics
-      path: /metrics
