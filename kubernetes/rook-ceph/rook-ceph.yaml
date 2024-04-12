@@ -31,9 +31,9 @@ spec:
   values:
     crds:
       enabled: true
+    currentNamespaceOnly: true
     resources:
       limits:
-        cpu: 100 # unreasonable number to remove the limit
         memory: 256Mi
       requests:
         cpu: 100m
