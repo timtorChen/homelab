@@ -1,0 +1,47 @@
+---
+version: "3"
+silent: true
+
+includes:
+  restic:
+    taskfile: ../../../.tasks/restic.yaml
+
+tasks:
+  secrets:
+    internal: true
+    silent: true
+    env:
+      RESTIC_REPO_DATA: &repo-data s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/data
+      RESTIC_REPO_DB: &repo-db s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/db
+      PASSWORD: &restic-password
+        sh: |
+          AWS_PROFILE=sso-admin@aws-homelab
+          aws ssm get-parameter --with-decryption \
+          --name /amethyst/navidrome-backup \
+          | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
+
+  list-snapshots:
+    cmds:
+      - echo "Listing navidrome-data snapshots..."
+      - task: restic:list
+        vars:
+          REPO: *repo-data
+          PASSWORD: *restic-password
+      - echo "Listing navidrome-db snapshots..."
+      - task: restic:list
+        vars:
+          REPO: *repo-db
+          PASSWORD: *restic-password
+
+  unlock-repo:
+    cmds:
+      - echo "Unlocking navidrome-data repository..."
+      - task: restic:unlock
+        vars:
+          REPO: *repo-data
+          PASSWORD: *restic-password
+      - echo "Unlocking navidrome-db repository..."
+      - task: restic:unlock
+        vars:
+          REPO: *repo-db
+          PASSWORD: *restic-password

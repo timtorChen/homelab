@@ -1,0 +1,36 @@
+---
+version: "3"
+silent: true
+
+includes:
+  restic:
+    taskfile: ../../.tasks/restic.yaml
+
+tasks:
+  secrets:
+    internal: true
+    silent: true
+    env:
+      REPO: &repo s3://s3.us-east-005.backblazeb2.com/home-amethyst-unifi-controller/data
+      PASSWORD: &restic-password
+        sh: |
+          AWS_PROFILE=sso-admin@aws-homelab
+          aws ssm get-parameter --with-decryption \
+          --name /amethyst/unifi-controller-backup \
+          | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
+
+  list-backup:
+    cmds:
+      - echo "Listing unifi-controller snapshots..."
+      - task: restic:list
+        vars:
+          REPO: *repo
+          PASSWORD: *restic-password
+
+  unlock-repo:
+    cmds:
+      - echo "Unlocking unifi-controller repository..."
+      - task: restic:unlock
+        vars:
+          REPO: *repo
+          PASSWORD: *restic-password

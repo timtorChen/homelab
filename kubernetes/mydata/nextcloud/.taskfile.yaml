@@ -1,0 +1,54 @@
+---
+version: "3"
+silent: true
+
+includes:
+  aws:
+    taskfile: ../../../.tasks/aws.yaml
+  restic:
+    taskfile: ../../../.tasks/restic.yaml
+
+tasks:
+  secrets:
+    internal: true
+    silent: true
+    env:
+      RESTIC_REPO_INSTALL: &repo-install s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/install
+      RESTIC_REPO_DATA: &repo-data s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/data
+      REPO_DB: &repo-db s3://homelab-amethyst-nextcloud/nextcloud-postgres/base/
+      PASSWORD: &restic-password
+        sh: |
+          AWS_PROFILE=sso-admin@aws-homelab
+          aws ssm get-parameter --with-decryption \
+          --name /amethyst/nextcloud-backup \
+          | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
+
+  list-backup:
+    cmds:
+      - echo "Listing nextcloud-install snapshots..."
+      - task: restic:list
+        vars:
+          REPO: *repo-install
+          PASSWORD: *restic-password
+      - echo "Listing nextcloud-data snapshots..."
+      - task: restic:list
+        vars:
+          REPO: *repo-data
+          PASSWORD: *restic-password
+      - echo "Listing nextcloud-postgres backups..."
+      - task: aws:s3-ls
+        vars:
+          REPO: *repo-db
+
+  unlock-repo:
+    cmds:
+      - echo "Unlocking nextcloud-install repository..."
+      - task: restic:unlock
+        vars:
+          REPO: *repo-install
+          PASSWORD: *restic-password
+      - echo "Unlocking nextcloud-data repository..."
+      - task: restic:unlock
+        vars:
+          REPO: *repo-data
+          PASSWORD: *restic-password

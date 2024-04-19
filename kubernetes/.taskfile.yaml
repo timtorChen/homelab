@@ -5,6 +5,18 @@ silent: true
 includes:
   k8s:
     taskfile: ../.tasks/kubernetes.yaml
+  nextcloud:
+    taskfile: mydata/nextcloud/.taskfile.yaml
+  navidrome:
+    taskfile: mydata/navidrome/.taskfile.yaml
+  immich:
+    taskfile: mydata/immich/.taskfile.yaml
+  vaultwarden:
+    taskfile: vaultwarden/.taskfile.yaml
+  unifi-controller:
+    taskfile: unifi-controller/.taskfile.yaml
+  grafana:
+    taskfile: grafana/.taskfile.yaml
 
 tasks:
   clear-volume:
@@ -41,34 +53,6 @@ tasks:
   ceph:crash:ls:
     silent: true
     cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- ceph crash ls
-
-  vautwarden:backup:
-    silent: true
-    cmd: restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-vaultwarden
-
-  navidrome:backup:
-    silent: true
-    cmds:
-      - echo "Data backup:"
-      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/data
-      - echo "Database backup:"
-      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-navidrome/db
-
-  immich:backup:
-    silent: true
-    cmds:
-      - echo "Data backup:"
-      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-immich/app
-      # TODO: database backup list
-
-  nextcloud:backup:
-    silent: true
-    cmds:
-      - echo "Install backup:"
-      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/install
-      - echo "Data backup:"
-      - restic snapshots -r s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-nextcloud/data
-      # TODO: database backup list
 
   get-oidc-config:
     silent: true

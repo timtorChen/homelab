@@ -1,0 +1,21 @@
+---
+version: "3"
+silent: true
+
+includes:
+  aws:
+    taskfile: ../../.tasks/aws.yaml
+
+tasks:
+  secrets:
+    internal: true
+    silent: true
+    env:
+      REPO_DB: &repo-db s3://homelab-amethyst-grafana/grafana-postgres/base/
+
+  list-backup:
+    cmds:
+      - echo "Listing grafana-postgres backups..."
+      - task: aws:s3-ls
+        vars:
+          REPO: *repo-db
