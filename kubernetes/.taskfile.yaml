@@ -5,6 +5,8 @@ silent: true
 includes:
   k8s:
     taskfile: ../.tasks/kubernetes.yaml
+  rook-ceph:
+    taskfile: ../.tasks/rook-ceph.yaml
   nextcloud:
     taskfile: mydata/nextcloud/.taskfile.yaml
   navidrome:

@@ -1,0 +1,37 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  status:
+    cmd: kubectl rook-ceph ceph status
+
+  osd-status:
+    cmd: kubectl rook-ceph ceph osd status
+
+  list-crush-rule:
+    cmd: kubectl rook-ceph ceph osd crush rule dump
+
+  direct-mount:install:
+    cmd: |
+      kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/direct-mount.yaml
+      kubectl wait -n rook-ceph deploy/rook-direct-mount --for=condition=available --timeout=60s
+  direct-mount:shell:
+    deps: [direct-mount:install]
+    cmd: |
+      kubectl exec -it -n rook-ceph deploy/rook-direct-mount -- /bin/bash
+  direct-mount:uninstall:
+    cmd: |
+      kubectl delete -n rook-ceph deploy/rook-direct-mount
+
+  toolbox:install:
+    cmd: |
+      kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/toolbox.yaml
+      kubectl wait -n rook-ceph deploy/rook-ceph-tools --for=condition=available --timeout=60s
+  toolbox:shell:
+    deps: [toolbox:install]
+    cmd: |
+      kubectl exec -it -n rook-ceph deploy/rook-ceph-tools -- /bin/bash
+  toolbox:uninstall:
+    cmd: |
+      kubectl delete -n rook-ceph deploy/rook-ceph-tools
