@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.101.0
+              tag: v1.102.3
             command: ["./start.sh", "immich"]
             env:
               SERVER_PORT: &p1 3001
@@ -89,7 +89,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.101.0
+              tag: v1.102.3
             command: ["./start.sh", "microservices"]
             env:
               SERVER_PORT: &p2 3002
@@ -127,7 +127,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.101.0
+              tag: v1.102.3
             env:
               MACHINE_LEARNING_PORT: &p3 3003
               MACHINE_LEARNING_CACHE_FOLDER: &cache-dir /cache
