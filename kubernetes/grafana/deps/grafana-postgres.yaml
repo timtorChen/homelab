@@ -5,6 +5,7 @@ metadata:
   namespace: grafana
   name: grafana-postgres
 spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.6
   instances: 2
   storage:
     pvcTemplate:
