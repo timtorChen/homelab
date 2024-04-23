@@ -21,7 +21,7 @@ spec:
         namespace: grafana
         name: grafana
       chart: grafana
-      version: 7.3.8
+      version: 7.3.9
   interval: 1h
   maxHistory: 1
   values:
