@@ -63,20 +63,20 @@ tasks:
     ignore_error: true
     cmd: |
       echo "Deleting vaultwarden volume claim..."
-      kubectl delete -n vaultwarden pvc/vaultwarden-data
+      kubectl delete -f app/pvc.yaml
 
   create-volume:
     internal: true
     cmd: |
       echo "Creating vaultwarden volume claim..."
-      kubectl create -f app/vaultwarden-data.yaml
+      kubectl create -f app/pvc.yaml
 
   stop:
     cmd: |
       echo "Stopping vaultwarden..."
-      kubectl scale Deployment --replicas 0 -n vaultwarden vaultwarden
+      kubectl scale --replicas 0 -n vaultwarden deployment/vaultwarden
 
   start:
     cmd: |
       echo "Starting vaultwarden..."
-      kubectl scale Deployment --replicas 1 -n vaultwarden vaultwarden
+      kubectl scale --replicas 1 -n vaultwarden deployment/vaultwarden

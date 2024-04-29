@@ -4,11 +4,11 @@ kind: ReplicationSource
 metadata:
   {}
   # namespace: vaultwarden
-  # name: vaultwarden-restore-manual-backup
+  # name: vaultwarden-manual-backup
 spec:
   trigger:
     {}
-    # manual: vaultwarden-restore-manual-backup
+    # manual: vaultwarden-manual-backup
   sourcePVC: vaultwarden-data
   restic:
     pruneIntervalDays: 14
