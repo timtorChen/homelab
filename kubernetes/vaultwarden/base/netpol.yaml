@@ -1,0 +1,13 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}

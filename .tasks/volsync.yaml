@@ -1,0 +1,83 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  backup:
+    internal: true
+    cmd: |
+      TEMPLATE="{{.TEMPLATE}}"
+      NAMESPACE="{{.NAMESPACE}}"
+      NAME='{{.NAME | default "backup" }}'
+      WAIT='{{.WAIT | default "true" }}'
+      TIMEOUT='{{.TIMEOUT | default "10m" }}'
+
+      [ -z "$TEMPLATE" ] && echo "Please set the TEMPLATE variable" && exit 1
+      [ -z "$NAMESPACE" ] && echo "Please set the NAMESPACE variable" && exit 1
+
+      TIMESTAMP="$(date +%Y%m%d%H%M%S%z)"
+      TIMESTAMP="${TIMESTAMP/+/plus}"
+      TIMESTAMP="${TIMESTAMP/-/minus}"
+      FULLNAME="$NAME-$TIMESTAMP"
+
+      CONTENT="$(yq \
+        '.metadata.namespace="'$NAMESPACE'" |
+         .metadata.name="'$FULLNAME'" |
+         .spec.trigger.manual="'$FULLNAME'"' \
+        "$TEMPLATE"
+      )"
+
+      echo "$CONTENT" | kubectl create -f -
+      if [ "$WAIT" == "true" ]; then
+        echo "Waiting for backup $FULLNAME..."
+        kubectl wait -n "$NAMESPACE" "replicationsources.volsync.backube/$FULLNAME" \
+          --for=jsonpath='{.status.lastManualSync}'="$FULLNAME" \
+          --timeout="$TIMEOUT"
+        kubectl delete -n "$NAMESPACE" "replicationsources.volsync.backube/$FULLNAME"
+        echo "Backup of $FULLNAME is completed"
+      fi
+
+  restore:
+    internal: true
+    interactive: true
+    cmd: |
+      TEMPLATE="{{.TEMPLATE}}"
+      NAMESPACE="{{.NAMESPACE}}"
+      NAME='{{.NAME | default "restore" }}'
+      WAIT='{{.WAIT | default "true" }}'
+      TIMEOUT='{{.TIMEOUT | default "10m" }}'
+
+      [ -z "$TEMPLATE" ] && echo "Please set the TEMPLATE variable" && exit
+      [ -z "$NAMESPACE" ] && echo "Please set the NAMESPACE variable" && exit 1
+      [ -z "$TIME" ] \
+        && echo -n "Please enter the restore target time with UTC offset: " && read TIME
+
+      if [ "{{OS}}" == "linux" ]; then
+        BIN=date
+      elif [ "{{OS}}" == "darwin" ]; then
+        BIN=gdate
+      fi
+
+      TIMESTAMP="$(date +%Y%m%d%H%M%S%z)"
+      TIMESTAMP="${TIMESTAMP/+/plus}"
+      TIMESTAMP="${TIMESTAMP/-/minus}"
+      RESTORE_TARGET="$(eval "$BIN" -u --date "'$TIME'" +%Y-%m-%dT%H:%M:%S%:z)"
+
+      FULLNAME="$NAME-$TIMESTAMP"
+      CONTENT="$(yq \
+        '.metadata.namespace="'$NAMESPACE'" |
+         .metadata.name="'$FULLNAME'" |
+         .spec.trigger.manual="'$FULLNAME'" |
+         .spec.restic.restoreAsOf="'$RESTORE_TARGET'"' \
+        "$TEMPLATE"
+      )"
+
+      echo "$CONTENT" | kubectl apply -f -
+      if [ "$WAIT" == "true" ]; then
+        echo "Restoring $FULLNAME..."
+        kubectl wait -n "$NAMESPACE" "replicationdestinations.volsync.backube/$FULLNAME" \
+          --for=jsonpath='{.status.lastManualSync}'="$FULLNAME" \
+          --timeout="$TIMEOUT"
+        kubectl delete -n "$NAMESPACE" "replicationdestinations.volsync.backube/$FULLNAME"
+        echo "Restore of $FULLNAME is completed"
+      fi

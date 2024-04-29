@@ -6,18 +6,26 @@ includes:
   k8s:
     taskfile: ../.tasks/kubernetes.yaml
   rook-ceph:
+    optional: true
     taskfile: ../.tasks/rook-ceph.yaml
   nextcloud:
+    optional: true
     taskfile: mydata/nextcloud/.taskfile.yaml
   navidrome:
+    optional: true
     taskfile: mydata/navidrome/.taskfile.yaml
   immich:
+    optional: true
     taskfile: mydata/immich/.taskfile.yaml
   vaultwarden:
+    optional: true
     taskfile: vaultwarden/.taskfile.yaml
+    dir: vaultwarden
   unifi-controller:
+    optional: true
     taskfile: unifi-controller/.taskfile.yaml
   grafana:
+    optional: true
     taskfile: grafana/.taskfile.yaml
 
 tasks:
@@ -46,15 +54,7 @@ tasks:
       # flux install creates a flux-system namespace
       - flux install --version v2.0.0-rc.5
       - kubectl apply -f ./kubernetes/flux-system/boostrap.yaml
-
   # yamllint enable
-  ceph:debug:
-    silent: true
-    cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- /bin/bash
-
-  ceph:crash:ls:
-    silent: true
-    cmd: kubectl exec -it -n rook-ceph deployment/toolbox -- ceph crash ls
 
   get-oidc-config:
     silent: true

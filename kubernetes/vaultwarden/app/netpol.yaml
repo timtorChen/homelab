@@ -3,19 +3,6 @@ apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   namespace: vaultwarden
-  name: vaultwarden-default-policy
-specs:
-  - endpointSelector:
-      matchLabels: {}
-    ingress:
-      - {}
-    egress:
-      - {}
----
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  namespace: vaultwarden
   name: vaultwarden-policy
 specs:
   # allow connection from ingress-nginx
@@ -53,7 +40,6 @@ specs:
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/created-by: volsync
-        job-name: volsync-src-vaultwarden-backup
     egress:
       - toEndpoints:
           - matchLabels:

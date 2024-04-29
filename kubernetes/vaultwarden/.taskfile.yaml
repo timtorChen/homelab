@@ -3,6 +3,8 @@ version: "3"
 silent: true
 
 includes:
+  volsync:
+    taskfile: ../../.tasks/volsync.yaml
   restic:
     taskfile: ../../.tasks/restic.yaml
 
@@ -19,6 +21,14 @@ tasks:
           --name /amethyst/nextcloud-backup \
           | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
 
+  backup:
+    cmds:
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/manual-backup.tmpl.yaml
+          NAMESPACE: vaultwarden
+          NAME: vaultwarden-backup
+
   list-backup:
     cmds:
       - echo "Listing vaultwarden snapshots..."
@@ -27,10 +37,46 @@ tasks:
           REPO: *repo
           PASSWORD: *restic-password
 
-  unlock-repo:
+  unlock-backup:
     cmds:
       - echo "Unlocking vaultwarden repository..."
       - task: restic:unlock
         vars:
           REPO: *repo
           PASSWORD: *restic-password
+
+  restore:
+    prompt: "Restore will delete the current vaultwarden data... continune?"
+    cmds:
+      - task: stop
+      - task: delete-volume
+      - task: create-volume
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/manual-restore.tmpl.yaml
+          NAMESPACE: vaultwarden
+          NAME: vaultwarden-restore
+      - task: start
+
+  delete-volume:
+    internal: true
+    ignore_error: true
+    cmd: |
+      echo "Deleting vaultwarden volume claim..."
+      kubectl delete -n vaultwarden pvc/vaultwarden-data
+
+  create-volume:
+    internal: true
+    cmd: |
+      echo "Creating vaultwarden volume claim..."
+      kubectl create -f app/vaultwarden-data.yaml
+
+  stop:
+    cmd: |
+      echo "Stopping vaultwarden..."
+      kubectl scale Deployment --replicas 0 -n vaultwarden vaultwarden
+
+  start:
+    cmd: |
+      echo "Starting vaultwarden..."
+      kubectl scale Deployment --replicas 1 -n vaultwarden vaultwarden
