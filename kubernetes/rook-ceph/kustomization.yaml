@@ -11,5 +11,3 @@ resources:
   - cephblock.yaml
   - cephobject.yaml
   - objectuser.yaml
-  - toolbox.yaml
-  - direct-mount.yaml
