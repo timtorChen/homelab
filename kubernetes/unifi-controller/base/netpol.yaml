@@ -1,0 +1,13 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: unifi-controller
+  name: unifi-controller-default-policy
+specs:
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}

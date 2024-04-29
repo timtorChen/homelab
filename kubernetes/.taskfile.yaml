@@ -24,6 +24,7 @@ includes:
   unifi-controller:
     optional: true
     taskfile: unifi-controller/.taskfile.yaml
+    dir: unifi-controller
   grafana:
     optional: true
     taskfile: grafana/.taskfile.yaml

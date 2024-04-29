@@ -3,6 +3,8 @@ version: "3"
 silent: true
 
 includes:
+  volsync:
+    taskfile: ../../.tasks/volsync.yaml
   restic:
     taskfile: ../../.tasks/restic.yaml
 
@@ -19,6 +21,14 @@ tasks:
           --name /amethyst/unifi-controller-backup \
           | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
 
+  backup:
+    cmds:
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/manual-backup.tmpl.yaml
+          NAMESPACE: unifi-controller
+          NAME: unifi-controller-backup
+
   list-backup:
     cmds:
       - echo "Listing unifi-controller snapshots..."
@@ -34,3 +44,39 @@ tasks:
         vars:
           REPO: *repo
           PASSWORD: *restic-password
+
+  restore:
+    prompt: "Restore will delete the current unifi-controller data... continune?"
+    cmds:
+      - task: stop
+      - task: delete-volume
+      - task: create-volume
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/manual-restore.tmpl.yaml
+          NAMESPACE: unifi-controller
+          NAME: unifi-controller-restore
+      - task: start
+
+  delete-volume:
+    internal: true
+    ignore_error: true
+    cmd: |
+      echo "Deleting unifi-controller volume claim..."
+      kubectl delete -f app/pvc.yaml
+
+  create-volume:
+    internal: true
+    cmd: |
+      echo "Creating unifi-controller volume claim..."
+      kubectl create -f app/pvc.yaml
+
+  stop:
+    cmd: |
+      echo "Stopping unifi-controller..."
+      kubectl scale --replicas 0 -n unifi-controller deployment/unifi-controller
+
+  start:
+    cmd: |
+      echo "Starting unifi-controller..."
+      kubectl scale --replicas 1 -n unifi-controller deployment/unifi-controller

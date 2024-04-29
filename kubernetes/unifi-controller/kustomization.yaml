@@ -2,9 +2,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - unifi-controller-backup-secret.yaml
-  - unifi-controller-data-backup.yaml
-  - unifi-controller-data.yaml
-  - unifi-controller.yaml
-  - networkpolicy.yaml
+  - base/ns.yaml
+  - base/netpol.yaml
+  - app/repo.yaml
+  - app/release.yaml
+  - app/pvc.yaml
+  - app/netpol.yaml
+  - backup/backup.yaml
+  - backup/secret.yaml
+  - backup/secret-holder.yaml
+  - backup/secret-holder-sa.yaml
