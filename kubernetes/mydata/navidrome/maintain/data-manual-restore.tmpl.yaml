@@ -1,0 +1,27 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  {}
+  # namespace: mydata
+  # name: navidrome-data-manual-restore
+spec:
+  trigger:
+    {}
+    # manual: navidrome-data-manual-restore
+  restic:
+    repository: navidrome-data-backup-secret
+    previous: 0
+    # restoreAsOf: 2024-02-14T18:00:24+08:00
+    copyMethod: Direct
+    destinationPVC: navidrome-data
+    cacheStorageClassName: rbd-fast-delete
+    cacheCapacity: 1Gi
+    cacheAccessModes: ["ReadWriteOnce"]
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault

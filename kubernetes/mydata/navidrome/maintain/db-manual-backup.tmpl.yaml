@@ -1,0 +1,34 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  {}
+  # namespace: mydata
+  # name: navidrome-db-manual-backup
+spec:
+  sourcePVC: navidrome-db
+  trigger:
+    {}
+    # manual: navidrome-db-manual-backup
+  restic:
+    pruneIntervalDays: 14
+    repository: navidrome-db-backup-secret
+    retain:
+      daily: 5
+      weekly: 4
+      monthly: 3
+    copyMethod: Snapshot
+    # volume created from snapshot
+    volumeSnapshotClassName: rook-ceph-fs
+    storageClassName: fs-fast-volatile
+    accessModes: ["ReadWriteOnce"]
+    cacheStorageClassName: rbd-fast-volatile
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 1Gi
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault

@@ -3,6 +3,8 @@ version: "3"
 silent: true
 
 includes:
+  volsync:
+    taskfile: ../../../.tasks/volsync.yaml
   restic:
     taskfile: ../../../.tasks/restic.yaml
 
@@ -20,7 +22,67 @@ tasks:
           --name /amethyst/navidrome-backup \
           | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
 
-  list-snapshots:
+  backup:
+    deps:
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/db-manual-backup.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: navidrome-db-backup
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/data-manual-backup.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: navidrome-data-backup
+          TIMEOUT: 10m
+
+  restore:
+    prompt: |
+      Navidrome volume is shared with nextcloud, remember to stop the nextcloud before proceeding.
+      Restore will delete the current navidrome data... continune?
+    cmds:
+      - task: stop
+      - task: delete-volume
+      - task: create-volume
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/db-manual-restore.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: navidrome-db-restore
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/data-manual-restore.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: navidrome-data-restore
+          TIMEOUT: 20m
+      - task: start
+
+  delete-volume:
+    internal: true
+    ignore_error: true
+    cmd: |
+      echo "Deleting vaultwarden volume claim..."
+      kubectl delete -f app/db-pvc.yaml
+      kubectl delete -f app/data-pvc.yaml
+
+  create-volume:
+    internal: true
+    cmd: |
+      echo "Creating vaultwarden volume claim..."
+      kubectl create -f app/db-pvc.yaml
+      kubectl create -f app/data-pvc.yaml
+
+  stop:
+    cmd: |
+      echo "Stopping navidrome..."
+      kubectl scale --replicas 0 -n mydata deployment/navidrome
+
+  start:
+    cmd: |
+      echo "Starting navidrome..."
+      kubectl scale --replicas 1 -n mydata deployment/navidrome
+
+  list-backup:
     cmds:
       - echo "Listing navidrome-data snapshots..."
       - task: restic:list

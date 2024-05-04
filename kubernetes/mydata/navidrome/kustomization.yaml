@@ -3,9 +3,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base
-  - navidrome-backup-secret.yaml
-  - navidrome-backup.yaml
-  - navidrome-data.yaml
-  - navidrome-db.yaml
-  - navidrome.yaml
-  - networkpolicy.yaml
+  - app/release.yaml
+  - app/netpol.yaml
+  - app/data-pvc.yaml
+  - app/db-pvc.yaml
+  - backup/data-backup.yaml
+  - backup/data-secret.yaml
+  - backup/db-backup.yaml
+  - backup/db-secret.yaml
+  - backup/secret-holder-sa.yaml
+  - backup/secret-holder.yaml

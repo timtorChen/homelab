@@ -50,7 +50,7 @@ tasks:
       [ -z "$TEMPLATE" ] && echo "Please set the TEMPLATE variable" && exit
       [ -z "$NAMESPACE" ] && echo "Please set the NAMESPACE variable" && exit 1
       [ -z "$TIME" ] \
-        && echo -n "Please enter the restore target time with UTC offset: " && read TIME
+        && echo -n "Please enter the $NAME restore target time with UTC offset: " && read TIME
 
       if [ "{{OS}}" == "linux" ]; then
         BIN=date

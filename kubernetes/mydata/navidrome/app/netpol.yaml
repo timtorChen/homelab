@@ -46,4 +46,3 @@ specs:
     endpointSelector:
       matchLabels:
         app.kubernetes.io/created-by: volsync
-        job-name: volsync-src-navidrome-db-backup
