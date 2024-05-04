@@ -2,11 +2,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - base/namespace.yaml
-  - base/networkpolicy.yaml
-  - deps/grafana-postgres-networkpolicy.yaml
-  - deps/grafana-postgres-secret.yaml
-  - deps/grafana-postgres.yaml
-  - app/networkpolicy.yaml
-  - app/grafana-secret.yaml
-  - app/grafana.yaml
+  - base/ns.yaml
+  - base/netpol.yaml
+  - app/repo.yaml
+  - app/release.yaml
+  - app/secret.yaml
+  - app/netpol.yaml
+  - deps/netpol.yaml
+  - deps/postgres-secret.yaml
+  - deps/postgres.yaml

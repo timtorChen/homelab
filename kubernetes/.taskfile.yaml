@@ -29,6 +29,7 @@ includes:
   grafana:
     optional: true
     taskfile: grafana/.taskfile.yaml
+    dir: grafana
 
 tasks:
   clear-volume:

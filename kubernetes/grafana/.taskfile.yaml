@@ -5,6 +5,8 @@ silent: true
 includes:
   aws:
     taskfile: ../../.tasks/aws.yaml
+  cnpg:
+    taskfile: ../../.tasks/cnpg.yaml
 
 tasks:
   secrets:
@@ -12,6 +14,36 @@ tasks:
     silent: true
     env:
       REPO_DB: &repo-db s3://homelab-amethyst-grafana/grafana-postgres/base/
+
+  pitrestore:
+    prompt: "Restore will delete the current grafana-postgres... continune?"
+    cmds:
+      - task: stop
+      - task: cnpg:delete
+        vars:
+          NAMESPACE: grafana
+          NAME: grafana-postgres
+      - task: cnpg:pitr
+        vars:
+          RESTORE_TEMPLATE: maintain/postgres-restore.tmpl.yaml
+      - task: start
+
+  backup:
+    cmds:
+      - task: cnpg:backup
+        vars:
+          NAMESPACE: grafana
+          NAME: grafana-postgres
+
+  stop:
+    cmd: |
+      echo "Stopping grafana..."
+      kubectl scale --replicas 0 -n grafana deployment/grafana
+
+  start:
+    cmd: |
+      echo "Starting grafana..."
+      kubectl scale --replicas 2 -n grafana deployment/grafana
 
   list-backup:
     cmds:

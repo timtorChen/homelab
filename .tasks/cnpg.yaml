@@ -1,0 +1,78 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  delete:
+    internal: true
+    cmd: |
+      NAMESPACE="{{.NAMESPACE}}"
+      NAME="{{.NAME}}"
+      WAIT='{{.WAIT | default "true" }}'
+      TIMEOUT='{{.TIMEOUT | default "5m" }}'
+
+      echo "Deleting the current cluster $NAME..."
+      kubectl delete 'clusters.postgresql.cnpg.io' -n "$NAMESPACE" "$NAME" \
+        --timeout="$TIMEOUT" --ignore-not-found=true
+      echo "Deletion of $NAME is completed"
+
+  backup:
+    internal: true
+    cmd: |
+      NAMESPACE="{{.NAMESPACE}}"
+      NAME="{{.NAME}}"
+      WAIT='{{.WAIT | default "true" }}'
+      TIMEOUT='{{.TIMEOUT | default "5m" }}'
+
+      TIMESTAMP="$(date +%Y%m%d%H%M%S%z)"
+      TIMESTAMP="${TIMESTAMP/+/plus}"
+      TIMESTAMP="${TIMESTAMP/-/minus}"
+      FULLNAME="$NAME-$TIMESTAMP"
+
+      kubectl cnpg backup -n "$NAMESPACE" "$NAME" --backup-name "$FULLNAME"
+      if [ "$WAIT" = "true" ]; then
+        echo "Waiting for backup $FULLNAME..."
+        kubectl wait -n "$NAMESPACE" "backups.postgresql.cnpg.io/$FULLNAME" \
+          --for=jsonpath='{.status.phase}'=completed \
+          --timeout="$TIMEOUT"
+        kubectl delete -n "$NAMESPACE" "backups.postgresql.cnpg.io/$FULLNAME"
+        echo "Backup of $FULLNAME is completed"
+      fi
+
+  pitr:
+    internal: true
+    interactive: true
+    cmd: |
+      RESTORE_TEMPLATE="{{.RESTORE_TEMPLATE}}"
+      TIME="{{.TIME}}"
+      WAIT='{{.WAIT | default "true" }}'
+      TIMEOUT='{{.TIMEOUT | default "10m" }}'
+
+      [ -z "$RESTORE_TEMPLATE" ] && echo "Please set the RESTORE_TEMPLATE variable" && exit
+      [ -z "$TIME" ] && echo -n "Please enter the target time for recovery: " && read TIME
+
+      FORMAT="%Y-%m-%d %H:%M:%S%:::z"
+      if [[ "{{OS}}" == "linux" ]]; then
+        PARSE="$(date --date "$TIME" +"$FORMAT")"
+        DATE="$(date -u --date "$PARSE" +"$FORMAT")"
+      elif [[ "{{OS}}" == "darwin" ]]; then
+        PARSE="$(gdate --date "$TIME" +"$FORMAT")"
+        DATE="$(gdate -u --date "$PARSE" +"$FORMAT")"
+      fi
+
+      export DATE
+      NAMESPAPE="$(yq '.metadata.namespace' "$RESTORE_TEMPLATE")"
+      NAME="$(yq '.metadata.name' "$RESTORE_TEMPLATE")"
+      CLUSTER_CONTENT="$(yq \
+        '.spec.bootstrap.recovery.recoveryTarget.targetTime=env(DATE),
+         .spec.bootstrap.recovery.recoveryTarget.targetTime style="double"
+        ' "$RESTORE_TEMPLATE")"
+
+      echo "$CLUSTER_CONTENT" | kubectl apply -f -
+      if [ "$WAIT" == "true" ]; then
+        echo "Recovering $NAME..."
+        kubectl wait -n "$NAMESPAPE" "cluster/$NAME" \
+          --for=jsonpath='{.status.phase}'='Cluster in healthy state' \
+          --timeout="$TIMEOUT"
+      fi
+      echo "Recovery of $NAME is completed"
