@@ -3,14 +3,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base
-  - deps/immich-postgres-secret.yaml
-  - deps/immich-postgres.yaml
-  - deps/immich-dragonfly.yaml
-  - deps/immich-dragonfly-secret.yaml
-  - deps/networkpolicy.yaml
-  - app/immich-backup-secret.yaml
-  - app/immich-backup.yaml
-  - app/immich-data.yaml
-  - app/immich-secret.yaml
-  - app/immich.yaml
-  - app/networkpolicy.yaml
+  - app/release.yaml
+  - app/pvc.yaml
+  - app/secret.yaml
+  - app/netpol.yaml
+  - deps/dragonfly-secret.yaml
+  - deps/dragonfly.yaml
+  - deps/postgres-secret.yaml
+  - deps/postgres.yaml
+  - deps/netpol.yaml
+  - backup/backup.yaml
+  - backup/secret-hoder-sa.yaml
+  - backup/secret-holder.yaml
+  - backup/secret.yaml

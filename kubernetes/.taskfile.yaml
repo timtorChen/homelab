@@ -18,6 +18,7 @@ includes:
   immich:
     optional: true
     taskfile: mydata/immich/.taskfile.yaml
+    dir: mydata/immich
   vaultwarden:
     optional: true
     taskfile: vaultwarden/.taskfile.yaml

@@ -1,0 +1,33 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  {}
+  # namespace: mydata
+  # name: immich-data-manual-backup
+spec:
+  sourcePVC: immich-data
+  trigger:
+    {}
+    # manual: immich-data-manual-backup
+  restic:
+    pruneIntervalDays: 14
+    repository: immich-backup-secret
+    retain:
+      daily: 5
+      weekly: 4
+      monthly: 3
+    copyMethod: Snapshot
+    volumeSnapshotClassName: rook-ceph-fs
+    storageClassName: fs-fast-volatile
+    accessModes: ["ReadWriteOnce"]
+    cacheStorageClassName: rbd-fast-volatile
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 1Gi
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault

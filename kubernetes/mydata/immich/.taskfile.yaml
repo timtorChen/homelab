@@ -7,6 +7,10 @@ includes:
     taskfile: ../../../.tasks/aws.yaml
   restic:
     taskfile: ../../../.tasks/restic.yaml
+  volsync:
+    taskfile: ../../../.tasks/volsync.yaml
+  cnpg:
+    taskfile: ../../../.tasks/cnpg.yaml
 
 tasks:
   secrets:
@@ -21,6 +25,69 @@ tasks:
           aws ssm get-parameter --with-decryption \
           --name /amethyst/immich-backup \
           | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
+
+  backup:
+    deps:
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/data-manual-backup.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: immich-data-backup
+          TIMEOUT: 10m
+      - task: cnpg:backup
+        vars:
+          NAMESPACE: mydata
+          NAME: immich-postgres
+
+  restore:
+    prompt: |
+      Immich volume is shared with nextcloud, remember to stop the nextcloud before proceeding.
+      Restore will delete current immich data and database... continue?
+    cmds:
+      - task: stop
+      - task: delete-volume
+      - task: cnpg:delete
+        vars:
+          NAMESPACE: mydata
+          NAME: immich-postgres
+      - task: create-volume
+      - task: cnpg:pitr
+        vars:
+          TEMPLATE: maintain/postgres-restore.tmpl.yaml
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/data-manual-restore.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: immich-data-restore
+          TIMEOUT: 20m
+      - task: start
+
+  delete-volume:
+    internal: true
+    ignore_error: true
+    cmd: |
+      echo "Deleting vaultwarden volume claim..."
+      kubectl delete -f app/pvc.yaml
+
+  create-volume:
+    internal: true
+    cmd: |
+      echo "Creating vaultwarden volume claim..."
+      kubectl create -f app/pvc.yaml
+
+  stop:
+    cmd: |
+      echo "Stopping immich..."
+      kubectl scale --replicas 0 -n mydata deployment/immich-machine-learning
+      kubectl scale --replicas 0 -n mydata deployment/immich-server
+      kubectl scale --replicas 0 -n mydata deployment/immich-microservices
+
+  start:
+    cmd: |
+      echo "Starting immich..."
+      kubectl scale --replicas 1 -n mydata deployment/immich-machine-learning
+      kubectl scale --replicas 1 -n mydata deployment/immich-server
+      kubectl scale --replicas 1 -n mydata deployment/immich-microservices
 
   list-backup:
     cmds:

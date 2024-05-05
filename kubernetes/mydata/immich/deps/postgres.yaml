@@ -5,8 +5,8 @@ metadata:
   namespace: mydata
   name: immich-postgres
 spec:
-  instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:15.6
+  instances: 2
   storage:
     pvcTemplate:
       storageClassName: fs-fast

@@ -43,13 +43,13 @@ tasks:
     internal: true
     interactive: true
     cmd: |
-      RESTORE_TEMPLATE="{{.RESTORE_TEMPLATE}}"
+      TEMPLATE="{{.TEMPLATE}}"
       TIME="{{.TIME}}"
       WAIT='{{.WAIT | default "true" }}'
       TIMEOUT='{{.TIMEOUT | default "10m" }}'
 
-      [ -z "$RESTORE_TEMPLATE" ] && echo "Please set the RESTORE_TEMPLATE variable" && exit
-      [ -z "$TIME" ] && echo -n "Please enter the target time for recovery: " && read TIME
+      [ -z "$TEMPLATE" ] && echo "Please set the TEMPLATE variable" && exit
+      [ -z "$TIME" ] && echo -n "Please enter the target time for postgres recovery: " && read TIME
 
       FORMAT="%Y-%m-%d %H:%M:%S%:::z"
       if [[ "{{OS}}" == "linux" ]]; then
@@ -61,12 +61,12 @@ tasks:
       fi
 
       export DATE
-      NAMESPAPE="$(yq '.metadata.namespace' "$RESTORE_TEMPLATE")"
-      NAME="$(yq '.metadata.name' "$RESTORE_TEMPLATE")"
+      NAMESPAPE="$(yq '.metadata.namespace' "$TEMPLATE")"
+      NAME="$(yq '.metadata.name' "$TEMPLATE")"
       CLUSTER_CONTENT="$(yq \
         '.spec.bootstrap.recovery.recoveryTarget.targetTime=env(DATE),
          .spec.bootstrap.recovery.recoveryTarget.targetTime style="double"
-        ' "$RESTORE_TEMPLATE")"
+        ' "$TEMPLATE")"
 
       echo "$CLUSTER_CONTENT" | kubectl apply -f -
       if [ "$WAIT" == "true" ]; then

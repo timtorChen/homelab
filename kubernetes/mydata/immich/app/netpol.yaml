@@ -124,7 +124,6 @@ specs:
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/created-by: volsync
-        job-name: volsync-src-immich-backup
     egress:
       - toEndpoints:
           - matchLabels:

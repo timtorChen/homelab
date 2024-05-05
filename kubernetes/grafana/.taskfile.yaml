@@ -25,7 +25,7 @@ tasks:
           NAME: grafana-postgres
       - task: cnpg:pitr
         vars:
-          RESTORE_TEMPLATE: maintain/postgres-restore.tmpl.yaml
+          TEMPLATE: maintain/postgres-restore.tmpl.yaml
       - task: start
 
   backup:

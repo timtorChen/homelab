@@ -1,0 +1,27 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  {}
+  # namespace: mydata
+  # name: immich-data-manual-restore
+spec:
+  trigger:
+    {}
+    # manual: immich-data-manual-restore
+  restic:
+    repository: immich-backup-secret
+    # previous: 0
+    # restoreAsOf: 2024-02-14T08:52:28+08:00
+    copyMethod: Direct
+    destinationPVC: immich-data
+    cacheStorageClassName: rbd-fast-delete
+    cacheCapacity: 1Gi
+    cacheAccessModes: ["ReadWriteOnce"]
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault
