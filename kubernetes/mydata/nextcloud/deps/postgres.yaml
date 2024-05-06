@@ -1,0 +1,49 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  namespace: mydata
+  name: nextcloud-postgres
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.6
+  instances: 2
+  storage:
+    pvcTemplate:
+      storageClassName: fs-fast
+      resources:
+        requests:
+          storage: 10Gi
+      accessModes: ["ReadWriteOnce"]
+  bootstrap:
+    initdb:
+      database: nextcloud
+      owner: nextcloud
+      secret:
+        name: nextcloud-postgres-secret
+  backup:
+    retentionPolicy: "2w"
+    barmanObjectStore:
+      endpointURL: https://s3.us-east-005.backblazeb2.com
+      destinationPath: s3://homelab-amethyst-nextcloud/
+      s3Credentials:
+        accessKeyId:
+          name: nextcloud-postgres-secret
+          key: POSTGRES_B2_ACCESS_KEY_ID
+        secretAccessKey:
+          name: nextcloud-postgres-secret
+          key: POSTGRES_B2_ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        maxParallel: 8
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  namespace: mydata
+  name: nextcloud-postgres-backup
+spec:
+  schedule: "0 0 0/12 * *"
+  backupOwnerReference: self
+  cluster:
+    name: nextcloud-postgres
+  target: prefer-standby

@@ -7,7 +7,7 @@ metadata:
 specs:
   # allow connection from ingress-nginx
   - endpointSelector: &self
-      matchLabels: 
+      matchLabels:
         app.kubernetes.io/name: nextcloud
     ingress:
       - fromEndpoints:
@@ -49,7 +49,6 @@ specs:
     endpointSelector:
       matchLabels:
         app.kubernetes.io/created-by: volsync
-        job-name: volsync-src-nextcloud-install-backup
     egress:
       - toEndpoints:
           - matchLabels:

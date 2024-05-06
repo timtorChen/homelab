@@ -1,0 +1,27 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  {}
+  # namespace: mydata
+  # name: nextcloud-data-manual-restore
+spec:
+  trigger:
+    {}
+    # manual: nextcloud-data-manual-restore
+  restic:
+    repository: nextcloud-data-backup-secret
+    # previous: 0
+    # restoreAsOf: 2024-02-14T08:52:28+08:00
+    copyMethod: Direct
+    destinationPVC: nextcloud-data
+    cacheStorageClassName: rbd-fast-delete
+    cacheCapacity: 1Gi
+    cacheAccessModes: ["ReadWriteOnce"]
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 33
+      runAsGroup: 33
+      fsGroup: 33
+      seccompProfile:
+        type: RuntimeDefault

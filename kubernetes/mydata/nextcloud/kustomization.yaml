@@ -3,16 +3,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base
-  - deps/nextcloud-postgres-secret.yaml
-  - deps/nextcloud-postgres.yaml
-  - deps/nextcloud-dragonfly-secret.yaml
-  - deps/nextcloud-dragonfly.yaml
-  - deps/networkpolicy.yaml
-  - app/nextcloud-backup-secret.yaml
-  - app/nextcloud-backup.yaml
-  - app/nextcloud-config.yaml
-  - app/nextcloud-secret.yaml
-  - app/nextcloud-install.yaml
-  - app/nextcloud-data.yaml
-  - app/nextcloud.yaml
-  - app/networkpolicy.yaml
+  - app/release.yaml
+  - app/secret.yaml
+  - app/config.yaml
+  - app/data-pvc.yaml
+  - app/install-pvc.yaml
+  - app/netpol.yaml
+  - deps/postgres.yaml
+  - deps/postgres-secret.yaml
+  - deps/postgres-secret-holder.yaml
+  - deps/postgres-sa.yaml
+  - deps/dragonfly.yaml
+  - deps/dragondly-secret.yaml
+  - deps/netpol.yaml

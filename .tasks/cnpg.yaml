@@ -74,5 +74,5 @@ tasks:
         kubectl wait -n "$NAMESPAPE" "cluster/$NAME" \
           --for=jsonpath='{.status.phase}'='Cluster in healthy state' \
           --timeout="$TIMEOUT"
+        echo "Recovery of $NAME is completed"
       fi
-      echo "Recovery of $NAME is completed"

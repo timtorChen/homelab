@@ -7,6 +7,10 @@ includes:
     taskfile: ../../../.tasks/aws.yaml
   restic:
     taskfile: ../../../.tasks/restic.yaml
+  volsync:
+    taskfile: ../../../.tasks/volsync.yaml
+  cnpg:
+    taskfile: ../../../.tasks/cnpg.yaml
 
 tasks:
   secrets:
@@ -22,6 +26,81 @@ tasks:
           aws ssm get-parameter --with-decryption \
           --name /amethyst/nextcloud-backup \
           | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
+
+  shell:
+    cmd: kubectl exec -it -n mydata deployment/nextcloud -- bash
+
+  backup:
+    deps:
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/data-manual-backup.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: nextcloud-data-backup
+          WAIT: false
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/install-manual-backup.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: nextcloud-install-backup
+          WAIT: false
+      - task: cnpg:backup
+        vars:
+          NAMESPACE: mydata
+          NAME: nextcloud-postgres
+          WAIT: false
+
+  restore:
+    prompt: |
+      Restore will delete current nextcloud data and database... continue?
+    cmds:
+      - task: stop
+      - task: delete-volume
+      - task: cnpg:delete
+        vars:
+          NAMESPACE: mydata
+          NAME: nextcloud-postgres
+      - task: create-volume
+      - task: cnpg:pitr
+        vars:
+          TEMPLATE: maintain/postgres-restore.tmpl.yaml
+          WAIT: false
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/install-manual-restore.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: nextcloud-install-restore
+          WAIT: false
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/data-manual-restore.tmpl.yaml
+          NAMESPACE: mydata
+          NAME: nextcloud-data-restore
+          WAIT: false
+
+  delete-volume:
+    internal: true
+    cmd: |
+      echo "Deleting nextcloud volume claim..."
+      kubectl delete -f app/data-pvc.yaml
+      kubectl delete -f app/install-pvc.yaml
+
+  create-volume:
+    internal: true
+    cmd: |
+      echo "Creating nextcloud volume claim..."
+      kubectl create -f app/data-pvc.yaml
+      kubectl create -f app/install-pvc.yaml
+
+  stop:
+    cmd: |
+      echo "Stopping nextcloud..."
+      kubectl scale --replicas 0 -n mydata deployment/nextcloud
+
+  start:
+    cmd: |
+      echo "Starting nextcloud..."
+      kubectl scale --replicas 2 -n mydata deployment/nextcloud
 
   list-backup:
     cmds:

@@ -1,0 +1,39 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  namespace: mydata
+  name: &name nextcloud-postgres
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.6
+  instances: 2
+  storage:
+    pvcTemplate:
+      storageClassName: fs-fast
+      resources:
+        requests:
+          storage: 10Gi
+      accessModes: ["ReadWriteOnce"]
+  bootstrap:
+    recovery:
+      source: clusterBackup
+      recoveryTarget:
+      # recoveryTarget:
+      ## timezone should be in +00:00
+      ## or barman-cloud-wal-restore will return "invalid value for parameter"
+      # targetTime: "2024-02-14 10:00:00.00000+00"
+  externalClusters:
+    - name: clusterBackup
+      barmanObjectStore:
+        endpointURL: https://s3.us-east-005.backblazeb2.com
+        destinationPath: s3://homelab-amethyst-nextcloud/
+        serverName: *name
+        s3Credentials:
+          accessKeyId:
+            name: nextcloud-postgres-secret
+            key: POSTGRES_B2_ACCESS_KEY_ID
+          secretAccessKey:
+            name: nextcloud-postgres-secret
+            key: POSTGRES_B2_ACCESS_SECRET_KEY
+        wal:
+          maxParallel: 8

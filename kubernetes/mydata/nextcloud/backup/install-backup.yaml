@@ -1,0 +1,30 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  namespace: mydata
+  name: nextcloud-install-backup
+spec:
+  sourcePVC: nextcloud-install
+  trigger:
+    schedule: "0 0 * * *"
+  restic:
+    pruneIntervalDays: 14
+    repository: nextcloud-install-backup-secret
+    retain:
+      daily: 5
+      weekly: 4
+    copyMethod: Snapshot
+    volumeSnapshotClassName: rook-ceph-fs
+    storageClassName: fs-fast-volatile
+    accessModes: ["ReadWriteOnce"]
+    cacheStorageClassName: rbd-fast-volatile
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 1Gi
+    moverSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault

@@ -11,6 +11,7 @@ includes:
   nextcloud:
     optional: true
     taskfile: mydata/nextcloud/.taskfile.yaml
+    dir: mydata/nextcloud
   navidrome:
     optional: true
     taskfile: mydata/navidrome/.taskfile.yaml
