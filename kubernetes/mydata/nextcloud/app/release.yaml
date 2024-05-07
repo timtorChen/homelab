@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: nextcloud
-              tag: 28.0.5-apache
+              tag: 29.0.0-apache
             env:
               OVERWRITECLIURL: https://drive.timtor.dev
               OVERWRITEPROTOCOL: https
