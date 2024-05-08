@@ -4,7 +4,9 @@ silent: true
 
 includes:
   terraform: terraform/.taskfile.yaml
-  talos: talos/.taskfile.yaml
+  talos:
+    taskfile: talos/.taskfile.yaml
+    dir: talos
   kubernetes: kubernetes/.taskfile.yaml
 
 tasks:

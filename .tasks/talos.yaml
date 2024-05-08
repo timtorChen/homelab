@@ -5,7 +5,6 @@ silent: true
 tasks:
   render:
     internal: true
-    dir: "{{.DIR}}"
     cmd: &talos-render-config |
       NODE="{{.NODE}}"
       SECRET_ENV="{{.SECRET_ENV}}"
@@ -22,7 +21,6 @@ tasks:
 
   plan:
     internal: true
-    dir: "{{.DIR}}"
     env:
       CONFIG:
         sh: *talos-render-config
@@ -30,12 +28,11 @@ tasks:
       NODE="{{.NODE}}"
       HEADER="$(yq 'head_comment' "${NODE}.yaml")"
       IP="$(echo "$HEADER" | yq '.ip')"
-      talosctl apply-config -n "$IP" --dry-run -f <(echo "$CONFIG")
+      talosctl apply-config -n "$IP" --dry-run -f <(echo "$CONFIG") {{.CLI_ARGS}}
 
   apply:
     prompt: The apply process may cause a reboot... continue?
     internal: true
-    dir: "{{.DIR}}"
     env:
       CONFIG:
         sh: *talos-render-config
@@ -43,12 +40,11 @@ tasks:
       NODE="{{.NODE}}"
       HEADER="$(yq 'head_comment' "${NODE}.yaml")"
       IP="$(echo "$HEADER" | yq '.ip')"
-      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG") {{.CLI_ARGS}}
 
   upgrade:
     prompt: The upgrade process will cause a reboot... continue?
     internal: true
-    dir: "{{.DIR}}"
     env:
       CONFIG:
         sh: *talos-render-config
@@ -67,7 +63,6 @@ tasks:
   reset:
     prompt: Reset the node and ALL data will be removed... continue?
     internal: true
-    dir: "{{.DIR}}"
     cmd: |
       NODE="{{.NODE}}"
       HEADER="$(yq 'head_comment' "${NODE}.yaml")"

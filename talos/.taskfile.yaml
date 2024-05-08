@@ -1,5 +1,6 @@
 ---
 version: "3"
+silent: true
 
 includes:
   tal: ../.tasks/talos.yaml
@@ -7,7 +8,6 @@ includes:
 tasks:
   # secrets
   get-secrets:
-    silent: true
     env:
       SECRET_ENV: &talos-secret
         sh: |
@@ -16,42 +16,40 @@ tasks:
           echo "$VALUES" | jq -r '.Parameters[].Value | fromjson | to_entries[] | "\(.key)=\(.value)"'
     cmd: echo "$SECRET_ENV"
 
+  # schematics id
+  get-default-schematic-id:
+    cmd: curl -s -X POST --data-binary @image-factory/default.yaml https://factory.talos.dev/schematics | jq .id
+  get-raspi-schematic-id:
+    cmd: curl -s -X POST --data-binary @image-factory/raspi.yaml https://factory.talos.dev/schematics | jq .id
+
   # controlplane
   apply-controlplane:
-    silent: true
     cmds:
       - for: [pi4b-1, pi4b-2, pi4b-3]
         vars:
-          DIR: talos
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
         task: tal:apply
   upgrade-controlplane:
-    silent: true
     cmds:
       - for: [pi4b-1, pi4b-2, pi4b-3]
         vars:
-          DIR: talos
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
         task: tal:upgrade
 
   # worker
   apply-worker:
-    silent: true
     cmds:
       - for: [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
         vars:
-          DIR: talos
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
         task: tal:apply
   upgrade-worker:
-    silent: true
     cmds:
       - for: [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
         vars:
-          DIR: talos
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
         task: tal:upgrade
@@ -61,7 +59,6 @@ tasks:
     cmds:
       - task: tal:render
         vars: &pi4b-1-vars
-          DIR: talos
           NODE: pi4b-1
           SECRET_ENV: *talos-secret
   plan-pi4b-1:
@@ -80,7 +77,6 @@ tasks:
     cmds:
       - task: tal:reset
         vars:
-          DIR: talos
           NODE: pi4b-1
 
   # pi4b-2
@@ -88,7 +84,6 @@ tasks:
     cmds:
       - task: tal:render
         vars: &pi4b-2-vars
-          DIR: talos
           NODE: pi4b-2
           SECRET_ENV: *talos-secret
   plan-pi4b-2:
@@ -107,7 +102,6 @@ tasks:
     cmds:
       - task: tal:reset
         vars:
-          DIR: talos
           NODE: pi4b-2
 
   # pi4b-3
@@ -115,7 +109,6 @@ tasks:
     cmds:
       - task: tal:render
         vars: &pi4b-3-vars
-          DIR: talos
           NODE: pi4b-3
           SECRET_ENV: *talos-secret
   plan-pi4b-3:
@@ -134,7 +127,6 @@ tasks:
     cmds:
       - task: tal:reset
         vars:
-          DIR: talos
           NODE: pi4b-3
 
   # nuc11tnhi50l-1
@@ -142,7 +134,6 @@ tasks:
     cmds:
       - task: tal:render
         vars: &nuc11tnhi50l-1-vars
-          DIR: talos
           NODE: nuc11tnhi50l-1
           SECRET_ENV: *talos-secret
   plan-nuc11tnhi50l-1:
@@ -161,7 +152,6 @@ tasks:
     cmds:
       - task: tal:reset
         vars:
-          DIR: talos
           NODE: nuc11tnhi50l-1
 
   # nuc11tnhi50l-2
@@ -169,7 +159,6 @@ tasks:
     cmds:
       - task: tal:render
         vars: &nuc11tnhi50l-2-vars
-          DIR: talos
           NODE: nuc11tnhi50l-2
           SECRET_ENV: *talos-secret
   plan-nuc11tnhi50l-2:
@@ -188,7 +177,6 @@ tasks:
     cmds:
       - task: tal:reset
         vars:
-          DIR: talos
           NODE: nuc11tnhi50l-2
 
   # nuc11tnhi50l-3
@@ -196,7 +184,6 @@ tasks:
     cmds:
       - task: tal:render
         vars: &nuc11tnhi50l-3-vars
-          DIR: talos
           NODE: nuc11tnhi50l-3
           SECRET_ENV: *talos-secret
   plan-nuc11tnhi50l-3:
@@ -215,5 +202,4 @@ tasks:
     cmds:
       - task: tal:reset
         vars:
-          DIR: talos
           NODE: nuc11tnhi50l-3

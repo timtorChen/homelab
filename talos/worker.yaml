@@ -12,7 +12,7 @@ machine:
   certSANs: []
   install:
     disk: /dev/sda
-    image: ghcr.io/siderolabs/installer:v1.6.7
+    image: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v1.7.1
     wipe: false
     extraKernelArgs:
       - talos.logging.kernel=tcp://192.168.253.100:3001
@@ -25,7 +25,7 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.29.3
+    image: ghcr.io/siderolabs/kubelet:v1.30.0
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features

@@ -12,7 +12,7 @@ machine:
     key: ${machine_ca_key}
   certSANs: []
   install:
-    image: ghcr.io/siderolabs/installer:v1.6.7
+    image: factory.talos.dev/installer/ee21ef4a5ef808a9b7484cc0dda0f25075021691c8c09a276591eedb638ea1f9:v1.7.1
     disk: /dev/sda
     wipe: false
     extraKernelArgs:
@@ -31,7 +31,7 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.29.3
+    image: ghcr.io/siderolabs/kubelet:v1.30.0
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
@@ -80,7 +80,7 @@ cluster:
   proxy:
     disabled: true
   apiServer:
-    image: registry.k8s.io/kube-apiserver:v1.29.3
+    image: registry.k8s.io/kube-apiserver:v1.30.0
     extraArgs:
       oidc-issuer-url: https://oauth.id.jumpcloud.com/
       oidc-client-id: ${cluster_apiServer_extraArgs_oidc_client_id}
@@ -123,11 +123,11 @@ cluster:
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
   controllerManager:
-    image: registry.k8s.io/kube-controller-manager:v1.29.3
+    image: registry.k8s.io/kube-controller-manager:v1.30.0
     extraArgs:
       bind-address: 0.0.0.0
   scheduler:
-    image: registry.k8s.io/kube-scheduler:v1.29.3
+    image: registry.k8s.io/kube-scheduler:v1.30.0
     extraArgs:
       bind-address: 0.0.0.0
   coreDNS:
