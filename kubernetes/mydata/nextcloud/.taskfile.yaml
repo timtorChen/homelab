@@ -102,6 +102,30 @@ tasks:
       echo "Starting nextcloud..."
       kubectl scale --replicas 2 -n mydata deployment/nextcloud
 
+  stop-postgres:
+    cmds:
+      - task: cnpg:stop
+        vars:
+          NAMESPACE: mydata
+          NAME: nextcloud-postgres
+
+  start-postgres:
+    cmds:
+      - task: cnpg:start
+        vars:
+          NAMESPACE: mydata
+          NAME: nextcloud-postgres
+
+  stop-all:
+    cmds:
+      - task: stop
+      - task: stop-postgres
+
+  start-all:
+    cmds:
+      - task: start-postgres
+      - task: start
+
   list-backup:
     cmds:
       - echo "Listing nextcloud-install snapshots..."

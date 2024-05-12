@@ -89,6 +89,30 @@ tasks:
       kubectl scale --replicas 1 -n mydata deployment/immich-server
       kubectl scale --replicas 1 -n mydata deployment/immich-microservices
 
+  stop-postgres:
+    cmds:
+      - task: cnpg:stop
+        vars:
+          NAMESPACE: mydata
+          NAME: immich-postgres
+
+  start-postgres:
+    cmds:
+      - task: cnpg:start
+        vars:
+          NAMESPACE: mydata
+          NAME: immich-postgres
+
+  stop-all:
+    cmds:
+      - task: stop
+      - task: stop-postgres
+
+  start-all:
+    cmds:
+      - task: start-postgres
+      - task: start
+
   list-backup:
     cmds:
       - echo "Listing immich-data snapshots..."

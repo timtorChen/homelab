@@ -3,6 +3,24 @@ version: "3"
 silent: true
 
 tasks:
+  stop:
+    internal: true
+    cmd: |
+      NAMESPACE="{{.NAMESPACE}}"
+      NAME="{{.NAME}}"
+
+      echo "Waking up the postgres cluster $NAME"
+      kubectl cnpg hibernate on -n "$NAMESPACE" "$NAME"
+
+  start:
+    internal: true
+    cmd: |
+      NAMESPACE="{{.NAMESPACE}}"
+      NAME="{{.NAME}}"
+
+      echo "Hibernating the postgres cluster $NAME"
+      kubectl cnpg hibernate off -n "$NAMESPACE" "$NAME"
+
   delete:
     internal: true
     cmd: |

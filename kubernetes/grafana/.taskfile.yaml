@@ -45,6 +45,30 @@ tasks:
       echo "Starting grafana..."
       kubectl scale --replicas 2 -n grafana deployment/grafana
 
+  stop-postgres:
+    cmds:
+      - task: cnpg:stop
+        vars:
+          NAMESPACE: grafana
+          NAME: grafana-postgres
+
+  start-postgres:
+    cmds:
+      - task: cnpg:start
+        vars:
+          NAMESPACE: grafana
+          NAME: grafana-postgres
+
+  stop-all:
+    cmds:
+      - task: stop
+      - task: stop-postgres
+
+  start-all:
+    cmds:
+      - task: start-postgres
+      - task: start
+
   list-backup:
     cmds:
       - echo "Listing grafana-postgres backups..."
