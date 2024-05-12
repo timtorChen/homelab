@@ -60,6 +60,16 @@ tasks:
       echo "> Start talos OS upgrade"
       talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
 
+  shutdown:
+    promtp: Shutdown the node... continue?
+    internal: true
+    cmd: |
+      NODE={{.NODE}}
+      HEADER="$(yq 'head_comment' "${NODE}.yaml")"
+      IP="$(echo "$HEADER" | yq '.ip')"
+
+      talosctl shutdown -n "$IP"
+
   reset:
     prompt: Reset the node and ALL data will be removed... continue?
     internal: true

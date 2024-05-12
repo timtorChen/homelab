@@ -25,34 +25,46 @@ tasks:
   # controlplane
   apply-controlplane:
     cmds:
-      - for: [pi4b-1, pi4b-2, pi4b-3]
+      - for: &controlplans [pi4b-1, pi4b-2, pi4b-3]
+        task: tal:apply
         vars:
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
-        task: tal:apply
   upgrade-controlplane:
     cmds:
-      - for: [pi4b-1, pi4b-2, pi4b-3]
+      - for: *controlplans
+        task: tal:upgrade
         vars:
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
-        task: tal:upgrade
+  shutdown-controlplane:
+    cmds:
+      - for: *controlplans
+        task: tal:shutdown
+        vars:
+          NODE: "{{.ITEM}}"
 
   # worker
   apply-worker:
     cmds:
-      - for: [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
+      - for: &workers [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
+        task: tal:apply
         vars:
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
-        task: tal:apply
   upgrade-worker:
     cmds:
-      - for: [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
+      - for: *workers
+        task: tal:upgrade
         vars:
           NODE: "{{.ITEM}}"
           SECRET_ENV: *talos-secret
-        task: tal:upgrade
+  shutdown-worker:
+    cmds:
+      - for: *workers
+        task: tal:shutdown
+        vars:
+          NODE: "{{.ITEM}}"
 
   # pi4b-1
   render-pi4b-1:
@@ -73,6 +85,11 @@ tasks:
     cmds:
       - task: tal:upgrade
         vars: *pi4b-1-vars
+  shutdown-pi4b-1:
+    cmds:
+      - task: tal:shutdown
+        vars:
+          NODE: pi4b-1
   reset-pi4b-1:
     cmds:
       - task: tal:reset
@@ -98,6 +115,11 @@ tasks:
     cmds:
       - task: tal:upgrade
         vars: *pi4b-2-vars
+  shutdown-pi4b-2:
+    cmds:
+      - task: tal:shutdown
+        vars:
+          NODE: pi4b-2
   reset-pi4b-2:
     cmds:
       - task: tal:reset
@@ -123,6 +145,11 @@ tasks:
     cmds:
       - task: tal:upgrade
         vars: *pi4b-3-vars
+  shutdown-pi4b-3:
+    cmds:
+      - task: tal:shutdown
+        vars:
+          NODE: pi4b-3
   reset-pi4b-3:
     cmds:
       - task: tal:reset
@@ -148,6 +175,11 @@ tasks:
     cmds:
       - task: tal:upgrade
         vars: *nuc11tnhi50l-1-vars
+  shutdown-nuc11tnhi50l-1:
+    cmds:
+      - task: tal:shutdown
+        vars:
+          NODE: nuc11tnhi50l-1
   reset-nuc11tnhi50l-1:
     cmds:
       - task: tal:reset
@@ -173,6 +205,11 @@ tasks:
     cmds:
       - task: tal:upgrade
         vars: *nuc11tnhi50l-2-vars
+  shutdown-nuc11tnhi50l-2:
+    cmds:
+      - task: tal:shutdown
+        vars:
+          NODE: nuc11tnhi50l-2
   reset-nuc11tnhi50l-2:
     cmds:
       - task: tal:reset
@@ -198,6 +235,11 @@ tasks:
     cmds:
       - task: tal:upgrade
         vars: *nuc11tnhi50l-3-vars
+  shutdown-nuc11tnhi50l-3:
+    cmds:
+      - task: tal:shutdown
+        vars:
+          NODE: nuc11tnhi50l-3
   reset-nuc11tnhi50l-3:
     cmds:
       - task: tal:reset
