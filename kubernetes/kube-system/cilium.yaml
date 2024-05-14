@@ -1,6 +1,6 @@
 # CRDs are managed by cilium-operator itself
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   namespace: kube-system
