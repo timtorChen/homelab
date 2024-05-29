@@ -14,5 +14,5 @@ resources:
   - deps/postgres-secret-holder.yaml
   - deps/postgres-sa.yaml
   - deps/dragonfly.yaml
-  - deps/dragondly-secret.yaml
+  - deps/dragonfly-secret.yaml
   - deps/netpol.yaml
