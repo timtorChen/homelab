@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: flux-system
+  name: fluxcd-community
+spec:
+  url: https://fluxcd-community.github.io/helm-charts
+  interval: 24h
