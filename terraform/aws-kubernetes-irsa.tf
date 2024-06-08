@@ -1,3 +1,46 @@
+resource "aws_iam_role" "notification-controller" {
+  name = "${local.project}-notification-controller"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:flux-system:notification-controller",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "notification-controller" {
+  name = "${local.project}-notification-controller"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameters",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/flux-system/webhook-token"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "notification-controller" {
+  role       = aws_iam_role.notification-controller.name
+  policy_arn = aws_iam_policy.notification-controller.arn
+}
+
 resource "aws_iam_role" "cert-manager" {
   name = "${local.project}-cert-manager"
   assume_role_policy = jsonencode({
