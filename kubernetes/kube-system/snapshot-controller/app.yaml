@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: kube-system
+  name: snapshot-controller
+spec:
+  interval: 10m
+  targetNamespace: kube-system
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    namespace: kube-system
+    name: snapshot-controller

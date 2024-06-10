@@ -1,0 +1,43 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: kube-system
+  name: secrets-store-csi-driver-provider-aws-policy
+specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: secrets-store-csi-driver-provider-aws
+    ingress:
+      - {}
+    egress:
+      - {}
+  # allow connection to AWS STS and SSM
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &services
+                - matchPattern: sts.*.amazonaws.com
+                - matchPattern: ssm.*.amazonaws.com
+      - toFQDNs: *services
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
+  # allow connection to kube-api server
+  - endpointSelector: *self
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
