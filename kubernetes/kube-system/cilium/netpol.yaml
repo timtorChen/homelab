@@ -1,0 +1,85 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: kube-system
+  name: cilium-hubble-relay-policy
+specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: hubble-relay
+    ingress:
+      - {}
+    egress:
+      - {}
+  # allow connection to kube-apiserver
+  - endpointSelector: *self
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
+  # allow connection to ciliums
+  - endpointSelector: *self
+    egress:
+      - toEntities: ["host", "remote-node"]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "4244"
+  # allow connection from hubble-ui
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: hubble-ui
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "4245"
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: kube-system
+  name: cilium-hubble-ui-policy
+specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: hubble-ui
+    ingress:
+      - {}
+    egress:
+      - {}
+  # allow connection to kube-apiserver
+  - endpointSelector: *self
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
+  # allow connection to hubble-relay
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "hubble-relay.kube-system.svc.cluster.local."
+      - toEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: hubble-relay
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "4245"

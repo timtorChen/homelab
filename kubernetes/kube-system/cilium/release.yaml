@@ -1,13 +1,3 @@
-# CRDs are managed by cilium-operator itself
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: kube-system
-  name: cilium
-spec:
-  url: https://helm.cilium.io
-  interval: 24h
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -52,3 +42,9 @@ spec:
       hostRoot: /sys/fs/cgroup
     k8sServiceHost: localhost
     k8sServicePort: 7745
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true

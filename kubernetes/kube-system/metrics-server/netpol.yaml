@@ -1,0 +1,40 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: kube-system
+  name: metrics-server-policy
+specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: metrics-server
+    ingress:
+      - {}
+    egress:
+      - {}
+  # allow connection to kube-apiserver
+  - endpointSelector: *self
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
+  # allow connection to kubelets
+  - endpointSelector: *self
+    egress:
+      - toEntities: ["host", "remote-node"]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "10250"
+  # allow connection from kube-apiserver
+  # possible ISSUE: https://github.com/cilium/cilium/issues/31711
+  - endpointSelector: *self
+    ingress:
+      - fromEntities: ["host", "remote-node"]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "10250"

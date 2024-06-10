@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: kube-system
+  name: aws-secrets-manager
+spec:
+  url: https://aws.github.io/secrets-store-csi-driver-provider-aws
+  interval: 24h

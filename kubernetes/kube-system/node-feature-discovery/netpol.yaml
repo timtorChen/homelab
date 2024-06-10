@@ -1,0 +1,23 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: kube-system
+  name: node-feature-discovery-policy
+specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: node-feature-discovery
+    ingress:
+      - {}
+    egress:
+      - {}
+  # allow connection to kube-api server
+  - endpointSelector: *self
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"

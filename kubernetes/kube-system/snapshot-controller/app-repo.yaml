@@ -1,0 +1,16 @@
+---
+# Workloads
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  namespace: kube-system
+  name: snapshot-controller
+spec:
+  interval: 5m
+  url: https://github.com/kubernetes-csi/external-snapshotter
+  ref:
+    tag: v6.3.3
+  ignore: |
+    /*
+    # include the manifest folder
+    !/deploy/kubernetes/snapshot-controller
