@@ -5,6 +5,14 @@ metadata:
   namespace: mydata
   name: immich-app-policy
 specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: immich
+    ingress:
+      - {}
+    egress:
+      - {}
   # allow immich-server connection from ingress-nginx
   - endpointSelector:
       matchLabels:
@@ -20,9 +28,7 @@ specs:
               - protocol: TCP
                 port: "3001"
   # allow immich internal components
-  - endpointSelector: &self
-      matchLabels:
-        app.kubernetes.io/name: immich
+  - endpointSelector: *self
     egress:
       - toEndpoints:
           - matchLabels:

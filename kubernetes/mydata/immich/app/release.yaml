@@ -37,10 +37,10 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.105.1
-            command: ["./start.sh", "immich"]
+              tag: v1.106.4
             env:
-              SERVER_PORT: &p1 3001
+              IMMICH_WORKERS_INCLUDE: api
+              IMMICH_PORT: &p1 3001
               IMMICH_MEDIA_LOCATION: &data-dir /data
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
               REDIS_HOSTNAME: immich-dragonfly
@@ -80,7 +80,7 @@ spec:
                 type: RuntimeDefault
       microservices:
         type: deployment
-        replicas: 1
+        replicas: 2
         strategy: RollingUpdate
         annotations: *annotations
         labels:
@@ -89,13 +89,11 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.105.1
-            command: ["./start.sh", "microservices"]
+              tag: v1.106.4
             env:
-              SERVER_PORT: &p2 3002
+              IMMICH_WORKERS_EXCLUDE: api
               IMMICH_MEDIA_LOCATION: *data-dir
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-              REVERSE_GEOCODING_DUMP_DIRECTORY: &geo-dir /geocode
               REDIS_HOSTNAME: immich-dragonfly
               DB_VECTOR_EXTENSION: pgvector
               DB_URL:
@@ -108,13 +106,19 @@ spec:
                   secretKeyRef:
                     name: *s
                     key: REDIS_PASSWORD
-            probes: *probes
+            probes:
+              startup:
+                enabled: false
+              readiness:
+                enabled: false
+              liveness:
+                enabled: false
             resources:
               limits:
-                memory: 500Mi
+                memory: 2Gi
               requests:
                 cpu: 100m
-                memory: 500Mi
+                memory: 1Gi
             securityContext: *sc
       machine-learning:
         type: deployment
@@ -127,9 +131,9 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.105.1
+              tag: v1.106.4
             env:
-              MACHINE_LEARNING_PORT: &p3 3003
+              IMMICH_PORT: &p3 3003
               MACHINE_LEARNING_CACHE_FOLDER: &cache-dir /cache
               TRANSFORMERS_CACHE: *cache-dir
             probes: *probes
@@ -161,16 +165,6 @@ spec:
           microservices:
             main:
               - path: *data-dir
-      geocode:
-        type: persistentVolumeClaim
-        storageClass: fs-fast-delete
-        accessMode: ReadWriteMany
-        size: 1Gi
-        retain: false
-        advancedMounts:
-          microservices:
-            main:
-              - path: *geo-dir
       cache:
         type: persistentVolumeClaim
         storageClass: fs-fast-delete
@@ -197,13 +191,6 @@ spec:
         ports:
           http:
             port: *p1
-            primary: true
-            protocol: HTTP
-      microservices:
-        controller: microservices
-        ports:
-          http:
-            port: *p2
             primary: true
             protocol: HTTP
       machine-learning:
