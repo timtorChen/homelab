@@ -1,0 +1,45 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: miniflux
+  name: miniflux-app-policy
+specs:
+  # allow connection from ingress-nginx
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: miniflux
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow connection to postgres, OIDC provider, and rss sites
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "*"
+      - toEndpoints:
+          - matchLabels:
+              cnpg.io/cluster: miniflux-postgres
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - toEntities: ["world"]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
