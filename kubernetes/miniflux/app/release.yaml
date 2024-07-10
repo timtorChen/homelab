@@ -1,0 +1,131 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: miniflux
+  name: miniflux
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 3.1.0
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &s miniflux-secret
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        containers:
+          main:
+            image:
+              repository: miniflux/miniflux
+              tag: 2.1.2-distroless
+            ## Debug only, uncomment
+            # command: ["sleep", "infinity"]
+
+            ## Environment variables reference
+            # https://miniflux.app/docs/configuration.html
+            env:
+              RUN_MIGRATIONS: 1
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: DATABASE_URL
+              CREATE_ADMIN: 1
+              ADMIN_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: ADMIN_USERNAME
+              ADMIN_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: ADMIN_PASSWORD
+              OAUTH2_USER_CREATION: 1
+              OAUTH2_PROVIDER: oidc
+              OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://oauth.id.jumpcloud.com/
+              OAUTH2_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: OAUTH2_CLIENT_ID
+              OAUTH2_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: OAUTH2_CLIENT_SECRET
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 128Mi
+              requests:
+                cpu: 10m
+                memory: 128Mi
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+
+    persistence:
+      secret:
+        type: custom
+        volumeSpec:
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s
+
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-miniflux
+        eks.amazonaws.com/audience: sts.amazonaws.com
+
+    service:
+      main:
+        controller: main
+        primary: true
+        ports:
+          http:
+            primary: true
+            port: &p 8080
+            protocol: HTTP
+
+    ingress:
+      main:
+        className: nginx
+        hosts:
+          - host: rss.timtor.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: *p

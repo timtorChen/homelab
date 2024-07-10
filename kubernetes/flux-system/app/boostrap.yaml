@@ -437,3 +437,17 @@ spec:
   interval: 10m0s
   path: /kubernetes/mydata/nextcloud
   prune: false
+---
+# miniflux
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-miniflux
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/miniflux
+  prune: false
