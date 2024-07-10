@@ -1031,8 +1031,8 @@ resource "aws_iam_role_policy_attachment" "immich-dragonfly" {
   policy_arn = aws_iam_policy.immich-dragonfly.arn
 }
 
-resource "aws_iam_role" "immich-typesense" {
-  name = "${local.project}-immich-typesense"
+resource "aws_iam_role" "miniflux" {
+  name = "${local.project}-miniflux"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1044,7 +1044,7 @@ resource "aws_iam_role" "immich-typesense" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-typesense",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:miniflux:miniflux",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -1053,8 +1053,8 @@ resource "aws_iam_role" "immich-typesense" {
   })
 }
 
-resource "aws_iam_policy" "immich-typesense" {
-  name = "${local.project}-immich-typesense"
+resource "aws_iam_policy" "miniflux" {
+  name = "${local.project}-miniflux"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1062,20 +1062,20 @@ resource "aws_iam_policy" "immich-typesense" {
         "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-typesense"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/miniflux/miniflux"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "immich-typesense" {
-  role       = aws_iam_role.immich-typesense.name
-  policy_arn = aws_iam_policy.immich-typesense.arn
+resource "aws_iam_role_policy_attachment" "miniflux" {
+  role       = aws_iam_role.miniflux.name
+  policy_arn = aws_iam_policy.miniflux.arn
 }
 
-resource "aws_iam_role" "immich-typesense-backup-secret-holder" {
-  name = "${local.project}-immich-typesense-backup-secret-holder"
+resource "aws_iam_role" "miniflux-postgres-secret-holder" {
+  name = "${local.project}-miniflux-postgres-secret-holder"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1087,7 +1087,7 @@ resource "aws_iam_role" "immich-typesense-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-typesense-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:miniflux:miniflux-postgres-secret-holder",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -1096,8 +1096,8 @@ resource "aws_iam_role" "immich-typesense-backup-secret-holder" {
   })
 }
 
-resource "aws_iam_policy" "immich-typesense-backup-secret-holder" {
-  name = "${local.project}-immich-typesense-backup-secret-holder"
+resource "aws_iam_policy" "miniflux-postgres-secret-holder" {
+  name = "${local.project}-miniflux-postgres-secret-holder"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1105,14 +1105,14 @@ resource "aws_iam_policy" "immich-typesense-backup-secret-holder" {
         "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-typesense-backup"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/miniflux/miniflux-postgres"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "immich-typesense-backup-secret-holder" {
-  role       = aws_iam_role.immich-typesense-backup-secret-holder.name
-  policy_arn = aws_iam_policy.immich-typesense-backup-secret-holder.arn
+resource "aws_iam_role_policy_attachment" "miniflux-postgres-secret-holder" {
+  role       = aws_iam_role.miniflux-postgres-secret-holder.name
+  policy_arn = aws_iam_policy.miniflux-postgres-secret-holder.arn
 }
