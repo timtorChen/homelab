@@ -20,7 +20,7 @@ spec:
         kind: HelmRepository
         name: grafana
       chart: mimir-distributed
-      version: 5.0.0
+      version: 5.4.0
   interval: 1h
   maxHistory: 1
   values:
