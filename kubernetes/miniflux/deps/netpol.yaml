@@ -1,0 +1,83 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: miniflux
+  name: miniflux-postgres-policy
+specs:
+  # allow connection from miniflux
+  - endpointSelector: &self
+      matchLabels:
+        cnpg.io/cluster: miniflux-postgres
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: miniflux
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+  # allow postgres internal components
+  # - dns resolution to primary
+  # - replica connect to primary
+  # - health check probe from cnpg operator
+  # - get information from kube-apiserver
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: cnpg
+              app.kubernetes.io/instance: cnpg
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8000"
+    egress:
+      - toEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "miniflux-postgres-rw.miniflux.svc.cluster.local."
+  # backup and restore
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: &b2 s3.us-east-005.backblazeb2.com
+      - toFQDNs:
+          - matchName: *b2
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"

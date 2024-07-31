@@ -1,0 +1,77 @@
+---
+version: "3"
+silent: true
+
+includes:
+  aws:
+    taskfile: ../../.tasks/aws.yaml
+  cnpg:
+    taskfile: ../../.tasks/cnpg.yaml
+
+tasks:
+  secrets:
+    internal: true
+    silent: true
+    env:
+      REPO_DB: &repo-db s3://timtor-homelab-miniflux/miniflux-postgres/base/
+
+  pitrestore:
+    prompt: "Restore will delete the current miniflux-postgres... continune?"
+    cmds:
+      - task: stop
+      - task: cnpg:delete
+        vars:
+          NAMESPACE: miniflux
+          NAME: miniflux-postgres
+      - task: cnpg:pitr
+        vars:
+          TEMPLATE: maintain/postgres-restore.tmpl.yaml
+      - task: start
+
+  backup:
+    cmds:
+      - task: cnpg:backup
+        vars:
+          NAMESPACE: miniflux
+          NAME: miniflux-postgres
+
+  stop:
+    cmd: |
+      echo "Stopping miniflux..."
+      kubectl scale --replicas 0 -n miniflux deployment/miniflux
+
+  start:
+    cmd: |
+      echo "Starting miniflux..."
+      kubectl scale --replicas 1 -n miniflux deployment/miniflux
+
+  stop-postgres:
+    cmds:
+      - task: cnpg:stop
+        vars:
+          NAMESPACE: miniflux
+          NAME: miniflux-postgres
+
+  start-postgres:
+    cmds:
+      - task: cnpg:start
+        vars:
+          NAMESPACE: miniflux
+          NAME: miniflux-postgres
+
+  stop-all:
+    cmds:
+      - task: stop
+      - task: stop-postgres
+
+  start-all:
+    cmds:
+      - task: start-postgres
+      - task: start
+
+  list-backup:
+    cmds:
+      - echo "Listing miniflux-postgres backups..."
+      - task: aws:s3-ls
+        vars:
+          REPO: *repo-db

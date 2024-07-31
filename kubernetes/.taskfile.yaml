@@ -28,6 +28,10 @@ includes:
     optional: true
     taskfile: unifi-controller/.taskfile.yaml
     dir: unifi-controller
+  miniflux:
+    optional: true
+    taskfile: miniflux/.taskfile.yaml
+    dir: miniflux
   grafana:
     optional: true
     taskfile: grafana/.taskfile.yaml
