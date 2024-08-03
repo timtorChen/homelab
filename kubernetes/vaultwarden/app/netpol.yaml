@@ -31,6 +31,7 @@ specs:
             rules:
               dns: &push
                 - matchName: push.bitwarden.com
+                - matchName: identity.bitwarden.com
       - toFQDNs: *push
         toPorts:
           - ports:
