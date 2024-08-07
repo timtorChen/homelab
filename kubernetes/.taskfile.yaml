@@ -8,6 +8,9 @@ includes:
   rook-ceph:
     optional: true
     taskfile: ../.tasks/rook-ceph.yaml
+  cilium:
+    optional: true
+    taskfile: ../.tasks/cilium.yaml
   nextcloud:
     optional: true
     taskfile: mydata/nextcloud/.taskfile.yaml

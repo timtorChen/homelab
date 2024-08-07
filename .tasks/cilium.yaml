@@ -1,0 +1,13 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  ui:
+    cmd: cilium hubble ui
+
+  port-forward:
+    cmd: cilium hubble port-forward
+
+  observe:
+    cmd: hubble observe {{.CLI_ARGS}}
