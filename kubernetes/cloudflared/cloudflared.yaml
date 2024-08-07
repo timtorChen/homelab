@@ -43,7 +43,7 @@ spec:
           main:
             image:
               repository: cloudflare/cloudflared
-              tag: 2024.6.1
+              tag: 2024.8.2
             args:
               - tunnel
               - --no-autoupdate
