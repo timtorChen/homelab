@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: miniflux/miniflux
-              tag: 2.1.2-distroless
+              tag: 2.1.4-distroless
             ## Debug only, uncomment
             # command: ["sleep", "infinity"]
 
