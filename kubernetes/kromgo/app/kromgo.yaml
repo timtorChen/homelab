@@ -43,7 +43,7 @@ spec:
               tag: v0.4.1
             env:
               PROMETHEUS_URL: http://mimir-query-frontend.mimir:8080/prometheus
-              PORT: 8080
+              SERVER_PORT: &p 8080
             securityContext:
               runAsNonRoot: true
               runAsUser: 65534
@@ -71,7 +71,7 @@ spec:
         ports:
           http:
             primary: true
-            port: &p 8080
+            port: *p
             protocol: HTTP
     ingress:
       main:
