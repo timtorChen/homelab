@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: secrets-store-csi-driver
       chart: secrets-store-csi-driver
-      version: 1.4.4
+      version: 1.4.5
   install:
     crds: CreateReplace
   upgrade:
