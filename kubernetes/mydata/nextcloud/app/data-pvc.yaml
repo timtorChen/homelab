@@ -5,7 +5,7 @@ metadata:
   namespace: mydata
   name: nextcloud-data
 spec:
-  storageClassName: fs-bulk
+  storageClassName: fs-fast
   resources:
     requests:
       storage: 500Gi

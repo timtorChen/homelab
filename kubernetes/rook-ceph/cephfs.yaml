@@ -35,20 +35,6 @@ spec:
       replicated:
         size: 2
         requireSafeReplicaSize: true
-    - # fs-bulk pool
-      name: bulk
-      failureDomain: host
-      deviceClass: hdd
-      replicated:
-        size: 3
-        requireSafeReplicaSize: true
-    - # fs-bulk-volatile pool
-      name: bulk-volatile
-      failureDomain: host
-      deviceClass: hdd
-      replicated:
-        size: 2
-        requireSafeReplicaSize: true
   metadataServer:
     # rook will create instance in activeCount*2
     # setup one active and one warm standby MDS
@@ -107,63 +93,6 @@ parameters:
   clusterID: rook-ceph
   fsName: fs
   pool: fs-fast-volatile
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-reclaimPolicy: Delete
-allowVolumeExpansion: true
----
-# StorageClass fs-bulk
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: fs-bulk
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  clusterID: rook-ceph
-  fsName: fs
-  pool: fs-bulk
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-reclaimPolicy: Retain
-allowVolumeExpansion: true
----
-# StorageClass fs-bulk-delete
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: fs-bulk-delete
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  clusterID: rook-ceph
-  fsName: fs
-  pool: fs-bulk
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-reclaimPolicy: Delete
-allowVolumeExpansion: true
----
-# StorageClass fs-bulk-volatile
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: fs-bulk-volatile
-provisioner: rook-ceph.cephfs.csi.ceph.com
-parameters:
-  clusterID: rook-ceph
-  fsName: fs
-  pool: fs-bulk-volatile
   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner

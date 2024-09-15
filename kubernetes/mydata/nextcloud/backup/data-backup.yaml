@@ -16,7 +16,7 @@ spec:
       weekly: 4
     copyMethod: Snapshot
     volumeSnapshotClassName: rook-ceph-fs
-    storageClassName: fs-bulk-volatile
+    storageClassName: fs-fast-volatile
     accessModes: ["ReadWriteOnce"]
     cacheStorageClassName: rbd-fast-volatile
     cacheAccessModes: ["ReadWriteOnce"]

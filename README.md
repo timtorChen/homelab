@@ -43,7 +43,7 @@ This is a mono repository for my home infrastructure and Kubernetes cluster. I u
 - [Cloudflared](https://github.com/cloudflare/cloudflared): encrypted tunnel between server and Cloudflare.
 - [Cert-manager](https://github.com/cert-manager/cert-manager): public and private certificate controller.
 - [Ingress-nginx](https://github.com/Kubernetes/ingress-nginx): simple ingress controller.
-- [Rook-ceph](https://github.com/rook/rook): ceph operator. I use nvme and hdd to provide different performace of block, object and file storage.
+- [Rook-ceph](https://github.com/rook/rook): ceph operator, providing block, object and file storage.
 - [Volsync](https://github.com/backube/volsync): Persistent Volume snapshot and backup. I use Restic-based backup to Backblaze S3 bucket.
 - [CNPG](https://github.com/cloudnative-pg/cloudnative-pg): postgres operator.
 - [Grafana LG~~T~~M](https://github.com/grafana): system monitoring stack.
@@ -111,7 +111,7 @@ Notice that Talos Linux default use ES256 for Kubernetes ServiceAccount token, h
 | Mikrotik<br/>RB4011iGS+RM        | Router                    | 1     |                              |                                                                                                                  |
 | Mikrotik<br/>CRS328-24P-4S+RM    | PoE Switch                | 1     |                              |                                                                                                                  |
 | Raspberry Pi 4B</br>with PoE hat | Kubernetes worker nodes   | 3     | 8GB                          | 960GB SSD Micron 5200                                                                                            |
-| Intel<br/>NUC11TNHi50L           | Kubernetes control planes | 3     | 16-32GB Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450, and 4TB HDD Seagate ST4000VN008<div/> |
+| Intel<br/>NUC11TNHi50L           | Kubernetes control planes | 3     | 16-32GB Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
 | APC AP7902                       | 16p Switched PDU          | 1     |                              |                                                                                                                  |
 
 ## 🤝 Acknowledgments

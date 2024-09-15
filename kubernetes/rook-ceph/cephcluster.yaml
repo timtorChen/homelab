@@ -29,25 +29,16 @@ spec:
           - config:
               deviceClass: nvme
             name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDCF214
-          - config:
-              deviceClass: hdd
-            name: /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH96900
       - name: amethyst-nuc11tnhi50l-2
         devices:
           - config:
               deviceClass: nvme
             name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDD4746
-          - config:
-              deviceClass: hdd
-            name: /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH95W58
       - name: amethyst-nuc11tnhi50l-3
         devices:
           - config:
               deviceClass: nvme
             name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDCF204
-          - config:
-              deviceClass: hdd
-            name: /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH93J1E
   resources:
     osd:
       requests:
