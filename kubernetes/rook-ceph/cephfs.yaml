@@ -33,8 +33,8 @@ spec:
       failureDomain: host
       deviceClass: nvme
       replicated:
-        size: 2
-        requireSafeReplicaSize: true
+        size: 1
+        requireSafeReplicaSize: false
   metadataServer:
     # rook will create instance in activeCount*2
     # setup one active and one warm standby MDS

@@ -22,8 +22,8 @@ spec:
   failureDomain: host
   deviceClass: nvme
   replicated:
-    size: 2
-    requireSafeReplicaSize: true
+    size: 1
+    requireSafeReplicaSize: false
 ---
 # StorageClass rbd-fast
 apiVersion: storage.k8s.io/v1

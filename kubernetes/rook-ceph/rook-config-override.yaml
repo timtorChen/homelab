@@ -11,3 +11,5 @@ data:
     cluster network = 192.168.253.101/21, 192.168.254.102/21, 192.168.254.103/21
     public addr = ""
     cluster addr = ""
+    [mon]
+    mon_warn_on_pool_no_redundancy = false
