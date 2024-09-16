@@ -9,6 +9,12 @@ resources:
   - app/data-pvc.yaml
   - app/install-pvc.yaml
   - app/netpol.yaml
+  - backup/data-backup.yaml
+  - backup/data-secret.yaml
+  - backup/install-backup.yaml
+  - backup/install-secret.yaml
+  - backup/secret-holder-sa.yaml
+  - backup/secret-holder.yaml
   - deps/postgres.yaml
   - deps/postgres-secret.yaml
   - deps/postgres-secret-holder.yaml
