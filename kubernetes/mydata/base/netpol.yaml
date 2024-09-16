@@ -2,8 +2,8 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: vaultwarden
-  name: vaultwarden-default-policy
+  namespace: mydata
+  name: mydata-default-policy
 specs:
   - endpointSelector:
       matchLabels: {}
@@ -15,8 +15,8 @@ specs:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: vaultwarden
-  name: vaultwarden-backup-policy
+  namespace: mydata
+  name: mydata-backup-policy
 specs:
   - endpointSelector:
       matchLabels:
