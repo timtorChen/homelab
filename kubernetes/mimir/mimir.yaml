@@ -66,6 +66,7 @@ spec:
         limits:
           # keep metrics for 90 days
           compactor_blocks_retention_period: 90d
+          max_global_series_per_user: 1000000
         compactor:
           # every 15 minutes mark old blocks as deleted, and update bucket index
           cleanup_interval: 15m
