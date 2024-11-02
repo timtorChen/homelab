@@ -1,10 +1,8 @@
 <div align="center">
 
-### My Homelab Repository :octocat:
+### My Homelab :octocat:
 
-... _progressed with the song [未来のミュージアム](https://www.youtube.com/watch?v=s8_vqfjYpBg)_ 🎧
-
-</div>
+... _progressing the song [未来のミュージアム](https://www.youtube.com/watch?v=s8_vqfjYpBg)_ 🎧
 
 </div>
 
@@ -33,57 +31,23 @@
 
 This is a mono repository for my home infrastructure and Kubernetes cluster. I use [Talos](https://github.com/siderolabs/talos) Kubernetes distribution, and follows the concept Infrastructure as Code (IaC), using the tools like [Flux](https://github.com/fluxcd/flux2), [Terraform](https://github.com/hashicorp/terraform), [Renovate](https://github.com/renovatebot/renovate) and [Github Actions](https://github.com/features/actions).
 
-## ⛵ Kubernetes
+## 🚢 Technology Stack
 
-### Core Components
-
-- [Flux](https://github.com/fluxcd/flux2): gitops tool reconcile manifests from Git repository to Kubernetes.
-- [Cilium](https://github.com/cilium/cilium): advanced networking.
-- [Metallb](https://github.com/metallb/metallb): IP address announcement and allocation for Kubernetes LoadBalancer Service.
-- [Cloudflared](https://github.com/cloudflare/cloudflared): encrypted tunnel between server and Cloudflare.
-- [Cert-manager](https://github.com/cert-manager/cert-manager): public and private certificate controller.
-- [Ingress-nginx](https://github.com/Kubernetes/ingress-nginx): simple ingress controller.
-- [Rook-ceph](https://github.com/rook/rook): ceph operator, providing block, object and file storage.
-- [Volsync](https://github.com/backube/volsync): Persistent Volume snapshot and backup. I use Restic-based backup to Backblaze S3 bucket.
-- [CNPG](https://github.com/cloudnative-pg/cloudnative-pg): postgres operator.
-- [Grafana LG~~T~~M](https://github.com/grafana): system monitoring stack.
-- [Kyverno](https://github.com/kyverno/kyverno): Kubernetes policy manager.
-- [Secrets-store-csi-driver](https://github.com/Kubernetes-sigs/secrets-store-csi-driver): mount secret volumes form external providers into a Pod, providing an alternative way to Kubernetes Secret.
-- [Amazon-eks-pod-identity-webhook](https://github.com/aws/amazon-eks-pod-identity-webhook): ServiceAccount token injection for Pod to access AWS.
-
-### Flux Reconcile Flow
-
-...
-
-### Networking
-
-...
-
-### Storage
-
-...
-
-### Secrets
-
-Kubernetes secrets are sourced externally from AWS Parameter Store. To provide the namespace separation and reduce etcd secret storage, I put more effort on Kubernetes secret management using secret-store-csi-driver and AWS IRSA:
-
-```
-                                                                                                OIDC discovery documents
-                                                                                                            ↑
-                                                                                                        reference
-                                                                                                            |
-                                                         ---- 2. exchange the token to AWS credentail ---> AWS STS
-secrets-store-csi-driver ---> secrets-store-csi-driver-  ---- 3. get secrets ---> AWS Parameter Store
-                                provider-aws
-                                    |
-                  1. create ServiceAccount token by impersonating workload
-                                    ↓
-                                 kube-api
-```
-
-Secrets-store-csi-driver-provider-aws DaemonSet plays as central manager to the secret fetching flow. Starting from volume mount request, secrets-store-csi-driver-provider-aws will create a ServiceAccount token by impersonating the workload, and try to exchange an AWS credential. AWS STS validate the ServiceAccount token by referencing OIDC discovery documents [s3://amethyst-kubernetes-oidc/.well-known/openid-configuration](https://amethyst-kubernetes-oidc.s3.us-west-2.amazonaws.com/.well-known/openid-configuration), and return a temporary AWS credential. Finally, secrets-store-csi-driver-provider-aws get secrtes from AWS Parameter Store and write secrets to a target hostPath.
-
-Notice that Talos Linux default use ES256 for Kubernetes ServiceAccount token, however [AWS STS only supports token with RS256](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html). We need to generate an RSA key, base64 encode and patch the talos configuration `cluster.serviceAccount.key` on control plane. The [blog](https://www.siderolabs.com/blog/workload-identity-for-Kubernetes-on-gcp) might be helpful.
+|                                                                                                                                                      | Name                                                                                      | Description                                                         |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+|                                             <img width="32" src="https://www.talos.dev/images/logo.svg">                                             | [Talos](https://github.com/siderolabs/talos)                                              | Immutable Linux distribution for Kubernetes.                        |
+|                     <img width="28" src="https://github.com/cncf/artwork/raw/main/projects/flux/icon/color/flux-icon-color.svg">                     | [Flux](https://github.com/fluxcd/flux2)                                                   | Gitops tool to reconcile sources from Git repository to Kubernetes. |
+|                  <img width="32" src="https://github.com/cncf/artwork/raw/main/projects/kyverno/icon/color/kyverno-icon-color.svg">                  | [Kyverno](https://github.com/kyverno/kyverno)                                             | Kubernetes policy manager.                                          |
+|                   <img width="32" src="https://github.com/cncf/artwork/raw/main/projects/cilium/icon/color/cilium_icon-color.svg">                   | [Cilium](https://github.com/cilium/cilium)                                                | Advanced networking.                                                |
+|                                   <img width="32" src="https://metallb.universe.tf/images/logo/metallb-blue.png">                                    | [Metallb](https://github.com/metallb/metallb)                                             | IP address announcement and allocation for Kubernetes LoadBalancer. |
+|            <img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Cloudflare_Logo.png/240px-Cloudflare_Logo.png">            | [Cloudflared](https://github.com/cloudflare/cloudflared)                                  | Encrypted tunnel between server and Cloudflare.                     |
+|             <img width="32" src="https://github.com/cncf/artwork/raw/main/projects/cert-manager/icon/color/cert-manager-icon-color.png">             | [Cert-manager](https://github.com/cert-manager/cert-manager)                              | Public and private certificate controller.                          |
+|              <img width="48"  src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nginx_logo.svg/320px-Nginx_logo.svg.png">               | [Ingress-nginx](https://github.com/Kubernetes/ingress-nginx)                              | Simple ingress controller.                                          |
+|                     <img width="32" src="https://github.com/cncf/artwork/raw/main/projects/rook/icon/color/rook-icon-color.png">                     | [Rook-ceph](https://github.com/rook/rook)                                                 | Ceph operator, providing block, object and file storage.            |
+|                                  <img width="32" src="https://avatars.githubusercontent.com/u/47803932?s=200&v=4">                                   | [Volsync](https://github.com/backube/volsync)                                             | Persistent Volume snapshot and backup.                              |
+|                                  <img width="32" src="https://avatars.githubusercontent.com/u/100373852?s=200&v=4">                                  | [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)                         | Postgres operator.                                                  |
+|                                       <img width="32" src="https://grafana.com/static/img/menu/grafana2.svg">                                        | [Grafana LG~~T~~M](https://github.com/grafana)                                            | System monitoring.                                                  |
+| <img width="32" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/320px-Amazon_Web_Services_Logo.svg.png"> | [Amazon-eks-pod-identity-webhook](https://github.com/aws/amazon-eks-pod-identity-webhook) | ServiceAccount token injection for Pod to access AWS.               |
 
 ## ☁️ Cloud Services
 
@@ -102,17 +66,17 @@ Notice that Talos Linux default use ES256 for Kubernetes ServiceAccount token, h
 
 <details>
 <summary>Click to see the rack</summary>
-<img src="docs/src/rack-20231206.jpg" width="400px"/>
+<img src="docs/src/rack-20241103.jpg" width="400px"/>
 </details>
 
-| Device                           | Description               | Count | RAM                          | Disk                                                                                                             |
-| -------------------------------- | ------------------------- | ----- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Askey RTF8207W                   | Chunghwa Telecom modem    | 1     |                              |                                                                                                                  |
-| Mikrotik<br/>RB4011iGS+RM        | Router                    | 1     |                              |                                                                                                                  |
-| Mikrotik<br/>CRS328-24P-4S+RM    | PoE Switch                | 1     |                              |                                                                                                                  |
-| Raspberry Pi 4B</br>with PoE hat | Kubernetes worker nodes   | 3     | 8GB                          | 960GB SSD Micron 5200                                                                                            |
-| Intel<br/>NUC11TNHi50L           | Kubernetes control planes | 3     | 16-32GB Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
-| APC AP7902                       | 16p Switched PDU          | 1     |                              |                                                                                                                  |
+| Device                          | Description                  | Count | RAM                        | Disk                                                                      |
+| ------------------------------- | ---------------------------- | ----- | -------------------------- | ------------------------------------------------------------------------- |
+| Askey RTF8207W                  | Chunghwa Telecom modem       | 1     |                            |                                                                           |
+| Mikrotik RB4011iGS+RM           | Router                       | 1     |                            |                                                                           |
+| Mikrotik CRS328-24P-4S+RM       | PoE Switch                   | 1     |                            |                                                                           |
+| Raspberry Pi 4B with PoE hat    | Kubernetes worker nodes      | 3     | 8GB                        | 960GB SSD Micron 5200                                                     |
+| Intel NUC11TNHi50L              | Kubernetes control planes    | 3     | 16\*2 Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
+| Ubiquiti Power Distribution Pro | 16p Switched and metered PDU | 1     |                            |                                                                           |
 
 ## 🤝 Acknowledgments
 
@@ -120,4 +84,5 @@ Thanks to [Home Operations](https://discord.com/invite/home-operations) Discord 
 
 ## 📄 License
 
-See [Licesne](./LICENSE).
+Code is under the [MIT License](./LICENSE).
+Document and image is avaliable under [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/).
