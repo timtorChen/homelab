@@ -18,9 +18,10 @@ spec:
   values:
     controllers:
       main:
+        # Notice: stateful application in deployment
         type: deployment
         replicas: 1
-        strategy: RollingUpdate
+        strategy: Recreate
         pod:
           automountServiceAccountToken: false
           securityContext:
