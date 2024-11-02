@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/dani-garcia/vaultwarden
-              tag: 1.32.2-alpine
+              tag: 1.32.3-alpine
             ## Debug only, uncomment
             # command: ["sleep", "infinity"]
 
