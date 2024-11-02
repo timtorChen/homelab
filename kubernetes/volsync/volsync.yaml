@@ -31,6 +31,10 @@ spec:
   values:
     manageCRDs: true
 
+    restic:
+      repository: quay.io/backube/volsync
+      tag: release-0.11
+
     podSecurityContext:
       runAsNonRoot: true
       seccompProfile:
