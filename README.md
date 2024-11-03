@@ -2,7 +2,7 @@
 
 ### My Homelab :octocat:
 
-... _progressing the song [未来のミュージアム](https://www.youtube.com/watch?v=s8_vqfjYpBg)_ 🎧
+... _progressing with [未来のミュージアム](https://www.youtube.com/watch?v=s8_vqfjYpBg)_ 🎧
 
 </div>
 
