@@ -37,6 +37,12 @@ machine:
   # -- Talos features
   features:
     rbac: true
+    kubernetesTalosAPIAccess:
+      enabled: true
+      allowedRoles:
+        - os:etcd:backup
+      allowedKubernetesNamespaces:
+        - etcd-backup
     stableHostname: true
     apidCheckExtKeyUsage: true
     kubePrism:
