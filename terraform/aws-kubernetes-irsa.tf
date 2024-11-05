@@ -127,6 +127,49 @@ resource "aws_iam_role_policy_attachment" "cloudflared" {
   policy_arn = aws_iam_policy.cloudflared.arn
 }
 
+resource "aws_iam_role" "etcd-backup" {
+  name = "${local.project}-etcd-backup"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:etcd-backup:etcd-backup",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "etcd-backup" {
+  name = "${local.project}-etcd-backup"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameters",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/etcd-backup"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "etcd-backup" {
+  role       = aws_iam_role.etcd-backup.name
+  policy_arn = aws_iam_policy.etcd-backup.arn
+}
+
 resource "aws_iam_role" "snmp-exporter-mikrotik" {
   name = "${local.project}-snmp-exporter-mikrotik"
   assume_role_policy = jsonencode({

@@ -1,0 +1,142 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: etcd-backup
+  name: etcd-backup
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 3.1.0
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    controllers:
+      main:
+        type: cronjob
+        cronjob:
+          schedule: "0 * * * *"
+          concurrencyPolicy: Forbid
+          backoffLimit: 3
+          successfulJobsHistory: 3
+          failedJobsHistory: 1
+        annotations:
+          secret.reloader.stakater.com/reload: &s rustic-secret
+        pod:
+          hostname: etcd-backup
+          restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+          dnsConfig:
+            options:
+              - name: ndots
+                value: "1"
+        initContainers:
+          talos:
+            image:
+              repository: ghcr.io/siderolabs/talosctl
+              tag: v1.7.1
+            args:
+              - "-n"
+              - "192.168.253.1"
+              - "etcd"
+              - "snapshot"
+              - "/data/etcd.snapshot"
+            securityContext: &sc
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+        containers:
+          rustic-backup:
+            image:
+              repository: ghcr.io/rustic-rs/rustic
+              tag: v0.9.4
+            env: &env
+              RUSTIC_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: RUSTIC_PASSWORD
+              OPENDAL_ACCESS_KEY_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: OPENDAL_ACCESS_KEY_ID
+              OPENDAL_SECRET_ACCESS_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: OPENDAL_SECRET_ACCESS_KEY
+            args:
+              - backup
+              - --init
+              - /data
+            resources: {}
+            securityContext: *sc
+          rustic-forget:
+            image:
+              repository: ghcr.io/rustic-rs/rustic
+              tag: v0.9.4
+            env: *env
+            args:
+              - forget
+            resources: {}
+            securityContext: *sc
+
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-etcd-backup
+        eks.amazonaws.com/audience: sts.amazonaws.com
+
+    persistence:
+      talos-secret:
+        type: secret
+        name: etcd-backup-talos-sa
+        advancedMounts:
+          main:
+            talos:
+              - path: /var/run/secrets/talos.dev
+                readOnly: true
+      data:
+        type: emptyDir
+        sizeLimit: 500Mi
+        advancedMounts:
+          main:
+            talos:
+              - path: /data
+            rustic-backup:
+              - path: /data
+      rustic-config:
+        type: configMap
+        name: rustic-config
+        advancedMounts:
+          main:
+            rustic-backup:
+              - path: /rustic.toml
+                subPath: rustic.toml
+                readOnly: true
+            rustic-forget:
+              - path: /rustic.toml
+                subPath: rustic.toml
+                readOnly: true
+      rustic-secret:
+        type: custom
+        volumeSpec:
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *s

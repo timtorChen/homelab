@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: etcd-backup
+  name: bjw-s
+spec:
+  url: https://bjw-s.github.io/helm-charts
+  interval: 24h
