@@ -30,6 +30,8 @@ spec:
         annotations:
           secret.reloader.stakater.com/reload: &s rustic-secret
         pod:
+          hostname: etcd-backup
+          restartPolicy: OnFailure
           automountServiceAccountToken: false
           securityContext:
             fsGroup: 65534
