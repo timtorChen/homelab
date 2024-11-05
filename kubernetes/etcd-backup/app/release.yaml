@@ -1,5 +1,4 @@
 ---
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -19,7 +18,6 @@ spec:
   values:
     controllers:
       main:
-        # Notice: stateful application in deployment
         type: cronjob
         cronjob:
           schedule: "0 * * * *"
