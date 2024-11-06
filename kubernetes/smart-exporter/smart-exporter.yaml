@@ -57,6 +57,7 @@ spec:
                 memory: 64Mi
             securityContext:
               privileged: true
+            terminationMessagePath: /termination-log
 
     persistence:
       device:
