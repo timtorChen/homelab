@@ -1,8 +1,0 @@
----
-## Header for task scripts
-# ip: 192.168.253.3
-# includes: [controlplane.yaml]
-machine:
-  type: controlplane
-  network:
-    hostname: amethyst-pi4b-3

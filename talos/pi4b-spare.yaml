@@ -5,4 +5,4 @@
 machine:
   type: controlplane
   network:
-    hostname: amethyst-pi4b-2
+    hostname: pi4b-spare
