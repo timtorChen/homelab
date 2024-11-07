@@ -74,8 +74,8 @@ This is a mono repository for my home infrastructure and Kubernetes cluster. I u
 | Askey RTF8207W                  | Chunghwa Telecom modem       | 1     |                            |                                                                           |
 | Mikrotik RB4011iGS+RM           | Router                       | 1     |                            |                                                                           |
 | Mikrotik CRS328-24P-4S+RM       | PoE Switch                   | 1     |                            |                                                                           |
-| Raspberry Pi 4B with PoE hat    | Kubernetes worker nodes      | 3     | 8GB                        | 960GB SSD Micron 5200                                                     |
-| Intel NUC11TNHi50L              | Kubernetes control planes    | 3     | 16\*2 Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
+| Raspberry Pi 4B with PoE hat    | Kubernetes control planes    | 1     | 8GB                        | 960GB SSD Micron 5200                                                     |
+| Intel NUC11TNHi50L              | Kubernetes worker nodes      | 3     | 16\*2 Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
 | Ubiquiti Power Distribution Pro | 16p Switched and metered PDU | 1     |                            |                                                                           |
 
 ## 🤝 Acknowledgments
