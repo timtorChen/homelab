@@ -25,7 +25,7 @@ tasks:
   # controlplane
   apply-controlplane:
     cmds:
-      - for: &controlplans [pi4b-1, pi4b-2, pi4b-3]
+      - for: &controlplans [pi4b-1]
         task: tal:apply
         vars:
           NODE: "{{.ITEM}}"
@@ -96,65 +96,35 @@ tasks:
         vars:
           NODE: pi4b-1
 
-  # pi4b-2
-  render-pi4b-2:
+  # pi4b-spare
+  render-pi4b-spare:
     cmds:
       - task: tal:render
-        vars: &pi4b-2-vars
-          NODE: pi4b-2
+        vars: &pi4b-spare-vars
+          NODE: pi4b-spare
           SECRET_ENV: *talos-secret
-  plan-pi4b-2:
+  plan-pi4b-spare:
     cmds:
       - task: tal:plan
-        vars: *pi4b-2-vars
-  apply-pi4b-2:
+        vars: *pi4b-spare-vars
+  apply-pi4b-spare:
     cmds:
       - task: tal:apply
-        vars: *pi4b-2-vars
-  upgrade-pi4b-2:
+        vars: *pi4b-spare-vars
+  upgrade-pi4b-spare:
     cmds:
       - task: tal:upgrade
-        vars: *pi4b-2-vars
-  shutdown-pi4b-2:
+        vars: *pi4b-spare-vars
+  shutdown-pi4b-spare:
     cmds:
       - task: tal:shutdown
         vars:
-          NODE: pi4b-2
-  reset-pi4b-2:
+          NODE: pi4b-spare
+  reset-pi4b-spare:
     cmds:
       - task: tal:reset
         vars:
-          NODE: pi4b-2
-
-  # pi4b-3
-  render-pi4b-3:
-    cmds:
-      - task: tal:render
-        vars: &pi4b-3-vars
-          NODE: pi4b-3
-          SECRET_ENV: *talos-secret
-  plan-pi4b-3:
-    cmds:
-      - task: tal:plan
-        vars: *pi4b-3-vars
-  apply-pi4b-3:
-    cmds:
-      - task: tal:apply
-        vars: *pi4b-3-vars
-  upgrade-pi4b-3:
-    cmds:
-      - task: tal:upgrade
-        vars: *pi4b-3-vars
-  shutdown-pi4b-3:
-    cmds:
-      - task: tal:shutdown
-        vars:
-          NODE: pi4b-3
-  reset-pi4b-3:
-    cmds:
-      - task: tal:reset
-        vars:
-          NODE: pi4b-3
+          NODE: pi4b-spare
 
   # nuc11tnhi50l-1
   render-nuc11tnhi50l-1:
