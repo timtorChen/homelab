@@ -20,6 +20,6 @@ data:
     region = "us-east-005"
 
     [forget]
-    keep-hourly = -1
+    keep-hourly = 24
     keep-daily = 5
     keep-weekly = 4
