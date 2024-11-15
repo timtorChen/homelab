@@ -139,6 +139,20 @@ spec:
   path: /kubernetes/reloader
   prune: true
 ---
+# etcd-backup
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-etcd-backup
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/etcd-backup
+  prune: true
+---
 # --- 2 - Storage Namespaces ---
 # rook-ceph
 apiVersion: kustomize.toolkit.fluxcd.io/v1
