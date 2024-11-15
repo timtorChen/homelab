@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: home-assistant
+  name: home-assistant
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 3.1.0
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: Recreate
+        annotations:
+          configmap.reloader.stakater.com/reload: &config home-assistant-config
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/home-assistant
+              tag: 2024.11.1
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+
+    serviceAccount:
+      create: true
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        existingClaim: home-assistant-data
+        globalMounts:
+          - path: /config
+      config:
+        type: configMap
+        name: *config
+        globalMounts:
+          - path: /config/configuration.yaml
+            subPath: configuration.yaml
+          - path: /config/automations.yaml
+            subPath: automations.yaml
+
+    service:
+      main:
+        controller: main
+        primary: true
+        ports:
+          http:
+            primary: true
+            port: &p 8123
+            protocol: HTTP
+
+    ingress:
+      main:
+        className: nginx
+        hosts:
+          - host: hass.timtor.dev
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: *p

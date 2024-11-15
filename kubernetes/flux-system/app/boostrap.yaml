@@ -543,3 +543,17 @@ spec:
   interval: 10m0s
   path: /kubernetes/miniflux
   prune: false
+---
+# home-assistant
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-home-assistant
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/home-assistant
+  prune: false
