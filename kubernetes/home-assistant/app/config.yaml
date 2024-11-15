@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: home-assistant
+  name: home-assistant-config
+data:
+  # --- configs
+  configuration.yaml: | #yaml
+    default_config: {}
+    homeassistant:
+      external_url: https://hass.timtor.dev
+    http:
+      server_port: 8123
+      use_x_forwarded_for: true
+      trusted_proxies: 
+        - 0.0.0.0/0
+    automation: !include automations.yaml
+
+  # --- automations
+  automations.yaml: | #yaml
+    - alias: "Plant LED"
+      id: "planet_led"
+      triggers:
+        - trigger: time_pattern
+          minutes: "/30"
+      actions:
+        - choose:
+          # turn on the led if is a morning having no sun light
+          - conditions:
+              - condition: sun
+                after: sunrise
+                before: sunset
+                after_offset: "+03:00:00"
+              - condition: template
+                value_template: "{{ state_attr('weather.home', 'uv_index') < 5 }}"
+            sequence:
+              - action: switch.turn_on
+                target:
+                  entity_id: switch.usp_strip_outlet_5
+          # otherwise turn off the led
+          default:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.usp_strip_outlet_5
