@@ -88,7 +88,15 @@ spec:
                 cpu: 50m
                 memory: 256Mi
             securityContext:
-              privileged: true
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
 
     serviceAccount:
       create: true
