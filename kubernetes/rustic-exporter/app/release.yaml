@@ -1,0 +1,136 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: rustic-exporter
+  name: rustic-exporter
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 3.1.0
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &secret rustic-exporter-secret
+          configmap.reloader.stakater.com/reload: &config rustic-exporter-config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/timtorchen/rustic-exporter
+              tag: v0.1.0-rc.5
+            args: ["--config", "/config.toml"]
+            env:
+              PORT: &port 8080
+              INTERVAL: 300
+              b2_general_access_key_id:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: b2_general_access_key_id
+              b2_general_secret_access_key:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: b2_general_secret_access_key
+              vaultwarden_backup_password:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: vaultwarden_backup_password
+              nextcloud_backup_password:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: nextcloud_backup_password
+              immich_backup_password:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: immich_backup_password
+              navidrome_backup_password:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: navidrome_backup_password
+              unifi_controller_backup_password:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: unifi_controller_backup_password
+              etcd_backup_password:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: etcd_backup_password
+
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 256Mi
+              requests:
+                cpu: 50m
+                memory: 256Mi
+            securityContext:
+              privileged: true
+
+    serviceAccount:
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-rustic-exporter
+        eks.amazonaws.com/audience: sts.amazonaws.com
+
+    persistence:
+      config:
+        type: configMap
+        name: *config
+        globalMounts:
+          - path: /config.toml
+            subPath: config.toml
+            readOnly: true
+      secret:
+        type: custom
+        volumeSpec:
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: *secret
+        globalMounts:
+          - path: /secret
+            readOnly: true
+
+    service:
+      main:
+        controller: main
+        primary: true
+        ports:
+          http:
+            primary: true
+            port: *port
+            protocol: HTTP
+
+    serviceMonitor:
+      main:
+        serviceName: rustic-exporter
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 30s

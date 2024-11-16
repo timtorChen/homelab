@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: rustic-exporter
+  name: rustic-exporter-config
+data:
+  config.toml: | #toml
+    # vaultwarden
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${vaultwarden_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "homelab-amethyst-vaultwarden"
+    root = "/"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
+
+    # nextcloud
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${nextcloud_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "homelab-amethyst-nextcloud"
+    root = "/install"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
+
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${nextcloud_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "homelab-amethyst-nextcloud"
+    root = "/data"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
+
+    # immich
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${immich_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "homelab-amethyst-immich"
+    root = "/app"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
+
+    # navidrome
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${navidrome_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "homelab-amethyst-navidrome"
+    root = "/data"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
+
+    # unifi-controller
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${unifi_controller_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "home-amethyst-unifi-controller"
+    root = "/data"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
+
+    # etcd
+    [[backup]]
+    repository = "opendal:s3"
+    password = "${etcd_backup_password}"
+
+    [backup.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    bucket = "timtor-homelab-etcd-backup"
+    root = "/"
+    region = "auto"
+    access_key_id = "${b2_general_access_key_id}"
+    secret_access_key = "${b2_general_secret_access_key}"
