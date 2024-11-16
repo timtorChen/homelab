@@ -381,6 +381,20 @@ spec:
   path: /kubernetes/unpoller
   prune: true
 ---
+# rustic-exporter
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-rustic-exporter
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/rustic-exporter
+  prune: true
+---
 # kromgo
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

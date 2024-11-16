@@ -472,6 +472,50 @@ resource "aws_iam_role_policy_attachment" "unifi-controller" {
   policy_arn = aws_iam_policy.unifi-controller.arn
 }
 
+resource "aws_iam_role" "rustic-exporter" {
+  name = "${local.project}-rustic-exporter"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:rustic-exporter:rustic-exporter",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "rustic-exporter" {
+  name = "${local.project}-rustic-exporter"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameters",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/rustic-exporter"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rustic-exporter" {
+  role       = aws_iam_role.rustic-exporter.name
+  policy_arn = aws_iam_policy.rustic-exporter.arn
+}
+
+
 resource "aws_iam_role" "unifi-controller-backup-secret-holder" {
   name = "${local.project}-unifi-controller-backup-secret-holder"
   assume_role_policy = jsonencode({
