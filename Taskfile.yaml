@@ -3,7 +3,9 @@ version: "3"
 silent: true
 
 includes:
-  terraform: terraform/.taskfile.yaml
+  terraform:
+    taskfile: terraform/.taskfile.yaml
+    dir: terraform
   talos:
     taskfile: talos/.taskfile.yaml
     dir: talos
