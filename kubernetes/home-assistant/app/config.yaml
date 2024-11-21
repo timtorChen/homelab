@@ -13,7 +13,7 @@ data:
     http:
       server_port: 8123
       use_x_forwarded_for: true
-      trusted_proxies: 
+      trusted_proxies:
         - 0.0.0.0/0
     automation: !include automations.yaml
 
@@ -31,9 +31,9 @@ data:
               - condition: sun
                 after: sunrise
                 before: sunset
-                after_offset: "+03:00:00"
+                after_offset: "+02:00:00"
               - condition: template
-                value_template: "{{ state_attr('weather.home', 'uv_index') < 5 }}"
+                value_template: "{{ state_attr('weather.home', 'uv_index') < 8 }}"
             sequence:
               - action: switch.turn_on
                 target:
