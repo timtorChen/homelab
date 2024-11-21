@@ -8,6 +8,7 @@ data:
   config.toml: | #toml
     # vaultwarden
     [[backup]]
+    name = "vaultwarden"
     repository = "opendal:s3"
     password = "${vaultwarden_backup_password}"
 
@@ -21,6 +22,7 @@ data:
 
     # nextcloud
     [[backup]]
+    name = "nextcloud-install"
     repository = "opendal:s3"
     password = "${nextcloud_backup_password}"
 
@@ -33,6 +35,7 @@ data:
     secret_access_key = "${b2_general_secret_access_key}"
 
     [[backup]]
+    name = "nextcloud-data"
     repository = "opendal:s3"
     password = "${nextcloud_backup_password}"
 
@@ -46,6 +49,7 @@ data:
 
     # immich
     [[backup]]
+    name = "immich"
     repository = "opendal:s3"
     password = "${immich_backup_password}"
 
@@ -59,6 +63,7 @@ data:
 
     # navidrome
     [[backup]]
+    name = "navidrome"
     repository = "opendal:s3"
     password = "${navidrome_backup_password}"
 
@@ -72,6 +77,7 @@ data:
 
     # unifi-controller
     [[backup]]
+    name = "unifi-controller"
     repository = "opendal:s3"
     password = "${unifi_controller_backup_password}"
 
@@ -85,6 +91,7 @@ data:
 
     # etcd
     [[backup]]
+    name = "etcd"
     repository = "opendal:s3"
     password = "${etcd_backup_password}"
 
