@@ -5,7 +5,7 @@ includes:
   tf: ../.tasks/terraform.yaml
 
 tasks:
-  ##  remote-state
+  ## remote-state
   remote-state:init:
     cmds:
       - task: tf:switch-init
@@ -70,3 +70,25 @@ tasks:
       - task: tf:output
         vars:
           DIR: local
+
+  ## grafana
+  grafana:init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: grafana
+  grafana:plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: grafana
+  grafana:apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: grafana
+  grafana:output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: grafana
