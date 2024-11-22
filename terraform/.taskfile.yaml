@@ -5,45 +5,90 @@ includes:
   tf: ../.tasks/terraform.yaml
 
 tasks:
-  ##  remote-state
-  remote-state-init:
+  ## remote-state
+  remote-state:init:
     cmds:
       - task: tf:switch-init
         vars:
-          DIR: terraform/_remote-state
-  remote-state-plan:
+          DIR: _remote-state
+  remote-state:plan:
     cmds:
       - task: tf:plan
         vars:
-          DIR: terraform/_remote-state
-  remote-state-apply:
+          DIR: _remote-state
+  remote-state:apply:
     cmds:
       - task: tf:apply
         vars:
-          DIR: terraform/_remote-state
-  remote-state-output:
+          DIR: _remote-state
+  remote-state:output:
     cmds:
       - task: tf:output
         vars:
-          DIR: terraform/_remote-state
-  ## this
-  init:
+          DIR: _remote-state
+
+  ## aws
+  aws:init:
     cmds:
       - task: tf:switch-init
         vars:
-          DIR: terraform
-  plan:
+          DIR: aws
+  aws:plan:
     cmds:
       - task: tf:plan
         vars:
-          DIR: terraform
-  apply:
+          DIR: aws
+  aws:apply:
     cmds:
       - task: tf:apply
         vars:
-          DIR: terraform
-  output:
+          DIR: aws
+  aws:output:
     cmds:
       - task: tf:output
         vars:
-          DIR: terraform
+          DIR: aws
+
+  ## local
+  local:init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: local
+  local:plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: local
+  local:apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: local
+  local:output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: local
+
+  ## grafana
+  grafana:init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: grafana
+  grafana:plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: grafana
+  grafana:apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: grafana
+  grafana:output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: grafana

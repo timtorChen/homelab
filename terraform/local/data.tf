@@ -1,7 +1,3 @@
-data "aws_caller_identity" "main" {}
-
-data "aws_region" "main" {}
-
 # Parameter store secrets
 data "aws_ssm_parameter" "ceph-admin" {
   name = "/amethyst/ceph-admin"
