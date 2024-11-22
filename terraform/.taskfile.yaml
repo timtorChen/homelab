@@ -49,27 +49,27 @@ tasks:
         vars:
           DIR: aws
 
-  ## local
-  local:init:
+  ## ceph
+  ceph:init:
     cmds:
       - task: tf:switch-init
         vars:
-          DIR: local
-  local:plan:
+          DIR: ceph
+  ceph:plan:
     cmds:
       - task: tf:plan
         vars:
-          DIR: local
-  local:apply:
+          DIR: ceph
+  ceph:apply:
     cmds:
       - task: tf:apply
         vars:
-          DIR: local
-  local:output:
+          DIR: ceph
+  ceph:output:
     cmds:
       - task: tf:output
         vars:
-          DIR: local
+          DIR: ceph
 
   ## grafana
   grafana:init:
