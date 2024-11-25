@@ -1,0 +1,10 @@
+---
+version: "3"
+silent: true
+
+tasks:
+  check:
+    cmd: dprint check {{.CLI_ARGS}}
+
+  fmt:
+    cmd: dprint fmt {{.CLI_ARGS}}
