@@ -2,13 +2,13 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  {}
   # namespace: unifi-controller
   # name: unifi-controller-restore
+  {}
 spec:
   trigger:
-    {}
     # manual: unifi-controller-restore
+    {}
   restic:
     repository: unifi-controller-backup-secret
     # previous: 0

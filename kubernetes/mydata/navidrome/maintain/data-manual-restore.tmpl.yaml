@@ -2,13 +2,13 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  {}
   # namespace: mydata
   # name: navidrome-data-manual-restore
+  {}
 spec:
   trigger:
-    {}
     # manual: navidrome-data-manual-restore
+    {}
   restic:
     repository: navidrome-data-backup-secret
     previous: 0

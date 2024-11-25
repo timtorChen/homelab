@@ -2,13 +2,13 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  {}
   # namespace: unifi-controller
   # name: unifi-controller-manual-backup
+  {}
 spec:
   trigger:
-    {}
     # manual: unifi-controller-manual-backup
+    {}
   sourcePVC: unifi-controller-data
   restic:
     pruneIntervalDays: 14

@@ -2,14 +2,14 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  {}
   # namespace: mydata
   # name: navidrome-data-manual-backup
+  {}
 spec:
   sourcePVC: navidrome-data
   trigger:
-    {}
     # manual: navidrome-data-manual-backup
+    {}
   restic:
     pruneIntervalDays: 14
     repository: navidrome-data-backup-secret

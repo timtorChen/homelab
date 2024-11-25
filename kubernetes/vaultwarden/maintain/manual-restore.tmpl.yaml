@@ -1,12 +1,14 @@
 ---
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
-metadata: {}
+metadata:
   # namespace: vaultwarden
   # name: vaultwarden-restore
+  {}
 spec:
-  trigger: {}
+  trigger:
     # manual: vaultwarden-restore
+    {}
   restic:
     repository: vaultwarden-backup-secret
     # previous: 0

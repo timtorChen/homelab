@@ -44,8 +44,8 @@ spec:
             command: ["sh", "-c"]
             args:
               - |
-                wget https://raw.githubusercontent.com/IgorKha/Grafana-Mikrotik/master/snmp/snmp.yml \
-                  -O /config/snmp.yml
+                  wget https://raw.githubusercontent.com/IgorKha/Grafana-Mikrotik/master/snmp/snmp.yml \
+                    -O /config/snmp.yml
             securityContext: &sc
               runAsNonRoot: true
               runAsUser: 65534

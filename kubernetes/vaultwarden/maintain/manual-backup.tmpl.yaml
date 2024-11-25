@@ -2,13 +2,13 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  {}
   # namespace: vaultwarden
   # name: vaultwarden-manual-backup
+  {}
 spec:
   trigger:
-    {}
     # manual: vaultwarden-manual-backup
+    {}
   sourcePVC: vaultwarden-data
   restic:
     pruneIntervalDays: 14
