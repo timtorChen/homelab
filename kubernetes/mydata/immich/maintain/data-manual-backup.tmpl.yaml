@@ -2,14 +2,14 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  {}
   # namespace: mydata
   # name: immich-data-manual-backup
+  {}
 spec:
   sourcePVC: immich-data
   trigger:
-    {}
     # manual: immich-data-manual-backup
+    {}
   restic:
     pruneIntervalDays: 14
     repository: immich-backup-secret

@@ -2,13 +2,13 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  {}
   # namespace: mydata
   # name: nextcloud-data-manual-restore
+  {}
 spec:
   trigger:
-    {}
     # manual: nextcloud-data-manual-restore
+    {}
   restic:
     repository: nextcloud-data-backup-secret
     # previous: 0

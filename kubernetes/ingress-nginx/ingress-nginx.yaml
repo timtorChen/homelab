@@ -25,12 +25,12 @@ spec:
   maxHistory: 1
   values:
     tcp:
-      "3001": vector/vector:3001  # talos-kernel
-      "3002": vector/vector:3002  # talos-service
-      "8080": unifi-controller/unifi-controller:8080  # unifi inform
+      "3001": vector/vector:3001 # talos-kernel
+      "3002": vector/vector:3002 # talos-service
+      "8080": unifi-controller/unifi-controller:8080 # unifi inform
     udp:
-      "4001": vector/vector:4001  # mikrotik remote write
-      "5001": vector/vector:5001  # unifi remote write
+      "4001": vector/vector:4001 # mikrotik remote write
+      "5001": vector/vector:5001 # unifi remote write
     controller:
       config:
         use-gzip: "true"

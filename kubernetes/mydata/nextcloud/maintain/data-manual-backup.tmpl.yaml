@@ -2,14 +2,14 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  {}
   # namespace: mydata
   # name: nextcloud-data-manual-backup
+  {}
 spec:
   sourcePVC: nextcloud-data
   trigger:
-    {}
     # manual: nextcloud-data-manual-backup
+    {}
   restic:
     pruneIntervalDays: 14
     repository: nextcloud-data-backup-secret

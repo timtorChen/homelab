@@ -50,17 +50,17 @@ tasks:
     cmds:
       - echo "Install Cilium on kube-system/cilium (helm)"
       - |
-        helm upgrade --install cilium cilium/cilium \
-        --namespace kube-system \
-        --version 1.14.0-snapshot.4 \
-        --set ipam.mode=kubernetes \
-        --set kubeProxyReplacement=strict \
-        --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
-        --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
-        --set cgroup.autoMount.enabled=false \
-        --set cgroup.hostRoot=/sys/fs/cgroup \
-        --set k8sServiceHost="localhost" \
-        --set k8sServicePort="7745"
+          helm upgrade --install cilium cilium/cilium \
+          --namespace kube-system \
+          --version 1.14.0-snapshot.4 \
+          --set ipam.mode=kubernetes \
+          --set kubeProxyReplacement=strict \
+          --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
+          --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
+          --set cgroup.autoMount.enabled=false \
+          --set cgroup.hostRoot=/sys/fs/cgroup \
+          --set k8sServiceHost="localhost" \
+          --set k8sServicePort="7745"
 
       - echo "Install Flux on flux-system namespace (manifests)"
       # flux install creates a flux-system namespace

@@ -2,13 +2,13 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  {}
   # namespace: mydata
   # name: immich-data-manual-restore
+  {}
 spec:
   trigger:
-    {}
     # manual: immich-data-manual-restore
+    {}
   restic:
     repository: immich-backup-secret
     # previous: 0
