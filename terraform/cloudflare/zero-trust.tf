@@ -24,8 +24,8 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
   }
 }
 
-# "Networks > Tunnels > Private Network" on web,
-# the added private network item will reconcile to "Network > Routes" 
+# "Networks > Tunnels > Private Network" on web, and the added 
+# private network item will reconcile to "Network > Routes" 
 resource "cloudflare_zero_trust_tunnel_route" "homelab" {
   account_id = local.account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.homelab.id

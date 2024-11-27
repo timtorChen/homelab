@@ -12,4 +12,3 @@ resource "cloudflare_record" "homelab-public" {
   allow_overwrite = true
 
 }
-
