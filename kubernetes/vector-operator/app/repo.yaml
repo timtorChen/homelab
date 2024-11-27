@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   namespace: vector-operator
-  name: bjw-s
+  name: vector-operator
 spec:
-  url: https://bjw-s.github.io/helm-charts
+  url: https://kaasops.github.io/vector-operator/helm
   interval: 24h
