@@ -92,3 +92,25 @@ tasks:
       - task: tf:output
         vars:
           DIR: grafana
+
+  ## cloudflare
+  cloudflare:init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: cloudflare
+  cloudflare:plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: cloudflare
+  cloudflare:apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: cloudflare
+  cloudflare:output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: cloudflare
