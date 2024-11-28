@@ -1,1 +1,16 @@
 ---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: vector-operator
+  name: vector-operator-policy
+specs:
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: vector-operator
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
