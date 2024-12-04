@@ -62,7 +62,7 @@ spec:
           rustic-backup:
             image:
               repository: ghcr.io/rustic-rs/rustic
-              tag: v0.9.4
+              tag: v0.9.5
             env: &env
               RUSTIC_PASSWORD:
                 valueFrom:
@@ -88,7 +88,7 @@ spec:
           rustic-forget:
             image:
               repository: ghcr.io/rustic-rs/rustic
-              tag: v0.9.4
+              tag: v0.9.5
             env: *env
             args:
               - forget
