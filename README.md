@@ -32,6 +32,10 @@
 
 This is a mono repository for my home infrastructure and Kubernetes cluster. I use [Talos](https://github.com/siderolabs/talos) Kubernetes distribution, and follows the concept Infrastructure as Code (IaC), using the tools like [Flux](https://github.com/fluxcd/flux2), [Terraform](https://github.com/hashicorp/terraform), [Renovate](https://github.com/renovatebot/renovate) and [Github Actions](https://github.com/features/actions).
 
+## Architecture
+
+![](./docs/src/arch.png)
+
 ## 🚢 Technology Stack
 
 |                                                                                                                                                      | Name                                                                                      | Description                                                         |
