@@ -38,7 +38,7 @@ spec:
           main:
             image:
               repository: matusnovak/prometheus-smartctl
-              tag: v2.4.0
+              tag: v2.5.0
             env:
               SMARTCTL_EXPORTER_PORT: &port 9902
               SMARTCTL_REFRESH_INTERVAL: 60
