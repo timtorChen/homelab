@@ -1,9 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: vector-operator
-  name: vector-operator
-spec:
-  url: https://kaasops.github.io/vector-operator/helm
-  interval: 24h
