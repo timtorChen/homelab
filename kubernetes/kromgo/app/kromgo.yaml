@@ -40,7 +40,7 @@ spec:
           main:
             image:
               repository: ghcr.io/kashalls/kromgo
-              tag: v0.4.2
+              tag: v0.4.3
             env:
               PROMETHEUS_URL: http://mimir-query-frontend.mimir:8080/prometheus
               SERVER_PORT: &p 8080
