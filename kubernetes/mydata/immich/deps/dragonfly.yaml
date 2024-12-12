@@ -39,7 +39,7 @@ spec:
           main:
             image:
               repository: ghcr.io/dragonflydb/dragonfly
-              tag: v1.6.2
+              tag: v1.25.5
             args:
               # https://github.com/immich-app/immich/issues/2542
               - --default_lua_flags=allow-undeclared-keys
