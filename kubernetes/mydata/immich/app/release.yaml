@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.106.4
+              tag: v1.123.0
             env:
               IMMICH_WORKERS_INCLUDE: api
               IMMICH_PORT: &p1 3001
@@ -89,7 +89,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.106.4
+              tag: v1.123.0
             env:
               IMMICH_WORKERS_EXCLUDE: api
               IMMICH_MEDIA_LOCATION: *data-dir
@@ -131,7 +131,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.106.4
+              tag: v1.123.0
             env:
               IMMICH_PORT: &p3 3003
               MACHINE_LEARNING_CACHE_FOLDER: &cache-dir /cache
