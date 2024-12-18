@@ -1,0 +1,33 @@
+---
+name: flux-local
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Flux local
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        resource: ["helmrelease", "kustomization"]
+    steps:
+      - name: Setup Flux CLI
+        uses: fluxcd/flux2/action@v2.2.2
+      - uses: allenporter/flux-local/action/diff@4.3.1
+        id: diff
+        with:
+          path: kubernetes/flux-system
+          sources: homelab
+          resource: ${{ matrix.resource }}
+      - name: PR Comments
+        uses: mshick/add-pr-comment@v2
+        if: ${{ steps.diff.outputs.diff != '' }}
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message-id: "${{ github.event.pull_request.number }}/${{ matrix.resource }}"
+          message-failure: Flux diff is not successful
+          message: |
+            `````diff
+            ${{ steps.diff.outputs.diff }}
+            `````
