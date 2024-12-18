@@ -26,7 +26,7 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message-id: "${{ github.event.pull_request.number }}/${{ matrix.resource }}"
-          message-failure: Flux diff is not successful
+          message-failure: flux-local diff is not successful
           message: |
             `````diff
             ${{ steps.diff.outputs.diff }}
