@@ -1,5 +1,6 @@
 ---
-# rbd-fast pool
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
+## rbd-fas-pool
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
@@ -12,7 +13,8 @@ spec:
     size: 3
     requireSafeReplicaSize: true
 ---
-# rbd-fast-volatile pool
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
+## rbd-fast-volatile pool
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
