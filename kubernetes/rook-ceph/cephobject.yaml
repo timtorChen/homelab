@@ -1,5 +1,5 @@
 ---
-# fast.rgw.* pool
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephobjectstore_v1.json
 apiVersion: ceph.rook.io/v1
 kind: CephObjectStore
 metadata:

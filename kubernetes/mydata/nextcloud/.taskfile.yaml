@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/go-task/task/refs/heads/main/website/static/schema.json
 version: "3"
 silent: true
 
