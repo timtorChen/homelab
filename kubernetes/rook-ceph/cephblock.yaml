@@ -27,7 +27,8 @@ spec:
     size: 1
     requireSafeReplicaSize: false
 ---
-# StorageClass rbd-fast
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
+## StorageClass rbd-fast
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -47,7 +48,8 @@ parameters:
 reclaimPolicy: Retain
 allowVolumeExpansion: true
 ---
-# StorageClass rbd-fast-delete
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
+## StorageClass rbd-fast-delete
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -67,7 +69,8 @@ parameters:
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 ---
-# StorageClass rbd-fast-volatile
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
+## StorageClass rbd-fast-volatile
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
