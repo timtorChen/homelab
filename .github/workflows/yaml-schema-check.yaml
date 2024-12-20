@@ -1,14 +1,14 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: format-check
+name: yaml-schema-check
 
 on:
   pull_request:
 
 jobs:
-  lint:
-    name: Format check
+  check:
+    name: Yaml schema check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
-      - uses: dprint/check@2f1cf31537886c3bfb05591c031f7744e48ba8a1 # v2.2
+      - run: npx --yes yaml-ls-check@1.4 ./
