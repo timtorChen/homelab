@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: jkroepke
       chart: amazon-eks-pod-identity-webhook
-      version: 2.1.3
+      version: 2.3.0
   interval: 1h
   maxHistory: 1
   values:
