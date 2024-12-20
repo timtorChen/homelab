@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/kyverno.io/policy_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kyverno.io/policy_v1.json
 ## Reference: https://github.com/kyverno/policies/tree/main/nginx-ingress
 apiVersion: kyverno.io/v1
 kind: Policy
@@ -44,7 +44,7 @@ spec:
             =(annotations):
               X(*-snippet): "?*"
 ---
-# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/kyverno.io/clusterpolicy_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kyverno.io/clusterpolicy_v1.json
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -91,7 +91,7 @@ spec:
                 operator: AnyIn
                 value: [true]
 ---
-# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/kyverno.io/clusterpolicy_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kyverno.io/clusterpolicy_v1.json
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
