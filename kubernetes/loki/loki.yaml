@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: grafana
       chart: loki
-      version: 5.26.0
+      version: 5.48.0
   interval: 1h
   maxHistory: 1
   values:
