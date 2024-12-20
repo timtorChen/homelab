@@ -11,7 +11,7 @@ spec:
   interval: 5m
   url: https://github.com/kubernetes-csi/external-snapshotter
   ref:
-    tag: v6.3.3
+    tag: v8.2.0
   ignore: |
     /*
     # include the manifest folder
