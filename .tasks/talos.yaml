@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/go-task/task/refs/heads/main/website/static/schema.json
 version: "3"
 silent: true
 
@@ -61,7 +62,7 @@ tasks:
       talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
 
   shutdown:
-    promtp: Shutdown the node... continue?
+    prompt: Shutdown the node... continue?
     internal: true
     cmd: |
       NODE={{.NODE}}

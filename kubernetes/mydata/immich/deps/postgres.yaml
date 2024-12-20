@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -36,6 +37,7 @@ spec:
         compression: gzip
         maxParallel: 8
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/postgresql.cnpg.io/scheduledbackup_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
@@ -49,6 +51,7 @@ spec:
   target: prefer-standby
 ---
 ## workaround to hold secret
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -58,6 +61,7 @@ metadata:
     eks.amazonaws.com/audience: sts.amazonaws.com
     eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich-postgres-secret-holder
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/deployment-apps-v1.json
 apiVersion: apps/v1
 kind: Deployment
 metadata:

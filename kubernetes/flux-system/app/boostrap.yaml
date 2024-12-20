@@ -1,5 +1,6 @@
 ---
-# My homelab repo hosted on Github
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/gitrepository_v1.json
+## My homelab repo hosted on Github
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
@@ -11,8 +12,9 @@ spec:
   ref:
     branch: main
 ---
-# --- 0 - Base Namespace ---
-# flux-system
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 0 - Base Namespace ---
+## flux-system
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -26,8 +28,9 @@ spec:
   path: /kubernetes/flux-system
   prune: false
 ---
-# --- 1 - Infra Namespaces ---
-# kube-system
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 1 - Infra Namespaces ---
+## kube-system
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -41,7 +44,8 @@ spec:
   path: /kubernetes/kube-system
   prune: false
 ---
-# kyverno
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## kyverno
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -55,7 +59,8 @@ spec:
   path: /kubernetes/kyverno
   prune: false
 ---
-# metallb-system
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## metallb-system
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -69,7 +74,8 @@ spec:
   path: /kubernetes/metallb-system
   prune: false
 ---
-# cert-manager
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## cert-manager
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -83,7 +89,8 @@ spec:
   path: /kubernetes/cert-manager
   prune: false
 ---
-# intel-device-system
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## intel-device-system
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -97,7 +104,8 @@ spec:
   path: /kubernetes/intel-device-system
   prune: false
 ---
-# aws-identity-webhook
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## aws-identity-webhook
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -111,7 +119,8 @@ spec:
   path: /kubernetes/aws-identity-webhook
   prune: true
 ---
-# cloudflared
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## cloudflared
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -125,7 +134,8 @@ spec:
   path: /kubernetes/cloudflared
   prune: true
 ---
-# reloader
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## reloader
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -139,7 +149,8 @@ spec:
   path: /kubernetes/reloader
   prune: true
 ---
-# etcd-backup
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## etcd-backup
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -153,8 +164,9 @@ spec:
   path: /kubernetes/etcd-backup
   prune: true
 ---
-# --- 2 - Storage Namespaces ---
-# rook-ceph
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 2 - Storage Namespaces ---
+## rook-ceph
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -168,7 +180,8 @@ spec:
   path: /kubernetes/rook-ceph
   prune: false
 ---
-# snapscheduler
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## snapscheduler
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -182,7 +195,8 @@ spec:
   path: /kubernetes/snapscheduler
   prune: false
 ---
-# volsync
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## volsync
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -196,8 +210,9 @@ spec:
   path: /kubernetes/volsync
   prune: true
 ---
-# --- 3 - Ingress Namespaces ---
-# ingress-nginx
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 3 - Ingress Namespaces ---
+## ingress-nginx
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -211,8 +226,9 @@ spec:
   path: /kubernetes/ingress-nginx
   prune: true
 ---
-# --- 4 - Database Namespaces ---
-# cnpg
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 4 - Database Namespaces ---
+## cnpg
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -226,8 +242,9 @@ spec:
   path: /kubernetes/cnpg
   prune: false
 ---
-# --- 5 - Monitor Namespaces ---
-# grafana
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 5 - Monitor Namespaces ---
+## grafana
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -241,7 +258,8 @@ spec:
   path: /kubernetes/grafana
   prune: false
 ---
-# mimir
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## mimir
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -255,7 +273,8 @@ spec:
   path: /kubernetes/mimir
   prune: false
 ---
-# prometheus
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## prometheus
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -269,7 +288,8 @@ spec:
   path: /kubernetes/prometheus
   prune: true
 ---
-# loki
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## loki
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -283,7 +303,8 @@ spec:
   path: /kubernetes/loki
   prune: false
 ---
-# vector-operator
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## vector-operator
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -297,7 +318,8 @@ spec:
   path: /kubernetes/vector-operator
   prune: false
 ---
-# vector
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## vector
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -311,7 +333,8 @@ spec:
   path: /kubernetes/vector
   prune: true
 ---
-# promtail
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## promtail
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -325,7 +348,8 @@ spec:
   path: /kubernetes/promtail
   prune: true
 ---
-# node-exporter
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## node-exporter
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -339,7 +363,8 @@ spec:
   path: /kubernetes/node-exporter
   prune: true
 ---
-# smart-exporter
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## smart-exporter
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -353,7 +378,8 @@ spec:
   path: /kubernetes/smart-exporter
   prune: true
 ---
-# snmp-exporter-mikrotik
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## snmp-exporter-mikrotik
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -367,7 +393,8 @@ spec:
   path: /kubernetes/snmp-exporter-mikrotik
   prune: true
 ---
-# unifi-controller
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## unifi-controller
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -381,7 +408,8 @@ spec:
   path: /kubernetes/unifi-controller
   prune: false
 ---
-# unpoller
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## unpoller
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -395,7 +423,8 @@ spec:
   path: /kubernetes/unpoller
   prune: true
 ---
-# rustic-exporter
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## rustic-exporter
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -409,7 +438,8 @@ spec:
   path: /kubernetes/rustic-exporter
   prune: true
 ---
-# kromgo
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## kromgo
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -423,8 +453,9 @@ spec:
   path: /kubernetes/kromgo
   prune: false
 ---
-# --- 6 - Application Namespaces ---
-# vaultwarden
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## --- 6 - Application Namespaces ---
+## vaultwarden
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -438,7 +469,8 @@ spec:
   path: /kubernetes/vaultwarden
   prune: false
 ---
-# navidrome
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## navidrome
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -452,7 +484,8 @@ spec:
   path: /kubernetes/mydata/navidrome
   prune: false
 ---
-# immich
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## immich
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -466,7 +499,8 @@ spec:
   path: /kubernetes/mydata/immich
   prune: false
 ---
-# nextcloud
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## nextcloud
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -480,7 +514,8 @@ spec:
   path: /kubernetes/mydata/nextcloud
   prune: false
 ---
-# miniflux
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## miniflux
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
