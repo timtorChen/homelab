@@ -31,7 +31,7 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.30.0
+    image: ghcr.io/siderolabs/kubelet:v1.32.0
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
@@ -86,7 +86,7 @@ cluster:
   proxy:
     disabled: true
   apiServer:
-    image: registry.k8s.io/kube-apiserver:v1.30.0
+    image: registry.k8s.io/kube-apiserver:v1.32.0
     extraArgs:
       oidc-issuer-url: https://oauth.id.jumpcloud.com/
       oidc-client-id: ${cluster_apiServer_extraArgs_oidc_client_id}
@@ -121,7 +121,7 @@ cluster:
       rules:
         - level: Metadata
   etcd:
-    image: gcr.io/etcd-development/etcd:v3.5.13-arm64
+    image: gcr.io/etcd-development/etcd:v3.5.17-arm64
     # Etcd CA
     ca:
       crt: ${cluster_etcd_ca_crt}
@@ -129,15 +129,15 @@ cluster:
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
   controllerManager:
-    image: registry.k8s.io/kube-controller-manager:v1.30.0
+    image: registry.k8s.io/kube-controller-manager:v1.32.0
     extraArgs:
       bind-address: 0.0.0.0
   scheduler:
-    image: registry.k8s.io/kube-scheduler:v1.30.0
+    image: registry.k8s.io/kube-scheduler:v1.32.0
     extraArgs:
       bind-address: 0.0.0.0
   coreDNS:
-    image: docker.io/coredns/coredns:1.11.1
+    image: docker.io/coredns/coredns:1.12.0
   # -- Extras
   extraManifests: []
   inlineManifests: []
