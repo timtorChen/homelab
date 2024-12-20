@@ -1,5 +1,6 @@
 ---
-# VolumeSnapshotClass rook-ceph-fs
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/snapshot.storage.k8s.io/volumesnapshotclass_v1.json
+## VolumeSnapshotClass rook-ceph-fs
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
@@ -11,7 +12,8 @@ parameters:
   csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
 deletionPolicy: Delete
 ---
-# VolumeSnapshotClass rook-ceph-rbd
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/snapshot.storage.k8s.io/volumesnapshotclass_v1.json
+## VolumeSnapshotClass rook-ceph-rbd
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
