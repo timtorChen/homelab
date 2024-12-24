@@ -12,7 +12,7 @@ machine:
   certSANs: []
   install:
     disk: /dev/sda
-    image: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v1.7.1
+    image: factory.talos.dev/installer/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62:v1.9.0
     wipe: false
     extraKernelArgs:
       - talos.logging.kernel=tcp://192.168.253.100:3001
