@@ -18,10 +18,10 @@ tasks:
     cmd: echo "$SECRET_ENV"
 
   # schematics id
-  get-default-schematic-id:
-    cmd: curl -s -X POST --data-binary @image-factory/default.yaml https://factory.talos.dev/schematics | jq .id
+  get-nuc11tnhi50l-schematic-id:
+    cmd: curl -s -X POST --data-binary @schematics/nuc11tnhi50l.yaml https://factory.talos.dev/schematics | jq --raw-output .id
   get-raspi-schematic-id:
-    cmd: curl -s -X POST --data-binary @image-factory/raspi.yaml https://factory.talos.dev/schematics | jq .id
+    cmd: curl -s -X POST --data-binary @schematics/raspi.yaml https://factory.talos.dev/schematics | jq --raw-output .id
 
   # controlplane
   apply-controlplane:
