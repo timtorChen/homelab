@@ -1,7 +1,7 @@
 ---
 ## Header for task scripts
 # ip: 192.168.253.1
-# includes: [controlplane.yaml]
+# includes: [roles/controlplane.yaml]
 machine:
   type: controlplane
   network:
