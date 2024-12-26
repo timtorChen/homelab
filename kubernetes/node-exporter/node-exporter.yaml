@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
       chart: prometheus-node-exporter
-      version: 4.43.0
+      version: 4.43.1
   interval: 1h
   maxHistory: 1
   values:
