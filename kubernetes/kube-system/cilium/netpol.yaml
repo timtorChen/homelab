@@ -22,9 +22,20 @@ specs:
           - ports:
               - protocol: TCP
                 port: "6443"
-  # allow connection to ciliums
+  # allow connection to peer service (cilium-agents)
   - endpointSelector: *self
     egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "hubble-peer.kube-system.svc.cluster.local."
       - toEntities: ["host", "remote-node"]
         toPorts:
           - ports:
