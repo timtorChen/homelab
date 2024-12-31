@@ -12,13 +12,13 @@ spec:
         kind: HelmRepository
         name: cilium
       chart: cilium
-      version: 1.14.0-snapshot.4
+      version: 1.16.5
   interval: 1h
   maxHistory: 1
   values:
     ipam:
       mode: kubernetes
-    kubeProxyReplacement: strict
+    kubeProxyReplacement: true
     securityContext:
       capabilities:
         ciliumAgent:
@@ -37,6 +37,11 @@ spec:
           - NET_ADMIN
           - SYS_ADMIN
           - SYS_RESOURCE
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
     cgroup:
       autoMount:
         enabled: false
@@ -49,3 +54,5 @@ spec:
         enabled: true
       ui:
         enabled: true
+    envoy:
+      enabled: false
