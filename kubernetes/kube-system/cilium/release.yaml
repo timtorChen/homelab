@@ -55,4 +55,4 @@ spec:
       ui:
         enabled: true
     envoy:
-      enabled: false
+      enabled: true
