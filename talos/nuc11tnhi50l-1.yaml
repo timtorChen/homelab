@@ -11,3 +11,8 @@ machine:
     rules:
       - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:33:54:cb", NAME="eth0"
       - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:2c:f4:8c", NAME="eth1"
+  install:
+    disk: /dev/sda
+    image: factory.talos.dev/installer/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62:v1.9.0
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.31.4
