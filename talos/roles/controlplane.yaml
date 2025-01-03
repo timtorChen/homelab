@@ -137,7 +137,7 @@ cluster:
     extraArgs:
       bind-address: 0.0.0.0
   coreDNS:
-    image: docker.io/coredns/coredns:1.1.13
+    image: docker.io/coredns/coredns:1.11.3
   # -- Extras
   extraManifests: []
   inlineManifests: []
