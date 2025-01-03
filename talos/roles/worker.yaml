@@ -11,8 +11,8 @@ machine:
     key: ""
   certSANs: []
   install:
-    disk: /dev/sda
-    image: factory.talos.dev/installer/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62:v1.9.0
+    disk: ""
+    image: ""
     wipe: false
     extraKernelArgs:
       - talos.logging.kernel=tcp://192.168.253.100:3001
@@ -25,7 +25,7 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.30.0
+    image: ""
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
