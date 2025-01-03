@@ -6,3 +6,16 @@ machine:
   type: controlplane
   network:
     hostname: amethyst-pi4b-1
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.32.0
+cluster:
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.32.0
+  controllerManager:
+    image: registry.k8s.io/kube-controller-manager:v1.32.0
+  scheduler:
+    image: registry.k8s.io/kube-scheduler:v1.32.0
+  coreDNS:
+    image: docker.io/coredns/coredns:1.12.0
+  etcd:
+    image: gcr.io/etcd-development/etcd:v3.5.17-arm64
