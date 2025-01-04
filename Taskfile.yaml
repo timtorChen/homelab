@@ -23,3 +23,10 @@ tasks:
     desc: Check all pre-commit hooks
     cmds:
       - pre-commit run -a
+
+  renovate:
+    desc: Run renovate on local directory
+    env:
+      LOG_LEVEL: debug
+    cmds:
+      - npx --yes renovate --platform=local
