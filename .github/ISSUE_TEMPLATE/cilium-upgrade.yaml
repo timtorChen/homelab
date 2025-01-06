@@ -24,7 +24,6 @@ body:
         - drop-d1
 
         ## Upgrade process
-
         ### Pre-upgrade tasks
         - [ ] Check Cilium status
           ```

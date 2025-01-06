@@ -54,9 +54,9 @@ body:
           ```
         - [ ] Upgrade control plane(s) first
           ```bash
-            task talos:plan-pi4b-1
-            task talos:apply-pi4b-1
-            ```
+          task talos:plan-pi4b-1
+          task talos:apply-pi4b-1
+          ```
         - [ ] Upgrade worker(s)
           ```bash
           task talos:plan-nuc11tnhi50l-1
