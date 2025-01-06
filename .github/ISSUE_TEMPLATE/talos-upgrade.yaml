@@ -31,7 +31,7 @@ body:
           ```
         - [ ] Backup etcd
           ```bash
-          task kubernetes:etcd:backup
+          task kubernetes:etcd-backup:trigger
           ```
 
         ### Upgrade execution
