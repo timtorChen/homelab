@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+name: Rook-ceph upgrade
+title: Upgrade Rook to {{v1.16}} and Ceph to {{v19}}
+description: Rook-ceph upgrade template
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      value: |
+        Rook-ceph upgrade note.
+
+        - [x] Related PR(s):
+          - #pr-number
+        - [x] Related Issue(s):
+          - #issue-number
+
+        ## Rook {{v1.16}}
+        Support Kubernetes version >= {{1.27}}
+        Support Ceph version >= {{v18.2.0}} and >= {{v19.2.0}}
+
+        ### Features
+        - feature-1
+
+        ### Deprecated
+        - drop-d1
+
+        ## Ceph {{v19}}
+
+        ### Features
+        - feature-1
+
+        ### Deprecated
+        - drop-d1
+
+        ## Upgrade process
+
+        #### Pre-upgrade Tasks
+        <br/>
+
+        - [ ] Check Ceph status
+          ```
+          task kubernetes:rook-ceph:status
+          ```
+
+        #### Upgrade execution
+        <br/>
+
+        - [ ] Merge helm chart update PR, and flux will handle the upgrade
+
+        #### Post-upgrade verification
+        <br/>
+
+        - [ ] Check Cilium status again
+          ```
+          task kubernetes:rook-ceph:status
+          ```
+
+        ## References
+        https://rook.io/docs/rook/{{v1.15}}/Upgrade/rook-upgrade/
+        https://ceph.io/en/news/blog/{{2024/v19-2-0-squid-released}}/

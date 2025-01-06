@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+name: Kubernetes upgrade
+title: Upgrade Kubernetes to {{1.32}}
+description: Kubernetes upgrade template
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      value: |
+        Kubernetes upgrade note.
+
+        - [x] Related PR(s):
+          - #pr-number
+        - [x] Related Issue(s):
+          - #issue-number
+
+        ## Kubernetes {{1.32}}
+
+        ### Features
+        #### to Stable:
+        <br/>
+
+        - feature-s1
+
+        #### to Beta
+        <br/>
+
+        - feature-b1
+
+        #### to Alpha
+        <br/>
+
+        - feature-a1
+
+        ### Deprecated
+        - drop-d1
+
+        ### Upgrade process
+        #### Pre-upgrade Tasks
+        <br/>
+
+        - [ ] Check Kubernetes cluster health
+          ```bash
+          talosctl health
+          ```
+        - [ ] Backup etcd
+          ```bash
+          task kubernetes:etcd:backup
+          ```
+
+        #### Upgrade execution
+        <br/>
+
+        - [ ] Login to secrert provider
+          ```bash
+          aws sso login
+          ```
+        - [ ] Upgrade control plane(s) first
+          ```bash
+            task talos:plan-pi4b-1
+            task talos:apply-pi4b-1
+            ```
+        - [ ] Upgrade worker(s)
+          ```bash
+          task talos:plan-nuc11tnhi50l-1
+          task talos:apply-nuc11tnhi50l-1
+          # continue to another worker
+          ```
+
+        #### Post-upgrade verification
+        <br/>
+
+        - [ ] Check Kubernetes cluster health again
+          ```bash
+          talosctl health
+          ```
+
+        ### References
+        https://kubernetes.io/blog/{{2024/12/11/kubernetes-v1-32-release}}/

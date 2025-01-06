@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+name: Talos upgrade
+title: Upgrade Talos to {{v1.9}}
+description: Talos upgrade template
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      value: |
+        Talos upgrade note.
+
+        - [x] Related PR(s):
+          - #pr-number
+        - [x] Related Issue(s):
+          - #issue-number
+
+        ## Talos {{v1.9}}
+        Support Kubernetes {{1.27}}-{{1.32}}
+
+        ### Features
+        - feature-1
+
+        ### Deprecated
+        - drop-d1
+
+        ### Upgrade process
+
+        #### Pre-upgrade tasks
+        <br/>
+
+        - [ ] Check Kubernetes cluster health
+          ```bash
+          talosctl health
+          ```
+        - [ ] Backup etcd
+          ```bash
+          task kubernetes:etcd:backup
+          ```
+
+        #### Upgrade execution
+        <br/>
+
+        - [ ] Login to secrert provider
+          ```bash
+          aws sso login
+          ```
+        - [ ] Upgrade control plane(s) first
+          ```bash
+            task talos:plan-pi4b-1
+            task talos:apply-pi4b-1
+            ```
+        - [ ] Upgrade worker(s)
+          ```bash
+          task talos:plan-nuc11tnhi50l-1
+          task talos:apply-nuc11tnhi50l-1
+          # continue to other workers
+          ```
+
+        #### Post-upgrade verification
+        <br/>
+
+        - [ ] Check Kubernetes cluster health again
+          ```bash
+          talosctl health
+          ```
+
+        ### References
+        https://www.talos.dev/{{v1.9}}/introduction/what-is-new/

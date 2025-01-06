@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+name: Cilium upgrade
+title: Upgrade Cilium to {{1.16}}
+description: Cilium upgrade template
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      value: |
+        Cilium upgrade note.
+
+        - [x] Related PR(s):
+          - #pr-number
+        - [x] Related Issue(s):
+          - #issue-number
+
+        ## Cilium {{1.16}}
+        Support Kubernetes version {{1.27}}-{{1.30}}
+
+        ### Features
+        - feature-1
+
+        ### Deprecated
+        - drop-d1
+
+        ### Upgrade process
+
+        #### Pre-upgrade tasks
+        <br/>
+
+        - [ ] Check Cilium status
+          ```
+          cilium status
+          ```
+
+        #### Upgrade execution
+        <br/>
+
+        - [ ] Merge helm chart update PR, and flux will handle the upgrade
+
+        #### Post-upgrade verification
+        <br/>
+
+        - [ ] Check Cilium status again
+          ```
+          cilium status
+          ```
+
+        ### References
+        https://isovalent.com/blog/post/cilium-{{1-16}}/
+        https://docs.cilium.io/en/{{v1.16}}/operations/upgrade
