@@ -23,11 +23,8 @@ body:
         ### Deprecated
         - drop-d1
 
-        ### Upgrade process
-
-        #### Pre-upgrade tasks
-        <br/>
-
+        ## Upgrade process
+        ### Pre-upgrade tasks
         - [ ] Check Kubernetes cluster health
           ```bash
           talosctl health
@@ -37,9 +34,7 @@ body:
           task kubernetes:etcd:backup
           ```
 
-        #### Upgrade execution
-        <br/>
-
+        ### Upgrade execution
         - [ ] Login to secrert provider
           ```bash
           aws sso login
@@ -56,13 +51,11 @@ body:
           # continue to other workers
           ```
 
-        #### Post-upgrade verification
-        <br/>
-
+        ### Post-upgrade verification
         - [ ] Check Kubernetes cluster health again
           ```bash
           talosctl health
           ```
 
-        ### References
+        ## References
         https://www.talos.dev/{{v1.9}}/introduction/what-is-new/

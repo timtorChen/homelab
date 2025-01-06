@@ -23,29 +23,23 @@ body:
         ### Deprecated
         - drop-d1
 
-        ### Upgrade process
+        ## Upgrade process
 
-        #### Pre-upgrade tasks
-        <br/>
-
+        ### Pre-upgrade tasks
         - [ ] Check Cilium status
           ```
           cilium status
           ```
 
-        #### Upgrade execution
-        <br/>
-
+        ### Upgrade execution
         - [ ] Merge helm chart update PR, and flux will handle the upgrade
 
-        #### Post-upgrade verification
-        <br/>
-
+        ### Post-upgrade verification
         - [ ] Check Cilium status again
           ```
           cilium status
           ```
 
-        ### References
+        ## References
         https://isovalent.com/blog/post/cilium-{{1-16}}/
         https://docs.cilium.io/en/{{v1.16}}/operations/upgrade

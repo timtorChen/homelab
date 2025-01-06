@@ -34,22 +34,16 @@ body:
 
         ## Upgrade process
 
-        #### Pre-upgrade Tasks
-        <br/>
-
+        ### Pre-upgrade Tasks
         - [ ] Check Ceph status
           ```
           task kubernetes:rook-ceph:status
           ```
 
-        #### Upgrade execution
-        <br/>
-
+        ### Upgrade execution
         - [ ] Merge helm chart update PR, and flux will handle the upgrade
 
-        #### Post-upgrade verification
-        <br/>
-
+        ### Post-upgrade verification
         - [ ] Check Cilium status again
           ```
           task kubernetes:rook-ceph:status

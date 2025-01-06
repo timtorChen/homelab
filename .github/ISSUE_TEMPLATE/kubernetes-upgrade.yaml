@@ -35,9 +35,8 @@ body:
         ### Deprecated
         - drop-d1
 
-        ### Upgrade process
-        #### Pre-upgrade Tasks
-        <br/>
+        ## Upgrade process
+        ### Pre-upgrade Tasks
 
         - [ ] Check Kubernetes cluster health
           ```bash
@@ -48,9 +47,7 @@ body:
           task kubernetes:etcd:backup
           ```
 
-        #### Upgrade execution
-        <br/>
-
+        ### Upgrade execution
         - [ ] Login to secrert provider
           ```bash
           aws sso login
@@ -67,13 +64,11 @@ body:
           # continue to another worker
           ```
 
-        #### Post-upgrade verification
-        <br/>
-
+        ### Post-upgrade verification
         - [ ] Check Kubernetes cluster health again
           ```bash
           talosctl health
           ```
 
-        ### References
+        ## References
         https://kubernetes.io/blog/{{2024/12/11/kubernetes-v1-32-release}}/
