@@ -9,6 +9,8 @@ includes:
   rook-ceph:
     optional: true
     taskfile: ../.tasks/rook-ceph.yaml
+  etcd-backup:
+    taskfile: etcd-backup/.taskfile.yaml
   cilium:
     optional: true
     taskfile: ../.tasks/cilium.yaml

@@ -28,7 +28,7 @@ body:
         ### Pre-upgrade tasks
         - [ ] Check Cilium status
           ```
-          cilium status
+          task kubernetes:cilium:status
           ```
 
         ### Upgrade execution
@@ -37,7 +37,7 @@ body:
         ### Post-upgrade verification
         - [ ] Check Cilium status again
           ```
-          cilium status
+          task kubernetes:cilium:status
           ```
 
         ## References

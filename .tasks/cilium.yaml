@@ -12,3 +12,6 @@ tasks:
 
   observe:
     cmd: hubble observe {{.CLI_ARGS}}
+
+  status:
+    cmd: cilium status
