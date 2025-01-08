@@ -36,6 +36,13 @@ spec:
       replicated:
         size: 1
         requireSafeReplicaSize: false
+    - # fs-fast-ec pool
+      name: fast-ec
+      failureDomain: host
+      deviceClass: nvme
+      erasureCoded:
+        codingChunks: 1
+        dataChunks: 1
   metadataServer:
     # rook will create instance in activeCount*2
     # setup one active and one warm standby MDS
