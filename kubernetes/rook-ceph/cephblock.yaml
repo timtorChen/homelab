@@ -14,21 +14,7 @@ spec:
     requireSafeReplicaSize: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
-## rbd-fast-volatile pool
-apiVersion: ceph.rook.io/v1
-kind: CephBlockPool
-metadata:
-  namespace: rook-ceph
-  name: rbd-fast-volatile
-spec:
-  failureDomain: host
-  deviceClass: nvme
-  replicated:
-    size: 1
-    requireSafeReplicaSize: false
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
-## rbd-fast-volatile pool
+## rbd-fast-ec pool
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
@@ -84,15 +70,15 @@ reclaimPolicy: Delete
 allowVolumeExpansion: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
-## StorageClass rbd-fast-volatile
+## StorageClass rbd-fast-ec
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: rbd-fast-volatile
+  name: rbd-fast-ec
 provisioner: rook-ceph.rbd.csi.ceph.com
 parameters:
   clusterID: rook-ceph
-  pool: rbd-fast-volatile
+  pool: rbd-fast-ec
   imageFeatures: layering
   csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
