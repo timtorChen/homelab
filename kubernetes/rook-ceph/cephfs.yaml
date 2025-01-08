@@ -29,13 +29,6 @@ spec:
       replicated:
         size: 3
         requireSafeReplicaSize: true
-    - # fs-fast-volatile pool
-      name: fast-volatile
-      failureDomain: host
-      deviceClass: nvme
-      replicated:
-        size: 1
-        requireSafeReplicaSize: false
     - # fs-fast-ec pool
       name: fast-ec
       failureDomain: host
@@ -94,16 +87,16 @@ reclaimPolicy: Delete
 allowVolumeExpansion: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
-## StorageClass fs-fast-volatile
+## StorageClass fs-fast-ec
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: fs-fast-volatile
+  name: fs-fast-ec
 provisioner: rook-ceph.cephfs.csi.ceph.com
 parameters:
   clusterID: rook-ceph
   fsName: fs
-  pool: fs-fast-volatile
+  pool: fs-fast-ec
   csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
   csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
