@@ -1,11 +1,25 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
-## rbd-fas-pool
+## rbd-fast pool
 apiVersion: ceph.rook.io/v1
 kind: CephBlockPool
 metadata:
   namespace: rook-ceph
   name: rbd-fast
+spec:
+  failureDomain: host
+  deviceClass: nvme
+  replicated:
+    size: 3
+    requireSafeReplicaSize: true
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
+## rbd-fast-ec-metadata pool (ec pool do not support omap, it need a replicated pool for metadata)
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  namespace: rook-ceph
+  name: rbd-fast-ec-metadata
 spec:
   failureDomain: host
   deviceClass: nvme
@@ -78,7 +92,8 @@ metadata:
 provisioner: rook-ceph.rbd.csi.ceph.com
 parameters:
   clusterID: rook-ceph
-  pool: rbd-fast-ec
+  dataPool: rbd-fast-ec
+  pool: rbd-fast-ec-metadata
   imageFeatures: layering
   csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
