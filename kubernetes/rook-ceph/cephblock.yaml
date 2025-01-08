@@ -27,6 +27,20 @@ spec:
     size: 1
     requireSafeReplicaSize: false
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephblockpool_v1.json
+## rbd-fast-volatile pool
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  namespace: rook-ceph
+  name: rbd-fast-ec
+spec:
+  failureDomain: host
+  deviceClass: nvme
+  erasureCoded:
+    dataChunks: 2
+    codingChunks: 1
+---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
 ## StorageClass rbd-fast
 apiVersion: storage.k8s.io/v1
