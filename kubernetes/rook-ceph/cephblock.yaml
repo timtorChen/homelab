@@ -38,8 +38,8 @@ spec:
   failureDomain: host
   deviceClass: nvme
   erasureCoded:
+    dataChunks: 2
     codingChunks: 1
-    dataChunks: 1
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
 ## StorageClass rbd-fast
