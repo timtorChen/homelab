@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: fluxcd-community
       chart: flux2
-      version: 2.13.0
+      version: 2.14.1
   install:
     crds: CreateReplace
   upgrade:
