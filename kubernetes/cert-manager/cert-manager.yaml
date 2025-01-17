@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: cert-manager
       chart: cert-manager
-      version: v1.12.2
+      version: v1.16.3
   install:
     crds: CreateReplace
   upgrade:
