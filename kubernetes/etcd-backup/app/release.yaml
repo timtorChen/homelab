@@ -42,7 +42,7 @@ spec:
           talos:
             image:
               repository: ghcr.io/siderolabs/talosctl
-              tag: v1.9.1
+              tag: v1.9.2
             args:
               - "-n"
               - "192.168.253.1"
