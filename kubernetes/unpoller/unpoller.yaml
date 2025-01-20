@@ -43,7 +43,7 @@ spec:
           main:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v2.14.0
+              tag: v2.14.1
             command: ["unpoller", "--config", "/config/unpoller.yaml"]
             env:
               UP_UNIFI_CONTROLLER_0_USER:
