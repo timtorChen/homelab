@@ -37,7 +37,7 @@ spec:
             env:
               ND_MUSICFOLDER: &dir1 /data
               ND_DATAFOLDER: &dir2 /db
-              # no such environment variable just for symmetry
+              SQLITE_TMPDIR: *dir2
               ND_CACHEFOLDER: &dir3 /db/cache
               ND_PORT: &p 4533
               ND_ENABLETRANSCODINGCONFIG: "true"
