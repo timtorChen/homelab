@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "automerge": true,
+      "matchDepNames": [
+        "deluan/navidrome",
+        "ghcr.io/dani-garcia/vaultwarden",
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning",
+        "cloudflare/cloudflared",
+        "matusnovak/prometheus-smartctl",
+        "jacobalberty/unifi",
+        "ghcr.io/unpoller/unpoller"
+      ],
+      "matchUpdateTypes": ["patch"],
+      "automergeType": "branch"
+    },
+    {
+      "automerge": true,
+      "matchDepNames": ["grafana"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automergeType": "branch"
+    }
+  ]
+}

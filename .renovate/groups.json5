@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "groupName": "kubernetes",
+      "matchFileNames": ["talos/**"],
+      "matchDatasources": "docker",
+      "matchDepPatterns": [
+        "ghcr.io/siderolabs/kubelet",
+        "registry.k8s.io/kube-apiserver",
+        "registry.k8s.io/kube-controller-manager",
+        "registry.k8s.io/kube-scheduler"
+      ],
+      "separateMultipleMinor": true
+    },
+    {
+      "groupName": "talos",
+      "matchDepPatterns": [
+        "siderolabs/talosctl",
+        "ghcr.io/siderolabs/installer"
+      ],
+      "separateMultipleMinor": true,
+      "commitMessageTopic": "talos"
+    },
+    {
+      "groupName": "immich",
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": "helm",
+      "matchDepPatterns": [
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning"
+      ]
+    },
+    {
+      "groupName": "rook-ceph",
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": "helm",
+      "matchDepPatterns": ["rook-ceph"],
+      "separateMultipleMinor": true
+    }
+  ]
+}
