@@ -3,9 +3,9 @@
   "extends": [
     "config:recommended", 
     ":disableRateLimiting",
-    "github>timtorChen/homelab-action//.renovate/groups.json5",
-    "github>timtorChen/homelab-action//.renovate/customManagers.json5",
-    "github>timtorChen/homelab-action//.renovate/autoMerge.json5"
+    "github>timtorChen/homelab//.renovate/groups.json5",
+    "github>timtorChen/homelab//.renovate/customManagers.json5",
+    "github>timtorChen/homelab//.renovate/autoMerge.json5"
   ],
   "timezone": "Asia/Taipei",
   "dependencyDashboard": true,
