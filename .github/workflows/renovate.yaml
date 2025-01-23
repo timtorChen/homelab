@@ -8,7 +8,7 @@ name: renovate
       - "main"
     paths:
       - "renovate.json5"
-      - "**/renovate.json5"
+      - ".renovate/**"
   schedule:
     - cron: "0 0 * * *" # every 08:00 UTC+8
 jobs:

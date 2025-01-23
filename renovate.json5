@@ -1,70 +1,32 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  // configurations
-  // https://docs.renovatebot.com/configuration-options
-  extends: ["config:recommended", ":disableRateLimiting"],
-  timezone: "Asia/Taipei",
-  dependencyDashboard: true,
-  kubernetes: {
-    fileMatch: ["^kubernetes/.*\\.yaml$"],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended", 
+    ":disableRateLimiting",
+    "github>timtorChen/homelab-action//.renovate/groups.json5",
+    "github>timtorChen/homelab-action//.renovate/customManagers.json5",
+    "github>timtorChen/homelab-action//.renovate/autoMerge.json5"
+  ],
+  "timezone": "Asia/Taipei",
+  "dependencyDashboard": true,
+  "kubernetes": {
+    "fileMatch": ["^kubernetes/.*\\.yaml$"]
   },
-  flux: {
-    fileMatch: ["^kubernetes/.*\\.yaml$"],
+  "flux": {
+    "fileMatch": ["^kubernetes/.*\\.yaml$"]
   },
   "helm-values": {
-    fileMatch: ["^(kubernetes|talos)/.*\\.yaml$"],
+    "fileMatch": ["^(kubernetes|talos)/.*\\.yaml$"]
   },
-  ignorePaths: ["**/archive/**"],
-  packageRules: [
-    // Groups
+  "ignorePaths": ["**/archive/**"],
+  "customManagers": [
     {
-      matchDepPatterns: [
-        "ghcr.io/immich-app/immich-server",
-        "ghcr.io/immich-app/immich-machine-learning",
-      ],
-      groupName: "immich",
-    },
-    {
-      matchDepPatterns: [
-        "ghcr.io/siderolabs/kubelet",
-        "registry.k8s.io/kube-apiserver",
-        "registry.k8s.io/kube-controller-manager",
-        "registry.k8s.io/kube-scheduler",
-        "gcr.io/etcd-development/etcd",
-        "docker.io/coredns/coredns",
-      ],
-      groupName: "kubernetes",
-    },
-    {
-      matchDepPatterns: ["ghcr.io/siderolabs/installer"],
-      commitMessageTopic: "talos",
-      groupName: "talos",
-    },
-    {
-      matchPackagePatterns: ["hashicorp/terraform", "hashicorp/aws"],
-      groupName: "terraform",
-    },
-    // Auto merge
-    {
-      matchDepPatterns: [
-        "deluan/navidrome",
-        "ghcr.io/dani-garcia/vaultwarden",
-        "ghcr.io/immich-app/immich-server",
-        "ghcr.io/immich-app/immich-machine-learning",
-        "cloudflare/cloudflared",
-        "matusnovak/prometheus-smartctl",
-        "jacobalberty/unifi",
-        "ghcr.io/unpoller/unpoller",
-      ],
-      matchUpdateTypes: ["patch"],
-      automergeType: "branch",
-      automerge: true,
-    },
-    {
-      matchDepPatterns: ["grafana"],
-      matchUpdateTypes: ["minor", "patch"],
-      automergeType: "branch",
-      automerge: true,
-    },
-  ],
+      "customType": "regex",
+      "fileMatch": ["^talos/.*\\.yaml$"],
+      "datasourceTemplate": "docker",
+      "matchStrings": [
+        "# renovate: depName=(?<depName>.*?)\n *image: factory\\.talos\\.dev\/installer\/[a-z0-9]+:(?<currentValue>v[\\d\\.]+)"
+      ]
+    }
+  ]
 }

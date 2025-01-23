@@ -1,0 +1,14 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    // talos installer
+    {
+      "customType": "regex",
+      "fileMatch": ["^talos/.*\\.yaml$"],
+      "datasourceTemplate": "docker",
+      "matchStrings": [
+        "# renovate: depName=(?<depName>.*?)\n *image: factory\\.talos\\.dev\/installer\/[a-z0-9]+:(?<currentValue>v[\\d\\.]+)"
+      ]
+    }
+  ]
+}
