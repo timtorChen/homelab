@@ -24,7 +24,7 @@ spec:
         namespace: cnpg
         name: cnpg
       chart: cloudnative-pg
-      version: 0.22.1
+      version: 0.23.0
   install:
     crds: CreateReplace
   upgrade:
