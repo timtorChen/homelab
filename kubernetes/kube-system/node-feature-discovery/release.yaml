@@ -11,7 +11,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: node-feature-discovery
-      version: 0.15.4
+      version: 0.17.1
       chart: node-feature-discovery
   interval: 1h
   maxHistory: 1
