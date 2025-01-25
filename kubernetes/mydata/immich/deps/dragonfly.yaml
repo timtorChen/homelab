@@ -46,7 +46,7 @@ spec:
               - --default_lua_flags=allow-undeclared-keys
               - --dir=/data
             env:
-              DFLY_PASSWORD:
+              DFLY_requirepass:
                 valueFrom:
                   secretKeyRef:
                     name: *s
