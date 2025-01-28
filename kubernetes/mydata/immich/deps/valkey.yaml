@@ -78,6 +78,7 @@ spec:
             bind * -::*
             aclfile /secret/users.acl
             # ACL example:
+            # user default off
             # user {username} {permissions} {access-patterns} {on or off} >{plaintext-password}
 
     persistence:
