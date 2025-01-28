@@ -4,7 +4,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   namespace: mydata
-  name: nextcloud-dragonfly
+  name: immich-valkey
 spec:
   chart:
     spec:
@@ -23,7 +23,7 @@ spec:
         replicas: 1
         strategy: RollingUpdate
         annotations:
-          secret.reloader.stakater.com/reload: &s nextcloud-dragonfly-secret
+          secret.reloader.stakater.com/reload: &s immich-valkey-secret
         pod:
           automountServiceAccountToken: false
           securityContext:
@@ -39,27 +39,20 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/dragonflydb/dragonfly
-              tag: v1.26.1
+              repository: valkey/valkey
+              tag: 8.0.2-alpine
             args:
-              - --default_lua_flags=allow-undeclared-keys
-              - --dir=/data
-            env:
-              DFLY_requirepass:
-                valueFrom:
-                  secretKeyRef:
-                    name: *s
-                    key: DFLY_PASSWORD
+              - /config/valkey.conf
             resources:
               requests:
                 cpu: 100m
             probes:
               startup:
-                enabled: false
-              liveness:
-                enabled: false
+                enabled: true
               readiness:
-                enabled: false
+                enabled: true
+              liveness:
+                enabled: true
             securityContext:
               runAsNonRoot: true
               runAsUser: 65534
@@ -74,10 +67,26 @@ spec:
     serviceAccount:
       create: true
       annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-nextcloud-dragonfly
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich-valkey
         eks.amazonaws.com/audience: sts.amazonaws.com
 
+    configMaps:
+      config:
+        enabled: true
+        data:
+          valkey.conf: |
+            bind * -::*
+            aclfile /secret/users.acl
+            # ACL example:
+            # user {username} {permissions} {access-patterns} {on or off} >{plaintext-password}
+
     persistence:
+      config:
+        type: configMap
+        name: immich-valkey-config
+        globalMounts:
+          - path: /config
+            readOnly: true
       secret:
         type: custom
         volumeSpec:
@@ -86,6 +95,9 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: *s
+        globalMounts:
+          - path: /secret
+            readOnly: true
 
     service:
       main:
@@ -94,5 +106,5 @@ spec:
         ports:
           redis:
             primary: true
-            protocol: TCP
             port: 6379
+            protocol: TCP

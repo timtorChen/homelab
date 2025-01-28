@@ -21,7 +21,7 @@ specs:
   # allow redis connection from nextcloud
   - endpointSelector:
       matchLabels:
-        app.kubernetes.io/name: nextcloud-dragonfly
+        app.kubernetes.io/name: nextcloud-valkey
     ingress:
       - fromEndpoints: *nextcloud
         toPorts:

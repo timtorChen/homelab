@@ -731,8 +731,8 @@ resource "aws_iam_role_policy_attachment" "nextcloud-postgres-secret-holder" {
   policy_arn = aws_iam_policy.nextcloud-postgres-secret-holder.arn
 }
 
-resource "aws_iam_role" "nextcloud-dragonfly" {
-  name = "${local.project}-nextcloud-dragonfly"
+resource "aws_iam_role" "nextcloud-valkey" {
+  name = "${local.project}-nextcloud-valkey"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -744,7 +744,7 @@ resource "aws_iam_role" "nextcloud-dragonfly" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:nextcloud-dragonfly",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:nextcloud-valkey",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -753,8 +753,8 @@ resource "aws_iam_role" "nextcloud-dragonfly" {
   })
 }
 
-resource "aws_iam_policy" "nextcloud-dragonfly" {
-  name = "${local.project}-nextcloud-dragonfly"
+resource "aws_iam_policy" "nextcloud-valkey" {
+  name = "${local.project}-nextcloud-valkey"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -762,16 +762,16 @@ resource "aws_iam_policy" "nextcloud-dragonfly" {
         "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/nextcloud-dragonfly"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/nextcloud-valkey"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "nextcloud-dragonfly" {
-  role       = aws_iam_role.nextcloud-dragonfly.name
-  policy_arn = aws_iam_policy.nextcloud-dragonfly.arn
+resource "aws_iam_role_policy_attachment" "nextcloud-valkey" {
+  role       = aws_iam_role.nextcloud-valkey.name
+  policy_arn = aws_iam_policy.nextcloud-valkey.arn
 }
 
 resource "aws_iam_role" "vaultwarden" {
@@ -1075,8 +1075,8 @@ resource "aws_iam_role_policy_attachment" "immich-postgres-secret-holder" {
   policy_arn = aws_iam_policy.immich-postgres-secret-holder.arn
 }
 
-resource "aws_iam_role" "immich-dragonfly" {
-  name = "${local.project}-immich-dragonfly"
+resource "aws_iam_role" "immich-valkey" {
+  name = "${local.project}-immich-valkey"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1088,7 +1088,7 @@ resource "aws_iam_role" "immich-dragonfly" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-dragonfly",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-valkey",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -1097,8 +1097,8 @@ resource "aws_iam_role" "immich-dragonfly" {
   })
 }
 
-resource "aws_iam_policy" "immich-dragonfly" {
-  name = "${local.project}-immich-dragonfly"
+resource "aws_iam_policy" "immich-valkey" {
+  name = "${local.project}-immich-valkey"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1106,16 +1106,16 @@ resource "aws_iam_policy" "immich-dragonfly" {
         "Action" : "ssm:GetParameters",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-dragonfly"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-valkey"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "immich-dragonfly" {
-  role       = aws_iam_role.immich-dragonfly.name
-  policy_arn = aws_iam_policy.immich-dragonfly.arn
+resource "aws_iam_role_policy_attachment" "immich-valkey" {
+  role       = aws_iam_role.immich-valkey.name
+  policy_arn = aws_iam_policy.immich-valkey.arn
 }
 
 resource "aws_iam_role" "miniflux" {
