@@ -20,6 +20,6 @@ resources:
   - deps/postgres-secret.yaml
   - deps/postgres-secret-holder.yaml
   - deps/postgres-sa.yaml
-  - deps/dragonfly.yaml
-  - deps/dragonfly-secret.yaml
+  - deps/valkey.yaml
+  - deps/valkey-secret.yaml
   - deps/netpol.yaml

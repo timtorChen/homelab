@@ -71,12 +71,12 @@ specs:
             rules:
               dns:
                 - matchName: "immich-postgres-rw.mydata.svc.cluster.local."
-                - matchName: "immich-dragonfly.mydata.svc.cluster.local."
+                - matchName: "immich-valkey.mydata.svc.cluster.local."
       - toEndpoints:
           - matchLabels:
               cnpg.io/cluster: immich-postgres
           - matchLabels:
-              app.kubernetes.io/name: immich-dragonfly
+              app.kubernetes.io/name: immich-valkey
         toPorts:
           - ports:
               - protocol: TCP

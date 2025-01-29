@@ -8,8 +8,8 @@ resources:
   - app/pvc.yaml
   - app/secret.yaml
   - app/netpol.yaml
-  - deps/dragonfly-secret.yaml
-  - deps/dragonfly.yaml
+  - deps/valkey-secret.yaml
+  - deps/valkey.yaml
   - deps/postgres-secret.yaml
   - deps/postgres.yaml
   - deps/netpol.yaml

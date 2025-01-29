@@ -33,12 +33,12 @@ specs:
             rules:
               dns:
                 - matchName: "nextcloud-postgres-rw.mydata.svc.cluster.local."
-                - matchName: "nextcloud-dragonfly.mydata.svc.cluster.local."
+                - matchName: "nextcloud-valkey.mydata.svc.cluster.local."
       - toEndpoints:
           - matchLabels:
               cnpg.io/cluster: nextcloud-postgres
           - matchLabels:
-              app.kubernetes.io/name: nextcloud-dragonfly
+              app.kubernetes.io/name: nextcloud-valkey
         toPorts:
           - ports:
               - protocol: TCP

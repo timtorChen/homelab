@@ -23,7 +23,7 @@ data:
   php-config.ini: |
     ; -- Redis session handler
     session.save_handler = redis
-    session.save_path = "tcp://${_REDIS_HOST}:${REDIS_HOST_PORT}?auth=${REDIS_HOST_PASSWORD}"
+    session.save_path = "tcp://${_REDIS_HOST}:${REDIS_HOST_PORT}?auth[username]=${REDIS_HOST_USERNAME}&auth[password]=${REDIS_HOST_PASSWORD}"
     redis.session.locking_enabled = 1
     redis.session.lock_retries = -1
     redis.session.lock_wait_time = 10000
@@ -51,6 +51,7 @@ data:
       'redis' => [
         'host' => getenv('_REDIS_HOST'),
         'port' => getenv('REDIS_HOST_PORT') ?: 6379,
+        'user' => getenv('REDIS_HOST_USERNAME'),
         'password' => getenv('REDIS_HOST_PASSWORD')
       ],
 

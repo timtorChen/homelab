@@ -21,7 +21,7 @@ specs:
   # allow redis connection from immich
   - endpointSelector:
       matchLabels:
-        app.kubernetes.io/name: immich-dragonfly
+        app.kubernetes.io/name: immich-valkey
     ingress:
       - fromEndpoints: *immich
         toPorts:
