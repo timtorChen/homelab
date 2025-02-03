@@ -100,13 +100,18 @@ spec:
               IMMICH_WORKERS_EXCLUDE: api
               IMMICH_MEDIA_LOCATION: *data-dir
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-              REDIS_HOSTNAME: immich-valkey
               DB_VECTOR_EXTENSION: pgvector
               DB_URL:
                 valueFrom:
                   secretKeyRef:
                     name: *s
                     key: DB_URL
+              REDIS_HOSTNAME: immich-valkey
+              REDIS_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_USERNAME
               REDIS_PASSWORD:
                 valueFrom:
                   secretKeyRef:
