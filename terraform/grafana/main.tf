@@ -8,7 +8,7 @@ terraform {
     }
     grafana = {
       source  = "grafana/grafana"
-      version = "3.18.2"
+      version = "3.18.3"
     }
   }
   backend "s3" {
