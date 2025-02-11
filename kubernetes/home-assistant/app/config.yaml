@@ -34,7 +34,7 @@ data:
                 before: sunset
                 before_offset: "-02:00:00"
               - condition: template
-                value_template: "{{ state_attr('weather.home', 'uv_index') < 6 }}"
+                value_template: "{{ state_attr('weather.home', 'uv_index') < 5 }}"
             sequence:
               - action: switch.turn_on
                 target:
