@@ -23,7 +23,7 @@ data:
       id: "planet_led"
       triggers:
         - trigger: time_pattern
-          minutes: "/30"
+          minutes: "/10"
       actions:
         - choose:
           # turn on the led if is a morning having no sun light
