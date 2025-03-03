@@ -7,6 +7,7 @@
         "deluan/navidrome",
         "ghcr.io/dani-garcia/vaultwarden",
         "ghcr.io/immich-app/immich-**",
+        "miniflux/miniflux",
         "cloudflare/cloudflared",
         "matusnovak/prometheus-smartctl",
         "jacobalberty/unifi",
