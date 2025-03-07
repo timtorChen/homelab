@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: rook-ceph
       chart: rook-ceph
-      version: v1.16.4
+      version: v1.16.5
   install:
     crds: CreateReplace
   upgrade:
