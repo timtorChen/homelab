@@ -40,7 +40,7 @@ spec:
           main:
             image:
               repository: valkey/valkey
-              tag: 8.0.2-alpine
+              tag: 8.1.0-alpine
             args:
               - /config/valkey.conf
             resources:
