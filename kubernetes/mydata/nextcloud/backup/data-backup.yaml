@@ -20,7 +20,7 @@ spec:
     accessModes: ["ReadWriteOnce"]
     cacheStorageClassName: rbd-fast-ec
     cacheAccessModes: ["ReadWriteOnce"]
-    cacheCapacity: 1Gi
+    cacheCapacity: 20Gi
     moverSecurityContext:
       runAsNonRoot: true
       runAsUser: 65534
