@@ -21,7 +21,8 @@ spec:
       main:
         type: cronjob
         cronjob:
-          schedule: "0 * * * *"
+          timeZone: Asia/Taipei
+          schedule: "0 8 * * *"
           concurrencyPolicy: Forbid
           backoffLimit: 3
           successfulJobsHistory: 3
