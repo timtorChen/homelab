@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - base/ns.yaml
+  - base/repo.yaml
+  - kubernetes-logs-vector/release.yaml
+  - kubernetes-logs-vector/rbac.yaml
+  - kubernetes-logs-vector/config.yaml

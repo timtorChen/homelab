@@ -1,0 +1,10 @@
+---
+apiVersion: clickhouse-keeper.altinity.com/v1
+kind: ClickHouseKeeperInstallation
+metadata:
+  namespace: monitoring
+  name: clickhouse-keeper
+spec:
+  configuration:
+    clusters:
+      - name: cluster1

@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: monitoring-privileged
+  name: kubernetes-logs-vector-config
+data:
+  # kubernetes-logs
+  kubernetes-logs.yaml: | #yaml
+    sources:
+      kubernetes-logs:
+        type: kubernetes_logs
+        read_from: end
+        extra_label_selector: "app.kubernetes.io/name=nextcloud"
+
+    sinks:
+      kubernetes-logs-debug:
+        type: console
+        inputs: [kubernetes-logs]
+        encoding:
+          codec: text
+
+
