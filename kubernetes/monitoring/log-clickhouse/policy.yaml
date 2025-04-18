@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kyverno.io/policy_v1.json
+apiVersion: v1
+kind: Policy
+metadata:
+  namespace: monitoring
+  name:  
+spec:
+  validationFailureAction: enforce
+  rules:
+    - name: allow-privileged-for-node-exporter-pod
+      match:
+        resources:
+          kinds: ["Pod"]
+          selector:
+            matchLabels:
+
+# apiVersion: kyverno.io/v1
+# kind: Policy
+# metadata:
+#   name: allow-privileged-node-exporter
+#   namespace: monitoring
+# spec:
+#   validationFailureAction: enforce
+#   rules:
+#     - name: allow-privileged-for-node-exporter
+#       match:
+#         resources:
+#           kinds: ["Pod"]
+#           selector:
+#             matchLabels:
+#               app.kubernetes.io/name: node-exporter
+#       validate:
+#         message: "Privileged containers are not allowed except for node-exporter"
+#         pattern:
+#           spec:
+#             containers:
+#               - securityContext:
+                  # privileged: true

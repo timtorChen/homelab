@@ -50,7 +50,8 @@ locals {
     "rss.timtor.dev",
     "s3-fast.timtor.dev",
     "ui.timtor.dev",
-    "vault.timtor.dev"
+    "vault.timtor.dev",
+    "workflow.timtor.dev"
   ]
   homelab_public_ingress_rules = [
     {

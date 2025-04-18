@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: monitoring-privileged
+  name: kubernetes-logs-vector
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 3.7.3
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    controllers:
+      main:
+        type: daemonset
+        strategy: RollingUpdate
+        annotations:
+          configmap.reloader.stakater.com/reload: &config kubernetes-logs-vector-config
+        pod:
+          automountServiceAccountToken: true
+        containers:
+          main:
+            image:
+              repository: timberio/vector
+              tag: 0.46.0-alpine
+            env:
+              VECTOR_CONFIG_DIR: &config-dir /config
+              VECTOR_SELF_NODE_NAME:
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: spec.nodeName
+            resources:
+              limits:
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 512Mi
+            probes:
+              startup:
+                enabled: false
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 0
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+    persistence:
+      log:
+        type: hostPath
+        hostPath: /var/log/pods
+        globalMounts:
+          - path: /var/log/pods
+            readOnly: true
+      config:
+        type: configMap
+        name: *config
+        globalMounts:
+          - path: *config-dir
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /var/lib/vector
+
+    serviceAccount:
+      create: true
