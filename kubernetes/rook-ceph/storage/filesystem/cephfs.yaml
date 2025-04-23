@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephfilesystem_v1.json
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  namespace: rook-ceph
+  name: fs
+spec:
+  preserveFilesystemOnDelete: true
+  # fs-metadata pool
+  metadataPool:
+    failureDomain: host
+    deviceClass: nvme
+    replicated:
+      size: 3
+      requireSafeReplicaSize: true
+  dataPools:
+    - # fs-default pool, left the default data pool unused
+      name: default
+      failureDomain: host
+      deviceClass: nvme
+      replicated:
+        size: 3
+        requireSafeReplicaSize: true
+    - # fs-fast pool
+      name: fast
+      failureDomain: host
+      deviceClass: nvme
+      replicated:
+        size: 3
+        requireSafeReplicaSize: true
+    - # fs-fast-ec pool
+      name: fast-ec
+      failureDomain: host
+      deviceClass: nvme
+      erasureCoded:
+        dataChunks: 2
+        codingChunks: 1
+  metadataServer:
+    # rook will create instance in activeCount*2
+    # setup one active and one warm standby MDS
+    activeCount: 1
+    activeStandby: true
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi

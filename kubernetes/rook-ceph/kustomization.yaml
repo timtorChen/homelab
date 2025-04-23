@@ -3,12 +3,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - _namespace.yaml
-  - rook-ceph.yaml
-  - cephcluster.yaml
-  - rook-config-override.yaml
-  - cephfs.yaml
-  - snapshotclass.yaml
-  - cephblock.yaml
-  - cephobject.yaml
-  - objectuser.yaml
+  - base/ns.yaml
+  - app/repo.yaml
+  - app/release.yaml
+  # cluster
+  - cluster/cephcluster.yaml
+  - cluster/rook-config-override.yaml
+  # block
+  - storage/block/cephblock.yaml
+  - storage/block/snapshotclass.yaml
+  - storage/block/storageclass.yaml
+  # fs
+  - storage/filesystem/cephfs.yaml
+  - storage/filesystem/snapshotclass.yaml
+  - storage/filesystem/storageclass.yaml
+  # object
+  - storage/object/cephobject.yaml
+  - storage/object/objectuser.yaml
