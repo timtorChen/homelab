@@ -7,8 +7,8 @@ resources:
   - app/repo.yaml
   - app/release.yaml
   # cluster
-  - custer/cephcluster.yaml
-  - custer/rook-config-override.yaml
+  - cluster/cephcluster.yaml
+  - cluster/rook-config-override.yaml
   # block
   - storage/block/cephblock.yaml
   - storage/block/snapshotclass.yaml
