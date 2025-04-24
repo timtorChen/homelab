@@ -38,7 +38,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.131.3
+              tag: v1.132.1
             env:
               IMMICH_WORKERS_INCLUDE: api
               IMMICH_PORT: &p1 3001
@@ -95,7 +95,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.131.3
+              tag: v1.132.1
             env:
               IMMICH_WORKERS_EXCLUDE: api
               IMMICH_MEDIA_LOCATION: *data-dir
