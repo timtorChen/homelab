@@ -20,7 +20,7 @@ spec:
     image:
       registry: docker.io
       repository: grafana/grafana
-      tag: 11.4.0
+      tag: 11.6.1
     replicas: 2
     serviceAccount:
       create: true
