@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: jacobalberty/unifi
-              tag: v9.0
+              tag: v9.1
             probes:
               startup:
                 enabled: true
