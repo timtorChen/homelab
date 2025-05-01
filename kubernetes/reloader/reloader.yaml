@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: stakater
       chart: reloader
-      version: 2.1.2
+      version: 2.1.3
   interval: 1h
   maxHistory: 1
   values:
