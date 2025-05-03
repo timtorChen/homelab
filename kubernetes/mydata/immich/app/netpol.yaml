@@ -121,7 +121,9 @@ specs:
                 port: "53"
             rules:
               dns: &model
-                - matchPattern: "*huggingface.co"
+                - matchPattern: "huggingface.co."
+                - matchPattern: "*.huggingface.co."
+                - matchPattern: "*.hf.co."
       - toFQDNs: *model
         toPorts:
           - ports:

@@ -6,7 +6,10 @@ metadata:
   namespace: mydata
   name: immich-postgres
 spec:
-  imageName: ghcr.io/cloudnative-pg/postgresql:15.6
+  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:15.9-v0.3.0
+  postgresql:
+    shared_preload_libraries:
+      - "vectors.so"
   instances: 1
   storage:
     pvcTemplate:
@@ -21,6 +24,14 @@ spec:
       owner: immich
       secret:
         name: immich-postgres-secret
+      postInitApplicationSQL:
+        - |
+            BEGIN;
+            CREATE EXTENSION vectors;
+            CREATE EXTENSION earthdistance CASCADE;
+            ALTER DATABASE immich SET search_path TO "$user", public, vectors;
+            ALTER SCHEMA vectors OWNER TO immich;
+            COMMIT;
   backup:
     retentionPolicy: "1w"
     barmanObjectStore:
@@ -49,58 +60,3 @@ spec:
   cluster:
     name: immich-postgres
   target: prefer-standby
----
-## workaround to hold secret
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: mydata
-  name: immich-postgres-secret-holder
-  annotations:
-    eks.amazonaws.com/audience: sts.amazonaws.com
-    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich-postgres-secret-holder
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/deployment-apps-v1.json
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  namespace: mydata
-  name: &n immich-postgres-secret-holder
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: *n
-  template:
-    metadata:
-      labels:
-        app: *n
-    spec:
-      serviceAccount: *n
-      volumes:
-        - name: &s immich-postgres-secret
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-      containers:
-        - name: *n
-          image: busybox:latest
-          command: ["sleep", "infinity"]
-          volumeMounts:
-            - name: *s
-              mountPath: /immich-postgres-secret
-              readOnly: true
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-            seccompProfile:
-              type: RuntimeDefault
-          resources: {}

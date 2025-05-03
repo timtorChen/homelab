@@ -44,7 +44,7 @@ spec:
               IMMICH_PORT: &p1 3001
               IMMICH_MEDIA_LOCATION: &data-dir /data
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-              DB_VECTOR_EXTENSION: pgvector
+              DB_VECTOR_EXTENSION: pgvecto.rs
               DB_URL:
                 valueFrom:
                   secretKeyRef:
@@ -70,7 +70,7 @@ spec:
                 enabled: true
             resources:
               limits:
-                memory: 512Mi
+                memory: 2Gi
               requests:
                 cpu: 50m
                 memory: 512Mi
@@ -100,7 +100,7 @@ spec:
               IMMICH_WORKERS_EXCLUDE: api
               IMMICH_MEDIA_LOCATION: *data-dir
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-              DB_VECTOR_EXTENSION: pgvector
+              DB_VECTOR_EXTENSION: pgvecto.rs
               DB_URL:
                 valueFrom:
                   secretKeyRef:
@@ -150,7 +150,7 @@ spec:
             probes: *probes
             resources:
               limits:
-                memory: 1Gi
+                memory: 2Gi
               requests:
                 cpu: 100m
                 memory: 1Gi
@@ -214,6 +214,8 @@ spec:
     ingress:
       main:
         className: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
         hosts:
           - host: photo.timtor.dev
             paths:
