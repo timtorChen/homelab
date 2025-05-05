@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: argo-workflows
+  name: test-workflow
+---
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+  namespace: argo-workflows
+  name: test-workflow-talos
+spec:
+  roles:
+    - os:operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: argo-workflows
+  name: test-argo-role
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: test-node-reader
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-reader-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: test-node-reader
+subjects:
+  - kind: ServiceAccount
+    namespace: argo-workflows
+    name: test-workflow
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: argo-workflows
+  name: argo-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: test-argo-role
+subjects:
+  - kind: ServiceAccount
+    namespace: argo-workflows
+    name: test-workflow

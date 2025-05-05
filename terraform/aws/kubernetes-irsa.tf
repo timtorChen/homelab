@@ -170,6 +170,49 @@ resource "aws_iam_role_policy_attachment" "etcd-backup" {
   policy_arn = aws_iam_policy.etcd-backup.arn
 }
 
+resource "aws_iam_role" "etcd-backup-new" {
+  name = "${local.project}-etcd-backup-new"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:etcd-backup-new:etcd-backup-new",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "etcd-backup-new" {
+  name = "${local.project}-etcd-backup-new"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameters",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/etcd-backup"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "etcd-backup-new" {
+  role       = aws_iam_role.etcd-backup-new.name
+  policy_arn = aws_iam_policy.etcd-backup-new.arn
+}
+
 resource "aws_iam_role" "snmp-exporter-mikrotik" {
   name = "${local.project}-snmp-exporter-mikrotik"
   assume_role_policy = jsonencode({
@@ -1202,4 +1245,47 @@ resource "aws_iam_policy" "miniflux-postgres-secret-holder" {
 resource "aws_iam_role_policy_attachment" "miniflux-postgres-secret-holder" {
   role       = aws_iam_role.miniflux-postgres-secret-holder.name
   policy_arn = aws_iam_policy.miniflux-postgres-secret-holder.arn
+}
+
+resource "aws_iam_role" "argo-workflows" {
+  name = "${local.project}-argo-workflows"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:argo-workflows:argo-workflows-server",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "argo-workflows" {
+  name = "${local.project}-argo-workflows"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameters",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/argo-workflows"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "argo-workflows" {
+  role       = aws_iam_role.argo-workflows.name
+  policy_arn = aws_iam_policy.argo-workflows.arn
 }

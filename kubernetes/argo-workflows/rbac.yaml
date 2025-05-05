@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: argo-workflows
+  name: admin-user
+  annotations:
+    workflows.argoproj.io/service-account-token.name: admin-user-sa-secret
+    workflows.argoproj.io/rbac-rule: "'argo-workflows-admin' in groups"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: argo-workflows
+  name: admin-user-sa-secret
+  annotations:
+    kubernetes.io/service-account.name: admin-user
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: test-cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: admin-user
+    namespace: argo-workflows

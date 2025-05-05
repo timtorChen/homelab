@@ -1,0 +1,110 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo-workflows
+  name: test-1
+spec:
+  entrypoint: main
+  volumes:
+    - name: talos-sa
+      secret:
+        secretName: test-workflow-talos
+  templates:
+    - name: main
+      parallelism: 1
+      steps:
+        - - name: get-ips
+            template: get-ips
+        - - name: manual-approve
+            template: manual-approve
+        - - name: upgrade-server-nodes
+            template: upgrade-server-nodes
+            withParam: "{{steps.get-ips.outputs.parameters.control-plane-ips}}"
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{item}}"
+        - - name: upgrade-worker-nodes
+            template: upgrade-worker-nodes
+            withParam: "{{steps.get-ips.outputs.parameters.worker-ips}}"
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{item}}"
+
+    - name: get-ips
+      serviceAccountName: test-workflow
+      container:
+        image: bitnami/kubectl
+        command: ["sh", "-c"]
+        args:
+          - |
+              kubectl get nodes --selector node-role.kubernetes.io/control-plane=="" -o json \
+              | jq -c '[.items[].status.addresses[] | select(.type=="InternalIP") | .address]' \
+              > /tmp/control-plane-ips
+
+              kubectl get nodes --selector node-role.kubernetes.io/control-plane!="" -o json \
+              | jq -c '[.items[].status.addresses[] | select(.type=="InternalIP") | .address]' \
+              > /tmp/worker-ips
+      outputs:
+        parameters:
+          - name: control-plane-ips
+            valueFrom:
+              path: /tmp/control-plane-ips
+          - name: worker-ips
+            valueFrom:
+              path: /tmp/worker-ips
+
+    - name: manual-approve
+      suspend: {}
+
+    # <unspecified nodes>
+    # get server nodes ip by kubectl
+    # and looply upgrade server nodes
+    - name: upgrade-server-nodes
+      inputs:
+        parameters:
+          - name: ip
+      serviceAccountName: test-workflow
+      container:
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              apk add --no-cache curl openssl perl-utils
+              curl -sL https://talos.dev/install | sh
+              talosctl -n "{{inputs.parameters.ip}}" ls /
+        volumeMounts:
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+
+    # <running on server node>
+    # get client nodes ip by kubectl
+    # and looply upgrade client nodes
+    - name: upgrade-worker-nodes
+      inputs:
+        parameters:
+          - name: ip
+      serviceAccountName: test-workflow
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+      container:
+        image: busybox
+        command: [echo]
+        args: ["{{inputs.parameters.ip}}"]
+        volumeMounts:
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
