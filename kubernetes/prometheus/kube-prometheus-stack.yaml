@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
       chart: kube-prometheus-stack
-      version: 72.4.0
+      version: 72.5.0
   install:
     crds: CreateReplace
   upgrade:
