@@ -1,0 +1,73 @@
+---
+# Talos SA
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+  namespace: etcd-backup-new
+  name: etcd-backup-new
+spec:
+  roles:
+    - os:etcd:backup
+---
+# SA
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: etcd-backup-new
+  name: etcd-backup-new
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-etcd-backup-new
+    eks.amazonaws.com/audience: sts.amazonaws.com
+---
+# Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: etcd-backup-new
+  name: etcd-backup-new-argo-result
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
+---
+# ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: etcd-backup-new-node-reader
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+---
+# Binding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: etcd-backup-new
+  name: etcd-backup-new
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: etcd-backup-new-argo-result
+subjects:
+  - kind: ServiceAccount
+    namespace: etcd-backup-new
+    name: etcd-backup-new
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: etcd-backup-new
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: etcd-backup-new-node-reader
+subjects:
+  - kind: ServiceAccount
+    namespace: etcd-backup-new
+    name: etcd-backup-new

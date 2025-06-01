@@ -41,8 +41,11 @@ machine:
       enabled: true
       allowedRoles:
         - os:etcd:backup
+        - os:operator
       allowedKubernetesNamespaces:
         - etcd-backup
+        # ! test
+        - etcd-backup-new
     stableHostname: true
     apidCheckExtKeyUsage: true
     kubePrism:
