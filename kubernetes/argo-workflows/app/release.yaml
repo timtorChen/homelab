@@ -78,6 +78,8 @@ spec:
         create: true
         name: "argo-workflows-workflow-controller"
       securityContext: *sc
+      singleNamespace: false # enable all namespaces
+      workflowNamespaces: [] # disable unused roles
       workflowDefaults:
         spec:
           podSpecPatch: | #yaml
