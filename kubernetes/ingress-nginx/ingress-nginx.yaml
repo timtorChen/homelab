@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
       chart: ingress-nginx
-      version: 4.12.2
+      version: 4.12.3
   interval: 1h
   maxHistory: 1
   values:
