@@ -22,4 +22,4 @@ cluster:
   coreDNS:
     image: docker.io/coredns/coredns:1.12.0
   etcd:
-    image: gcr.io/etcd-development/etcd:v3.5.17-arm64
+    image: gcr.io/etcd-development/etcd:v3.6.1-arm64
