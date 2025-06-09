@@ -20,6 +20,6 @@ cluster:
   scheduler:
     image: registry.k8s.io/kube-scheduler:v1.32.0
   coreDNS:
-    image: docker.io/coredns/coredns:1.12.0
+    image: docker.io/coredns/coredns:1.12.2
   etcd:
     image: gcr.io/etcd-development/etcd:v3.5.17-arm64
