@@ -1,0 +1,78 @@
+---
+# Talos SA
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+  namespace: etcd-backup
+  name: etcd-backup
+spec:
+  roles:
+    - os:etcd:backup
+---
+# SA
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: etcd-backup
+  name: etcd-backup
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-etcd-backup
+    eks.amazonaws.com/audience: sts.amazonaws.com
+---
+# Role
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/role-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: etcd-backup
+  name: etcd-backup-argo-result
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
+---
+# ClusterRole
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrole-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: etcd-backup-node-reader
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+---
+# Binding
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/rolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: etcd-backup
+  name: etcd-backup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: etcd-backup-argo-result
+subjects:
+  - kind: ServiceAccount
+    namespace: etcd-backup
+    name: etcd-backup
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: etcd-backup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: etcd-backup-node-reader
+subjects:
+  - kind: ServiceAccount
+    namespace: etcd-backup
+    name: etcd-backup

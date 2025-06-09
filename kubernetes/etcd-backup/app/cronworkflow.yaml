@@ -1,0 +1,155 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  namespace: etcd-backup
+  name: etcd-backup-cornworkflow
+spec:
+  timezone: Asia/Taipei
+  schedules:
+    - "0 8 * * *"
+  concurrencyPolicy: Forbid
+  workflowSpec:
+    entrypoint: main
+    podMetadata:
+      labels:
+        app: etcd-backup
+    dnsConfig:
+      options:
+        - name: ndots
+          value: "1"
+    volumes:
+      - name: talos-sa
+        secret:
+          secretName: etcd-backup
+      - name: data
+        emptyDir:
+          sizeLimit: 500Mi
+      - name: tmp
+        emptyDir:
+          sizeLimit: 1Mi
+      - name: rustic-config
+        configMap:
+          name: rustic-config
+      - name: rustic-secret
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: rustic-secret
+    templates:
+      - name: main
+        steps:
+          - - name: vars
+              template: vars
+          - - name: etcd-snapshot
+              template: etcd-snapshot
+              arguments:
+                parameters:
+                  - name: ip
+                    value: "{{steps.vars.outputs.parameters.control-plane-ip}}"
+          - - name: rustic-backup
+              template: rustic-backup
+          - - name: rustic-forget
+              template: rustic-forget
+
+      - name: vars
+        serviceAccountName: etcd-backup
+        outputs:
+          parameters:
+            - name: control-plane-ip
+              valueFrom:
+                path: /tmp/control-plane-ip
+        
+        container:
+          image: bitnami/kubectl
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              kubectl get nodes --selector node-role.kubernetes.io/control-plane=="" -o json \
+              | jq -c '.items[0].status.addresses[] | select(.type=="InternalIP") | .address' \
+              > /tmp/control-plane-ip
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          securityContext: &sc
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+
+      - name: etcd-snapshot
+        serviceAccountName: etcd-backup
+        inputs:
+          parameters:
+            - name: ip
+        container:
+          image: ghcr.io/siderolabs/talosctl:v1.9.1
+          command: ["/talosctl"]
+          args:
+            - -n
+            - "{{inputs.parameters.ip}}"
+            - etcd
+            - snapshot
+            - /data/etcd.snapshot
+          volumeMounts:
+            - name: talos-sa
+              mountPath: /var/run/secrets/talos.dev
+              readOnly: true
+            - name: data
+              mountPath: /data
+          securityContext: *sc
+
+      - name: rustic-backup
+        serviceAccountName: etcd-backup
+        container:
+          image: ghcr.io/rustic-rs/rustic:v0.9.5
+          command: ["/rustic"]
+          args:
+            - backup
+            - --init
+            - /data
+          env: &rustic-env
+            - name: RUSTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rustic-secret
+                  key: RUSTIC_PASSWORD
+            - name: OPENDAL_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: rustic-secret
+                  key: OPENDAL_ACCESS_KEY_ID
+            - name: OPENDAL_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rustic-secret
+                  key: OPENDAL_SECRET_ACCESS_KEY
+          securityContext: *sc
+          volumeMounts: &rustic-volume-mounts
+            - name: data
+              mountPath: /data
+            - name: rustic-config
+              subPath: rustic.toml
+              mountPath: /rustic.toml
+              readOnly: true
+            - name: rustic-secret
+              mountPath: /secret
+              readOnly: true
+
+      - name: rustic-forget
+        serviceAccountName: etcd-backup
+        container:
+          image: ghcr.io/rustic-rs/rustic:v0.9.5
+          env: *rustic-env
+          command: ["/rustic"]
+          args:
+            - forget
+          securityContext: *sc
+          volumeMounts: *rustic-volume-mounts
