@@ -8,4 +8,7 @@ resources:
   - app/repo.yaml
   - app/release.yaml
   - app/secret.yaml
-  - sso-rbac/admin.yaml
+  - sso-rbac/role/argo-events-admin-role.yaml
+  - sso-rbac/role/argo-workflows-admin-role.yaml
+  - sso-rbac/role/argo-workflows-log-view-role.yaml
+  - sso-rbac/argo-we-admin.yaml

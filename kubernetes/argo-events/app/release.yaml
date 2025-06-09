@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: argo-events
+  name: argo-events
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        namespace: argo-events
+        name: argo
+      chart: argo-events
+      version: 2.4.15
+  install:
+    crds: CreateReplace 
+  upgrade:
+    crds: CreateReplace
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    images:
+      tag: v1.9.6
+    crds:
+      install: true
+      keep: true
+    createAggregateRoles: false
+    controller:
+      containerSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 9731
+        runAsGroup: 9731
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault

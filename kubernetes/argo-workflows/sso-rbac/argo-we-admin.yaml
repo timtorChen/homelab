@@ -4,32 +4,45 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: argo-workflows
-  name: argo-workflows-admin
+  name: argo-we-admin
   annotations:
-    workflows.argoproj.io/rbac-rule: "'argo-workflows-admin' in groups"
-    workflows.argoproj.io/service-account-token.name: argo-workflows-admin-token
+    workflows.argoproj.io/rbac-rule: "'argo-we-admin' in groups"
+    workflows.argoproj.io/service-account-token.name: argo-we-admin-token
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/secret-v1.json
 apiVersion: v1
 kind: Secret
 metadata:
   namespace: argo-workflows
-  name: argo-workflows-admin-token
+  name: argo-we-admin-token
   annotations:
-    kubernetes.io/service-account.name: argo-workflows-admin
+    kubernetes.io/service-account.name: argo-we-admin
 type: kubernetes.io/service-account-token
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrole-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argo-we-admin
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        rbac.authorization.k8s.io/argo-workflows-admin: "true"
+    - matchLabels:
+        rbac.authorization.k8s.io/argo-events-admin: "true"
+    - matchLabels:
+        rbac.authorization.k8s.io/argo-workflows-log-view: "true"
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrolebinding-rbac-v1.json
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: argo-workflows-admin
+  name: argo-we-admin
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  # ClusterRole created by default in argo-workflows chart
   kind: ClusterRole
-  name: argo-workflows-admin
+  name: argo-we-admin
 subjects:
   - kind: ServiceAccount
     namespace: argo-workflows
-    name: argo-workflows-admin
+    name: argo-we-admin

@@ -27,6 +27,7 @@ spec:
     crds:
       install: true
       keep: true
+    createAggregateRoles: false
     server:
       serviceAccount:
         create: true
@@ -76,7 +77,7 @@ spec:
     controller:
       serviceAccount:
         create: true
-        name: "argo-workflows-workflow-controller"
+        name: "argo-workflows-controller"
       securityContext: *sc
       singleNamespace: false # enable all namespaces
       workflowNamespaces: [] # disable unused roles

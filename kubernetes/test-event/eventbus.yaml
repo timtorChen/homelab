@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-events/refs/heads/master/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: EventBus
+metadata:
+  namespace: test-event
+  name: event-bus
+spec:
+  jetstream:
+    version: latest
+    replicas: 3
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-events/refs/heads/master/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  namespace: test-event
+  name: event-source
+spec:
+  eventBusName: event-bus
+  service:
+    ports:
+      - name: test
+        port: 12000
+        targetPort: 12000
+  github:
+    example:
+      repository: homelab
+      owner: timtorChen
+      events:
+        - "*"
+      webhook:
+        endpoint: /push
+        method: POST
+        port: "12000"
+        url: http://localhost
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-events/refs/heads/master/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  namespace: test-event
+  name: event-sensor
+spec:
+  eventBusName: event-bus
+  dependencies:
+    - eventName: push
+      eventSourceName: event-source
+      name: envet-sensor
+  triggers:
+    - template:
+        name: echo
+        container:
+          image: busybox
+          command: ["sh", "-c"]
+          args:
+            - |
+              echo hello
+
+
+# ---
+# # ingress for event source
+# apiVersion: v1
+# kind: Ingress
+# metadata:
+#   namespace: test-evnet
+#   name: event-ingress
+# spec:
