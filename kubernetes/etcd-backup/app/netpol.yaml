@@ -4,11 +4,17 @@ apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   namespace: etcd-backup
-  name: etcd-backup-app-policy
+  name: etcd-backup-policy
 specs:
   - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}
+  - endpointSelector:
       matchLabels:
-        app.kubernetes.io/name: etcd-backup
+        app: etcd-backup
     egress:
       # allow dns connection
       - toEndpoints:
