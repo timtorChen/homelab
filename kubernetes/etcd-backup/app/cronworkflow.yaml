@@ -61,15 +61,15 @@ spec:
             - name: control-plane-ip
               valueFrom:
                 path: /tmp/control-plane-ip
-        
+
         container:
           image: bitnami/kubectl
           command: ["/bin/sh", "-c"]
           args:
             - |
-              kubectl get nodes --selector node-role.kubernetes.io/control-plane=="" -o json \
-              | jq -c '.items[0].status.addresses[] | select(.type=="InternalIP") | .address' \
-              > /tmp/control-plane-ip
+                kubectl get nodes --selector node-role.kubernetes.io/control-plane=="" -o json \
+                | jq -c '.items[0].status.addresses[] | select(.type=="InternalIP") | .address' \
+                > /tmp/control-plane-ip
           volumeMounts:
             - name: tmp
               mountPath: /tmp
