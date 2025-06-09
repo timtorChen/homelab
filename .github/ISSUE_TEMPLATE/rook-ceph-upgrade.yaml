@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+# yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Rook-ceph upgrade
 title: Upgrade Rook to {{v1.16}} and Ceph to {{v19}}
 description: Rook-ceph upgrade template

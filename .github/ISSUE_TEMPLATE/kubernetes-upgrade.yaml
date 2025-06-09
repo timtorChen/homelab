@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+# yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Kubernetes upgrade
 title: Upgrade Kubernetes to {{1.32}}
 description: Kubernetes upgrade template

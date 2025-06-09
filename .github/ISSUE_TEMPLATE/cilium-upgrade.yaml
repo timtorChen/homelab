@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-issue-forms.json
+# yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Cilium upgrade
 title: Upgrade Cilium to {{1.16}}
 description: Cilium upgrade template
