@@ -19,13 +19,21 @@ spec:
       options:
         - name: ndots
           value: "1"
+    securityContext:
+      fsGroup: 65534
+    volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          storageClassName: rbd-fast-ec
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 500Mi
     volumes:
       - name: talos-sa
         secret:
           secretName: etcd-backup
-      - name: data
-        emptyDir:
-          sizeLimit: 500Mi
       - name: tmp
         emptyDir:
           sizeLimit: 1Mi
