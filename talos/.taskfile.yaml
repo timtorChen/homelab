@@ -3,216 +3,217 @@
 version: "3"
 silent: true
 
-includes:
-  tal: ../.tasks/talos.yaml
-
 tasks:
-  # secrets
-  get-secrets:
-    env:
-      SECRET_ENV: &talos-secret
-        sh: |
-          VALUES="$(aws ssm get-parameters --with-decryption \
-            --names /amethyst/talos-machine /amethyst/talos-cluster)"
-          echo "$VALUES" | jq -r '.Parameters[].Value | fromjson | to_entries[] | "\(.key)=\(.value)"'
-    cmd: echo "$SECRET_ENV"
-
   # schematics id
   get-nuc11tnhi50l-schematic-id:
     cmd: curl -s -X POST --data-binary @schematics/nuc11tnhi50l.yaml https://factory.talos.dev/schematics | jq --raw-output .id
   get-raspi-schematic-id:
     cmd: curl -s -X POST --data-binary @schematics/raspi.yaml https://factory.talos.dev/schematics | jq --raw-output .id
 
-  # controlplane
-  apply-controlplane:
-    cmds:
-      - for: &controlplans [pi4b-1]
-        task: tal:apply
-        vars:
-          NODE: "{{.ITEM}}"
-          SECRET_ENV: *talos-secret
-  upgrade-controlplane:
-    cmds:
-      - for: *controlplans
-        task: tal:upgrade
-        vars:
-          NODE: "{{.ITEM}}"
-          SECRET_ENV: *talos-secret
-  shutdown-controlplane:
-    cmds:
-      - for: *controlplans
-        task: tal:shutdown
-        vars:
-          NODE: "{{.ITEM}}"
+  # talos task functions
+  render:
+    internal: true
+    cmd: &talos-config |
+      TALOS_ROLE="{{.TALOS_ROLE}}"
+      TALOS_NODE="{{.TALOS_NODE}}"
 
-  # worker
-  apply-worker:
-    cmds:
-      - for: &workers [nuc11tnhi50l-1, nuc11tnhi50l-2, nuc11tnhi50l-3]
-        task: tal:apply
-        vars:
-          NODE: "{{.ITEM}}"
-          SECRET_ENV: *talos-secret
-  upgrade-worker:
-    cmds:
-      - for: *workers
-        task: tal:upgrade
-        vars:
-          NODE: "{{.ITEM}}"
-          SECRET_ENV: *talos-secret
-  shutdown-worker:
-    cmds:
-      - for: *workers
-        task: tal:shutdown
-        vars:
-          NODE: "{{.ITEM}}"
+      TALOS_ROLE=$TALOS_ROLE TALOS_NODE=$TALOS_NODE \
+      gomplate -f main.tmpl \
+      -t templates/nodes \
+      -t templates/roles \
+      -d aws-homelab=aws+smp://
+
+  plan:
+    internal: true
+    env:
+      CONFIG:
+        sh: *talos-config
+    cmd: |
+      TALOS_ROLE="{{.TALOS_ROLE}}"
+      TALOS_NODE="{{.TALOS_NODE}}"
+      IP="{{.IP}}"
+
+      echo "> (dry-run) Apply configuration on $IP $TALOS_ROLE/$TALOS_NODE"
+      talosctl apply-config --dry-run -n "$IP" -f <(echo "$CONFIG")
+
+  apply:
+    internal: true
+    prompt: The apply process may cause a reboot on {{.TALOS_ROLE}}/{{.TALOS_NODE}}... continue?
+    env:
+      CONFIG:
+        sh: *talos-config
+    cmd: |
+      TALOS_ROLE="{{.TALOS_ROLE}}"
+      TALOS_NODE="{{.TALOS_NODE}}"
+      IP="{{.IP}}"
+
+      echo "> Apply configuration on $IP $TALOS_ROLE/$TALOS_NODE"
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
+
+  upgrade:
+    internal: true
+    prompt: The upgrade process will cause a reboot on {{.TALOS_ROLE}}/{{.TALOS_NODE}}... continue?
+    env:
+      CONFIG:
+        sh: *talos-config
+    cmd: |
+      IP="{{.IP}}"
+      IMAGE="$(echo "$CONFIG" | yq '.machine.install.image')"
+
+      echo "> Apply configuration"
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
+
+      echo "> Start talos OS upgrade"
+      talosctl upgrade --preserve --image "$IMAGE" -n "$IP"
+
+  shutdown:
+    internal: true
+    prompt: Shutdown the node {{.TALOS_ROLE}}/{{.TALOS_NODE}}... continue?
+    cmd: |
+      IP="{{.IP}}"
+      talosctl shutdonw -n "$IP"
+
+  reset:
+    internal: true
+    prompt: Reset the node and remove all data on {{.TALOS_ROLE}}/{{.TALOS_NODE}}... continue?
+    cmd: |
+      IP="{{.IP}}"
+      talosctl reset \
+      --system-labels-to-wipe=STATE \
+      --system-labels-to-wipe=EPHEMERAL \
+      --system-labels-to-wipe=META \
+      --reboot --graceful -n "$IP"
 
   # pi4b-1
   render-pi4b-1:
     cmds:
-      - task: tal:render
+      - task: render
         vars: &pi4b-1-vars
-          NODE: pi4b-1
-          SECRET_ENV: *talos-secret
+          IP: 192.168.253.1
+          TALOS_NODE: pi4b-1
+          TALOS_ROLE: controlplane
   plan-pi4b-1:
     cmds:
-      - task: tal:plan
+      - task: plan
         vars: *pi4b-1-vars
   apply-pi4b-1:
     cmds:
-      - task: tal:apply
+      - task: apply
         vars: *pi4b-1-vars
   upgrade-pi4b-1:
     cmds:
-      - task: tal:upgrade
+      - task: upgrade
         vars: *pi4b-1-vars
   shutdown-pi4b-1:
     cmds:
-      - task: tal:shutdown
-        vars:
-          NODE: pi4b-1
+      - task: shutdown
+        vars: *pi4b-1-vars
   reset-pi4b-1:
     cmds:
-      - task: tal:reset
-        vars:
-          NODE: pi4b-1
-
-  # pi4b-spare
-  render-pi4b-spare:
-    cmds:
-      - task: tal:render
-        vars: &pi4b-spare-vars
-          NODE: pi4b-spare
-          SECRET_ENV: *talos-secret
-  plan-pi4b-spare:
-    cmds:
-      - task: tal:plan
-        vars: *pi4b-spare-vars
-  apply-pi4b-spare:
-    cmds:
-      - task: tal:apply
-        vars: *pi4b-spare-vars
-  upgrade-pi4b-spare:
-    cmds:
-      - task: tal:upgrade
-        vars: *pi4b-spare-vars
-  shutdown-pi4b-spare:
-    cmds:
-      - task: tal:shutdown
-        vars:
-          NODE: pi4b-spare
-  reset-pi4b-spare:
-    cmds:
-      - task: tal:reset
-        vars:
-          NODE: pi4b-spare
+      - task: reset
+        vars: *pi4b-1-vars
 
   # nuc11tnhi50l-1
   render-nuc11tnhi50l-1:
     cmds:
-      - task: tal:render
-        vars: &nuc11tnhi50l-1-vars
-          NODE: nuc11tnhi50l-1
-          SECRET_ENV: *talos-secret
+      - task: render
+        vars: &nuc11-1-vars
+          IP: 192.168.253.11
+          TALOS_NODE: nuc11tnhi50l-1
+          TALOS_ROLE: worker
   plan-nuc11tnhi50l-1:
     cmds:
-      - task: tal:plan
-        vars: *nuc11tnhi50l-1-vars
+      - task: plan
+        vars: *nuc11-1-vars
   apply-nuc11tnhi50l-1:
     cmds:
-      - task: tal:apply
-        vars: *nuc11tnhi50l-1-vars
+      - task: apply
+        vars: *nuc11-1-vars
   upgrade-nuc11tnhi50l-1:
     cmds:
-      - task: tal:upgrade
-        vars: *nuc11tnhi50l-1-vars
+      - task: upgrade
+        vars: *pi4b-1-vars
   shutdown-nuc11tnhi50l-1:
     cmds:
-      - task: tal:shutdown
-        vars:
-          NODE: nuc11tnhi50l-1
+      - task: shutdown
+        vars: *nuc11-1-vars
   reset-nuc11tnhi50l-1:
     cmds:
-      - task: tal:reset
-        vars:
-          NODE: nuc11tnhi50l-1
+      - task: reset
+        vars: *nuc11-1-vars
 
   # nuc11tnhi50l-2
   render-nuc11tnhi50l-2:
     cmds:
-      - task: tal:render
-        vars: &nuc11tnhi50l-2-vars
-          NODE: nuc11tnhi50l-2
-          SECRET_ENV: *talos-secret
+      - task: render
+        vars: &nuc11-2-vars
+          IP: 192.168.253.12
+          TALOS_NODE: nuc11tnhi50l-2
+          TALOS_ROLE: worker
   plan-nuc11tnhi50l-2:
     cmds:
-      - task: tal:plan
-        vars: *nuc11tnhi50l-2-vars
+      - task: plan
+        vars: *nuc11-2-vars
   apply-nuc11tnhi50l-2:
     cmds:
-      - task: tal:apply
-        vars: *nuc11tnhi50l-2-vars
+      - task: apply
+        vars: *nuc11-2-vars
   upgrade-nuc11tnhi50l-2:
     cmds:
-      - task: tal:upgrade
-        vars: *nuc11tnhi50l-2-vars
+      - task: upgrade
+        vars: *nuc11-2-vars
   shutdown-nuc11tnhi50l-2:
     cmds:
-      - task: tal:shutdown
-        vars:
-          NODE: nuc11tnhi50l-2
+      - task: shutdown
+        vars: *nuc11-2-vars
   reset-nuc11tnhi50l-2:
     cmds:
-      - task: tal:reset
-        vars:
-          NODE: nuc11tnhi50l-2
+      - task: reset
+        vars: *nuc11-2-vars
 
   # nuc11tnhi50l-3
   render-nuc11tnhi50l-3:
     cmds:
-      - task: tal:render
-        vars: &nuc11tnhi50l-3-vars
-          NODE: nuc11tnhi50l-3
-          SECRET_ENV: *talos-secret
+      - task: render
+        vars: &nuc11-3-vars
+          IP: 192.168.253.13
+          TALOS_NODE: nuc11tnhi50l-3
+          TALOS_ROLE: worker
   plan-nuc11tnhi50l-3:
     cmds:
-      - task: tal:plan
-        vars: *nuc11tnhi50l-3-vars
+      - task: plan
+        vars: *nuc11-3-vars
   apply-nuc11tnhi50l-3:
     cmds:
-      - task: tal:apply
-        vars: *nuc11tnhi50l-3-vars
+      - task: apply
+        vars: *nuc11-3-vars
   upgrade-nuc11tnhi50l-3:
     cmds:
-      - task: tal:upgrade
-        vars: *nuc11tnhi50l-3-vars
+      - task: upgrade
+        vars: *nuc11-3-vars
   shutdown-nuc11tnhi50l-3:
     cmds:
-      - task: tal:shutdown
-        vars:
-          NODE: nuc11tnhi50l-3
+      - task: shutdown
+        vars: *nuc11-3-vars
   reset-nuc11tnhi50l-3:
     cmds:
-      - task: tal:reset
-        vars:
-          NODE: nuc11tnhi50l-3
+      - task: reset
+        vars: *nuc11-3-vars
+
+  # worker batch
+  plan-workers:
+    cmds:
+      - for: ["1", "2", "3"]
+        task: plan-nuc11tnhi50l-{{.ITEM}}
+  apply-workers:
+    cmds:
+      - for: ["1", "2", "3"]
+        task: apply-nuc11tnhi50l-{{.ITEM}}
+  upgrade-workers:
+    cmds:
+      - for: ["1", "2", "3"]
+        task: upgrade-nuc11tnhi50l-{{.ITEM}}
+  shutdown-workers:
+    cmds:
+      - for: ["1", "2", "3"]
+        task: shutdown-nuc11tnhi50l-{{.ITEM}}

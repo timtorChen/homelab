@@ -1,0 +1,3 @@
+{{ $role := (tmpl.Exec .Env.TALOS_ROLE | data.YAML) -}}
+{{ $node := (tmpl.Exec .Env.TALOS_NODE | data.YAML) -}}
+{{ merge . $node $role | toYAML -}}

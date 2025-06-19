@@ -1,19 +1,21 @@
----
+{{ define "controlplane" }}
+{{ $secret := merge 
+  ( ds "aws-homelab" "/amethyst/talos-machine" | data.JSON ) 
+  ( ds "aws-homelab" "/amethyst/talos-cluster" | data.JSON )
+}}
 version: v1alpha1
 debug: false
 persist: true
 machine:
   # -- Setup
   type: controlplane
-  token: ${machine_token}
+  token: {{ $secret.machine_token }}
   # Talos CA
   ca:
-    crt: ${machine_ca_crt}
-    key: ${machine_ca_key}
+    crt: {{ $secret.machine_ca_crt }}
+    key: {{ $secret.machine_ca_key }}
   certSANs: []
   install:
-    image: ""
-    disk: ""
     wipe: false
     extraKernelArgs:
       - talos.logging.kernel=tcp://192.168.253.100:3001
@@ -31,7 +33,6 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
-    image: ""
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
@@ -62,26 +63,26 @@ cluster:
     serviceSubnets:
       - 10.96.0.0/12
   # Cluster id
-  id: ${cluster_id}
+  id: {{ $secret.cluster_id }}
   # Cluster shared secret
-  secret: ${cluster_secret}
+  secret: {{ $secret.cluster_secret }}
   # Boostrap token used to join the cluster
-  token: ${cluster_token}
+  token: {{ $secret.cluster_token }}
   # Etcd encryption at rest
-  secretboxEncryptionSecret: ${cluster_secretboxEncryptionSecret}
+  secretboxEncryptionSecret: {{ $secret.cluster_secretboxEncryptionSecret }}
   # Kubernetes CA
   ca:
-    crt: ${cluster_ca_crt}
-    key: ${cluster_ca_key}
+    crt: {{ $secret.cluster_ca_crt }}
+    key: {{ $secret.cluster_ca_key }}
   # Aggregator CA for generating fortned-proxy certificate
   aggregatorCA:
-    crt: ${cluster_aggregatorCA_crt}
-    key: ${cluster_aggregatorCA_key}
+    crt: {{ $secret.cluster_aggregatorCA_crt }}
+    key: {{ $secret.cluster_aggregatorCA_key }}
   # Private key for generating serviceAccount token (JWT)
   # Talos generates ECDSA key by default
   # Change to RSA for AWS IAM identity provider
   serviceAccount:
-    key: ${cluster_serviceAccount_key}
+    key: {{ $secret.cluster_serviceAccount_key }}
   # -- Services
   proxy:
     disabled: true
@@ -89,7 +90,7 @@ cluster:
     image: ""
     extraArgs:
       oidc-issuer-url: https://oauth.id.jumpcloud.com/
-      oidc-client-id: ${cluster_apiServer_extraArgs_oidc_client_id}
+      oidc-client-id: {{ $secret.cluster_apiServer_extraArgs_oidc_client_id }}
       oidc-username-claim: email
       oidc-groups-claim: groups
       service-account-issuer: https://amethyst-kubernetes-oidc.s3.us-west-2.amazonaws.com
@@ -124,8 +125,8 @@ cluster:
     image: ""
     # Etcd CA
     ca:
-      crt: ${cluster_etcd_ca_crt}
-      key: ${cluster_etcd_ca_key}
+      crt: {{ $secret.cluster_etcd_ca_crt }}
+      key: {{ $secret.cluster_etcd_ca_key }}
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
   controllerManager:
@@ -143,3 +144,4 @@ cluster:
   inlineManifests: []
   discovery:
     enabled: false
+{{ end }}

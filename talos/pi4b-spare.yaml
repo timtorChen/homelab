@@ -1,8 +1,0 @@
----
-## Header for task scripts
-# ip: 192.168.253.2
-# includes: [roles/controlplane.yaml]
-machine:
-  type: controlplane
-  network:
-    hostname: pi4b-spare
