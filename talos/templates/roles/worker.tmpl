@@ -1,13 +1,17 @@
----
+{{ define "worker" }}
+{{ $secret := merge 
+  ( ds "aws-homelab" "/amethyst/talos-machine" | data.JSON ) 
+  ( ds "aws-homelab" "/amethyst/talos-cluster" | data.JSON )
+}}
 version: v1alpha1
 debug: false
 persist: true
 machine:
   # -- Setup
   type: worker
-  token: ${machine_token}
+  token: {{ $secret.machine_token }}
   ca:
-    crt: ${machine_ca_crt}
+    crt: {{ $secret.machine_ca_crt }}
     key: ""
   certSANs: []
   install:
@@ -48,11 +52,11 @@ cluster:
       - 10.244.0.0/16
     serviceSubnets:
       - 10.96.0.0/12
-  id: ${cluster_id}
-  secret: ${cluster_secret}
-  token: ${cluster_token}
+  id: {{ $secret.cluster_id }}
+  secret: {{ $secret.cluster_secret }}
+  token: {{ $secret.cluster_token }}
   ca:
-    crt: ${cluster_ca_crt}
+    crt: {{ $secret.cluster_ca_crt }}
     key: ""
   # -- Service
   proxy:
@@ -60,3 +64,4 @@ cluster:
   # -- Extras
   discovery:
     enabled: false
+{{ end }}
