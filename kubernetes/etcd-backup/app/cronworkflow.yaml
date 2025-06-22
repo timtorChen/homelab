@@ -123,6 +123,8 @@ spec:
             - backup
             - --init
             - /data
+            - --host
+            - etcd-backup-cornworkflow
           env: &rustic-env
             - name: RUSTIC_PASSWORD
               valueFrom:
@@ -159,5 +161,6 @@ spec:
           command: ["/rustic"]
           args:
             - forget
+            - --prune
           securityContext: *sc
           volumeMounts: *rustic-volume-mounts
