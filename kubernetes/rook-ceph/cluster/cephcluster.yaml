@@ -25,17 +25,17 @@ spec:
     useAllNodes: false
     useAllDevices: false
     nodes:
-      - name: amethyst-nuc11tnhi50l-1
+      - name: nuc11tnhi50l-1
         devices:
           - config:
               deviceClass: nvme
             name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDCF214
-      - name: amethyst-nuc11tnhi50l-2
+      - name: nuc11tnhi50l-2
         devices:
           - config:
               deviceClass: nvme
             name: /dev/disk/by-id/nvme-Micron_7450_MTFDKBA960TFR_22473CDD4746
-      - name: amethyst-nuc11tnhi50l-3
+      - name: nuc11tnhi50l-3
         devices:
           - config:
               deviceClass: nvme
