@@ -1,0 +1,391 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  namespace: talos-upgrade
+  name: talos-upgrade-workflowtemplate
+spec:
+  entrypoint: main
+  arguments:
+    parameters:
+      - name: auto-approve
+        value: "false"
+  serviceAccountName: talos-upgrade
+  podMetadata:
+    labels:
+      app: talos-upgrade
+  securityContext:
+    fsGroup: 65534
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        storageClassName: fs-fast-ec
+        accessModes: ["ReadWriteMany"]
+        resources:
+          requests:
+            storage: 50Mi
+    - metadata:
+        name: config
+      spec:
+        storageClassName: fs-fast-ec
+        accessModes: ["ReadWriteMany"]
+        resources:
+          requests:
+            storage: 1Mi
+  volumes:
+    - name: talos-sa
+      secret:
+        secretName: talos-upgrade
+  templates:
+    - name: main
+      steps:
+        - - name: checkout
+            template: checkout
+            arguments:
+              parameters:
+                - name: repo-url
+                  value: "https://github.com/timtorChen/homelab.git"
+          - name: get-nodes-info
+            template: get-nodes-info
+        - - name: upgrade-controlplane-nodes
+            template: upgrade-controlplane-node
+            withParam: "{{steps.get-nodes-info.outputs.parameters.controlplanes}}"
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{item.InternalIP}}"
+                - name: hostname
+                  value: "{{item.Hostname}}"
+        - - name: upgrade-worker-nodes
+            template: upgrade-worker-node
+            withParam: "{{steps.get-nodes-info.outputs.parameters.workers}}"
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{item.InternalIP}}"
+                - name: hostname
+                  value: "{{item.Hostname}}"
+
+    - name: checkout
+      inputs:
+        parameters:
+          - name: repo-url
+      container:
+        image: alpine/git:v2.49.0
+        command: ["sh", "-c"]
+        args:
+          - |
+              git clone "{{inputs.parameters.repo-url}}" /data/repo
+        volumeMounts:
+          - name: data
+            mountPath: /data
+        securityContext: &sc
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+
+    - name: get-nodes-info
+      outputs:
+        parameters:
+          - name: controlplanes
+            valueFrom:
+              path: /tmp/controlplanes
+          - name: workers
+            valueFrom:
+              path: /tmp/workers
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      container:
+        image: timtor/talos-upgrade-toolbox:latest
+        imagePullPolicy: Always
+        command: ["sh", "-c"]
+        args:
+          - |
+              kubectl get nodes --selector node-role.kubernetes.io/control-plane=="" -o json \
+                | jq -c '[.items[].status.addresses | map({(.type): .address}) | add]' \
+                > /tmp/controlplanes
+
+              kubectl get nodes --selector node-role.kubernetes.io/control-plane!="" -o json \
+                | jq -c '[.items[].status.addresses | map({(.type): .address}) | add]' \
+                > /tmp/workers
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+        securityContext: *sc
+
+    - name: manual-approve
+      suspend: {}
+
+    - name: upgrade-controlplane-node
+      inputs:
+        parameters:
+          - name: ip
+          - name: hostname
+          - name: role
+            value: controlplane
+      steps: &upgrade-steps
+        - - name: render-config
+            template: render-config
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+                - name: hostname
+                  value: "{{inputs.parameters.hostname}}"
+                - name: role
+                  value: "{{inputs.parameters.role}}"
+        - - name: check-config-drift
+            template: check-config-drift
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+        - - name: apply-config
+            template: apply-config
+            when: "{{steps.check-config-drift.outputs.parameters.drift}} == true"
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+        - - name: check-image-drift
+            template: check-image-drift
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+        - - name: upgrade-image
+            template: upgrade-image
+            when: "{{steps.check-image-drift.outputs.parameters.drift}} == true"
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+
+    - name: upgrade-worker-node
+      inputs:
+        parameters:
+          - name: ip
+          - name: hostname
+          - name: role
+            value: worker
+      steps: *upgrade-steps
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+
+    - name: render-config
+      inputs:
+        parameters:
+          - name: ip
+          - name: hostname
+          - name: role
+      container:
+        image: timtor/talos-upgrade-toolbox:v0.0.1
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              IP="{{inputs.parameters.ip}}"
+              TALOS_NODE="{{inputs.parameters.hostname}}"
+              TALOS_ROLE="{{inputs.parameters.role}}"
+
+              TALOS_ROLE=$TALOS_ROLE TALOS_NODE=$TALOS_NODE \
+              gomplate -f /data/repo/talos/main.tmpl \
+              -t /data/repo/talos/templates/nodes \
+              -t /data/repo/talos/templates/roles \
+              -d aws-homelab=aws+smp:// > "/config/$IP-config.yaml"
+        volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: data
+            mountPath: /data
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+        securityContext: *sc
+
+    - name: check-config-drift
+      inputs:
+        parameters:
+          - name: ip
+      outputs:
+        parameters:
+          - name: drift
+            valueFrom:
+              path: /tmp/drift
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      container:
+        image: timtor/talos-upgrade-toolbox:v0.0.1
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              IP="{{inputs.parameters.ip}}"
+              CURRENT_CONFIG_SHA="$(talosctl get machineconfigs.config.talos.dev -n $IP -o yaml | yq .spec | yq | sha256sum)"
+              APPLY_CONFIG_SHA="$(cat /config/$IP-config.yaml | yq | sha256sum)"
+
+              if [ "$CURRENT_CONFIG_SHA" != "$APPLY_CONFIG_SHA" ]; then
+                echo "true" > /tmp/drift
+              else
+                echo "false" > /tmp/drift
+              fi
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          - name: config
+            mountPath: /config
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+        securityContext: *sc
+
+    - name: apply-config
+      inputs:
+        parameters:
+          - name: ip
+      steps:
+        - - name: talos-plan
+            template: talos-plan
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+        - - name: manual-approve
+            template: manual-approve
+            when: "{{workflow.parameters.auto-approve}} != true"
+        - - name: talos-apply
+            template: talos-apply
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+
+    - name: talos-plan
+      inputs:
+        parameters:
+          - name: ip
+      container:
+        image: timtor/talos-upgrade-toolbox:v0.0.1
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              IP="{{inputs.parameters.ip}}"
+              talosctl apply-config -n "$IP" -f "/config/$IP-config.yaml" --dry-run
+        volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: data
+            mountPath: /data
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+        securityContext: *sc
+
+    - name: talos-apply
+      inputs:
+        parameters:
+          - name: ip
+      container:
+        image: timtor/talos-upgrade-toolbox:v0.0.1
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              IP="{{inputs.parameters.ip}}"
+              talosctl apply-config -n "$IP" -f "/config/$IP-config.yaml"
+        volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: data
+            mountPath: /data
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+        securityContext: *sc
+
+    - name: check-image-drift
+      inputs:
+        parameters:
+          - name: ip
+      outputs:
+        parameters:
+          - name: drift
+            valueFrom:
+              path: /tmp/drift
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      container:
+        image: timtor/talos-upgrade-toolbox:v0.0.1
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              IP="{{inputs.parameters.ip}}"
+              CURRENT_IMAGE="$(\
+                talosctl get machineconfigs.config.talos.dev -n $IP -o yaml \
+                | yq .spec | yq .machine.install.image \
+              )"
+              APPLY_IMAGE="$(cat /config/$IP-config.yaml | yq .machine.install.image)"
+
+              if [ "$CURRENT_IMAGE" != "$APPLY_IMAGE" ]; then
+                echo "true" > /tmp/drift
+              else
+                echo "false" > /tmp/drift
+              fi
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+          - name: config
+            mountPath: /config
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+        securityContext: *sc
+
+    - name: upgrade-image
+      inputs:
+        parameters:
+          - name: ip
+      steps:
+        - - name: manual-approve
+            template: manual-approve
+        - - name: talos-upgrade
+            template: talos-upgrade
+            arguments:
+              parameters:
+                - name: ip
+                  value: "{{inputs.parameters.ip}}"
+
+    - name: talos-upgrade
+      inputs:
+        parameters:
+          - name: ip
+      container:
+        image: timtor/talos-upgrade-toolbox:v0.0.1
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              talos upgrade --preserve --image "$APPLY_IMAGE" -n "$IP"
+        volumeMounts:
+          - name: config
+            mountPath: /config
+          - name: talos-sa
+            mountPath: /var/run/secrets/talos.dev
+            readOnly: true
+        securityContext: *sc
