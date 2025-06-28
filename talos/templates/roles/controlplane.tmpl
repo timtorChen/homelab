@@ -42,8 +42,10 @@ machine:
       enabled: true
       allowedRoles:
         - os:etcd:backup
+        - os:admin
       allowedKubernetesNamespaces:
         - etcd-backup
+        - talos-upgrade
     stableHostname: true
     apidCheckExtKeyUsage: true
     kubePrism:
