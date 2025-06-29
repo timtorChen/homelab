@@ -40,6 +40,7 @@ spec:
         secretName: talos-upgrade
   templates:
     - name: main
+      parallelism: 1
       steps:
         - - name: checkout
             template: checkout
