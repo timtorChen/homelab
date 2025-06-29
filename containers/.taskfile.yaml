@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/go-task/task/refs/heads/main/website/static/schema.json
+version: "3"
+silent: true
+
+tasks:
+  talos-upgrade-toolbox:build:
+    cmds:
+      - |
+          docker buildx build --platform=linux/amd64,linux/arm64 \
+          talos-upgrade-toolbox \
+          -f talos-upgrade-toolbox/Dockerfile \
+          -t ghcr.io/timtorchen/talos-upgrade-toolbox:$(date -u +"%Y-%m-%dT%H-%M-%SZ") \
+          {{.CLI_ARGS}}

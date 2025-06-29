@@ -1,0 +1,78 @@
+---
+# Talos SA
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+  namespace: talos-upgrade
+  name: talos-upgrade
+spec:
+  roles:
+    - os:admin
+---
+# SA
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: talos-upgrade
+  name: talos-upgrade
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-talos-upgrade
+    eks.amazonaws.com/audience: sts.amazonaws.com
+---
+# Role
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/role-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: talos-upgrade
+  name: talos-upgrade-argo-result
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
+---
+# ClusterRole
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrole-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: talos-upgrade-node-reader
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+---
+# Binding
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/rolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: talos-upgrade
+  name: argo-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: talos-upgrade-argo-result
+subjects:
+  - kind: ServiceAccount
+    namespace: talos-upgrade
+    name: talos-upgrade
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-reader-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: talos-upgrade-node-reader
+subjects:
+  - kind: ServiceAccount
+    namespace: talos-upgrade
+    name: talos-upgrade

@@ -35,27 +35,27 @@ spec:
           eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-argo-workflows
           eks.amazonaws.com/audience: sts.amazonaws.com
       volumes:
-        - name: &sso-secret argo-workflows-secret
+        - name: &secret argo-workflows-secret
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: *sso-secret
+              secretProviderClass: *secret
       # csi driver needs mounting to fetch secret
       volumeMounts:
-        - name: *sso-secret
+        - name: *secret
           mountPath: /secret
       deploymentAnnotations:
-        secret.reloader.stakater.com/reload: *sso-secret
+        secret.reloader.stakater.com/reload: *secret
       authModes: ["sso"]
       sso:
         enabled: true
         issuer: https://oauth.id.jumpcloud.com/
         clientId:
-          name: *sso-secret
+          name: *secret
           key: CLIENT_ID
         clientSecret:
-          name: *sso-secret
+          name: *secret
           key: CLIENT_SECRET
         redirectUrl: https://workflows.timtor.dev/oauth2/callback
         scopes: ["group"]

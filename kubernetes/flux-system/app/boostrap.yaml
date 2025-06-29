@@ -150,6 +150,21 @@ spec:
   prune: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## argo-workflows
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 1-argo-workflows
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/argo-workflows
+  prune: false
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 ## etcd-backup
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -170,14 +185,14 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   namespace: flux-system
-  name: 1-argo-workflows
+  name: 1-talos-upgrade
 spec:
   sourceRef:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /kubernetes/argo-workflows
-  prune: false
+  path: /kubernetes/talos-upgrade
+  prune: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 ## --- 2 - Storage Namespaces ---
