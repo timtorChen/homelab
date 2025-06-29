@@ -10,6 +10,9 @@ includes:
   talos:
     taskfile: talos/.taskfile.yaml
     dir: talos
+  container:
+    taskfile: containers/.taskfile.yaml
+    dir: containers
   kubernetes: kubernetes/.taskfile.yaml
   format: .tasks/dprint.yaml
 

@@ -105,7 +105,7 @@ spec:
         - name: tmp
           emptyDir: {}
       container:
-        image: timtor/talos-upgrade-toolbox:latest
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         imagePullPolicy: Always
         command: ["sh", "-c"]
         args:
@@ -197,7 +197,7 @@ spec:
           - name: hostname
           - name: role
       container:
-        image: timtor/talos-upgrade-toolbox:v0.0.1
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -233,7 +233,7 @@ spec:
         - name: tmp
           emptyDir: {}
       container:
-        image: timtor/talos-upgrade-toolbox:v0.0.1
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -282,7 +282,7 @@ spec:
         parameters:
           - name: ip
       container:
-        image: timtor/talos-upgrade-toolbox:v0.0.1
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -303,7 +303,7 @@ spec:
         parameters:
           - name: ip
       container:
-        image: timtor/talos-upgrade-toolbox:v0.0.1
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -332,7 +332,7 @@ spec:
         - name: tmp
           emptyDir: {}
       container:
-        image: timtor/talos-upgrade-toolbox:v0.0.1
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -377,7 +377,7 @@ spec:
         parameters:
           - name: ip
       container:
-        image: timtor/talos-upgrade-toolbox:v0.0.1
+        image: ghcr.io/timtorchen/talos-upgrade-toolbox:2025-06-29T13-40-38Z
         command: ["/bin/sh", "-c"]
         args:
           - |
