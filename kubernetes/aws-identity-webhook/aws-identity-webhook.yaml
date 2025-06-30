@@ -29,8 +29,7 @@ spec:
     config:
       # follow the EKS convention
       annotationPrefix: eks.amazonaws.com
-      # disable default region
-      defaultAwsRegion: ""
+      defaultAwsRegion: "us-west-2"
       stsRegionalEndpoint: false
     pki:
       certManager:

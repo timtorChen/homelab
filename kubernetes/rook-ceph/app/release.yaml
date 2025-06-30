@@ -23,6 +23,11 @@ spec:
     crds:
       enabled: true
     currentNamespaceOnly: true
+    csi:
+      pluginTolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     resources:
       limits:
         memory: 256Mi
