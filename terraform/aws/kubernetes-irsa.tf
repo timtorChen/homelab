@@ -170,6 +170,53 @@ resource "aws_iam_role_policy_attachment" "etcd-backup" {
   policy_arn = aws_iam_policy.etcd-backup.arn
 }
 
+
+resource "aws_iam_role" "talos-upgrade" {
+  name = "${local.project}-talos-upgrade"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:talos-upgrade:talos-upgrade",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "talos-upgrade" {
+  name = "${local.project}-talos-upgrade"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        # ! Notice: the service need "ssm:GetParameter" not "ssm:GetParameters"
+        "Action" : "ssm:GetParameter",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/talos-cluster",
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/talos-machine"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "talos-upgrade" {
+  role       = aws_iam_role.talos-upgrade.name
+  policy_arn = aws_iam_policy.talos-upgrade.arn
+}
+
+
 resource "aws_iam_role" "snmp-exporter-mikrotik" {
   name = "${local.project}-snmp-exporter-mikrotik"
   assume_role_policy = jsonencode({
