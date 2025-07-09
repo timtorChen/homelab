@@ -98,3 +98,15 @@ spec:
             containers:
               - name: wait
                 securityContext: *sc
+      metricsConfig:
+        enabled: true
+        path: /metrics
+        interval: 1m
+        secure: false
+        scheme: http # serviceMonitor shchema
+        metricRelabelings: # serviceMonitor metricRelabelings
+          - action: drop
+            sourceLabels: [__name__]
+            regex: ^(go|process).*
+      serviceMonitor:
+        enabled: true
