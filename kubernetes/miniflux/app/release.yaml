@@ -59,6 +59,7 @@ spec:
               OAUTH2_USER_CREATION: 1
               OAUTH2_PROVIDER: oidc
               OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://oauth.id.jumpcloud.com/
+              OAUTH2_REDIRECT_URL: https://rss.timtor.dev/oauth2/oidc/callback
               OAUTH2_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
