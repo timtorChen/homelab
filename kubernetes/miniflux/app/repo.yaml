@@ -6,5 +6,5 @@ metadata:
   namespace: miniflux
   name: bjw-s
 spec:
-  url: https://bjw-s.github.io/helm-charts
+  url: https://bjw-s-labs.github.io/helm-charts
   interval: 24h

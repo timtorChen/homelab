@@ -6,7 +6,7 @@ metadata:
   namespace: unpoller
   name: bjw-s
 spec:
-  url: https://bjw-s.github.io/helm-charts
+  url: https://bjw-s-labs.github.io/helm-charts
   interval: 24h
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
