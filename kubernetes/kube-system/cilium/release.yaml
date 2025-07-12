@@ -48,6 +48,12 @@ spec:
       hostRoot: /sys/fs/cgroup
     k8sServiceHost: localhost
     k8sServicePort: 7745
+    nodePort:
+      enabled: true
+    bgpControlPlane:
+      enabled: true
+    gatewayAPI:
+      enabled: true
     hubble:
       enabled: true
       relay:
