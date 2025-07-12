@@ -55,8 +55,7 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              echo hello
-
+                echo hello
 
 # ---
 # # ingress for event source

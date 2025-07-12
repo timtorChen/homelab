@@ -15,7 +15,7 @@ spec:
       chart: argo-events
       version: 2.4.15
   install:
-    crds: CreateReplace 
+    crds: CreateReplace
   upgrade:
     crds: CreateReplace
   interval: 1h
