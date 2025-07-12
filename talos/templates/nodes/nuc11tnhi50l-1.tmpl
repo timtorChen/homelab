@@ -3,6 +3,22 @@ machine:
   type: worker
   network:
     hostname: nuc11tnhi50l-1
+    interfaces:
+      # external network
+      - interface: eth0
+        addresses: 
+          - 192.168.253.11/21
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.248.1
+      # internal ceph communication
+      - interface: eth1
+        addresses:
+          - 192.168.253.101/21
+        routes:
+          - network: 192.168.253.101/32
+          - network: 192.168.253.102/32
+          - network: 192.168.253.103/32
   udev:
     # check /usr/etc/udev/rules.d/99-talos.rules
     rules:
