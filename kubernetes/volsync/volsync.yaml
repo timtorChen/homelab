@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: backube
       chart: volsync
-      version: 0.11.0
+      version: 0.13.0
   install:
     crds: CreateReplace
   upgrade:
