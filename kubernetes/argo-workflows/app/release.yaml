@@ -13,7 +13,7 @@ spec:
         namespace: argo-workflows
         name: argo
       chart: argo-workflows
-      version: 0.45.18
+      version: 0.45.20
   install:
     crds: CreateReplace
   upgrade:
