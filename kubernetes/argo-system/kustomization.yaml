@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - base/ns.yaml
+  - base/argo-repo.yaml
+  - base/nats-repo.yaml
+  - argo-workflows/release.yaml
+  - argo-workflows/secret.yaml
+  - argo-events/release.yaml
+  - sso-rbac/aggregate-role/argo-events-admin-clusterrole.yaml
+  - sso-rbac/aggregate-role/argo-workflows-admin-clusterrole.yaml
+  - sso-rbac/aggregate-role/argo-workflows-log-view-clusterrole.yaml
+  - sso-rbac/impersonate/argo-system-admin.yaml

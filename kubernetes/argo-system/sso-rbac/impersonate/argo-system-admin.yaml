@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: argo-system
+  name: argo-system-admin
+  annotations:
+    workflows.argoproj.io/rbac-rule: "'argo-system-admin' in groups"
+    workflows.argoproj.io/service-account-token.name: argo-system-admin-token
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: argo-system
+  name: argo-system-admin-token
+  annotations:
+    kubernetes.io/service-account.name: argo-system-admin
+type: kubernetes.io/service-account-token
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrole-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argo-system-admin
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        rbac.authorization.k8s.io/argo-workflows-admin: "true"
+    - matchLabels:
+        rbac.authorization.k8s.io/argo-events-admin: "true"
+    - matchLabels:
+        rbac.authorization.k8s.io/argo-workflows-log-view: "true"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argo-system-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-system-admin
+subjects:
+  - kind: ServiceAccount
+    namespace: argo-system
+    name: argo-system-admin
