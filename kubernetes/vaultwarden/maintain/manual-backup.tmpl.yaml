@@ -20,8 +20,8 @@ spec:
       monthly: 3
     copyMethod: Snapshot
     # volume created from snapshot
-    volumeSnapshotClassName: rook-ceph-fs
-    storageClassName: fs-fast-ec
+    volumeSnapshotClassName: rook-ceph-rbd
+    storageClassName: rbd-fast-ec
     accessModes: ["ReadWriteOnce"]
     cacheStorageClassName: rbd-fast-ec
     cacheAccessModes: ["ReadWriteOnce"]
