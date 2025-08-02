@@ -6,7 +6,7 @@ metadata:
   namespace: vaultwarden
   name: vaultwarden-data
 spec:
-  storageClassName: fs-fast
+  storageClassName: rbd-fast
   resources:
     requests:
       storage: 1Gi

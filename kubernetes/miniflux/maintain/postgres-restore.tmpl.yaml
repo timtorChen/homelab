@@ -7,10 +7,10 @@ metadata:
   name: &name miniflux-postgres
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:15.6
-  instances: 2
+  instances: 1
   storage:
     pvcTemplate:
-      storageClassName: fs-fast
+      storageClassName: rbd-fast
       resources:
         requests:
           storage: 10Gi
@@ -27,7 +27,7 @@ spec:
     - name: clusterBackup
       barmanObjectStore:
         endpointURL: https://s3.us-east-005.backblazeb2.com
-        destinationPath: s3://homelab-amethyst-miniflux/
+        destinationPath: s3://timtor-homelab-miniflux/
         serverName: *name
         s3Credentials:
           accessKeyId:
