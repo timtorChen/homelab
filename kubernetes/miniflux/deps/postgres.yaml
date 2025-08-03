@@ -10,7 +10,7 @@ spec:
   instances: 1
   storage:
     pvcTemplate:
-      storageClassName: fs-fast
+      storageClassName: rbd-fast
       resources:
         requests:
           storage: 10Gi
