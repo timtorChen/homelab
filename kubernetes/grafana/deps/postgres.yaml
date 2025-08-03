@@ -10,7 +10,7 @@ spec:
   instances: 1
   storage:
     pvcTemplate:
-      storageClassName: fs-fast
+      storageClassName: rbd-fast
       resources:
         requests:
           storage: 10Gi
@@ -52,57 +52,3 @@ spec:
   cluster:
     name: grafana-postgres
   target: prefer-standby
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: grafana
-  name: grafana-postgres-secret-holder
-  annotations:
-    eks.amazonaws.com/audience: sts.amazonaws.com
-    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-grafana-postgres-secret-holder
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/deployment-apps-v1.json
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  namespace: grafana
-  name: &n grafana-postgres-secret-holder
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: *n
-  template:
-    metadata:
-      labels:
-        app: *n
-    spec:
-      serviceAccount: *n
-      volumes:
-        - name: &s grafana-postgres-secret
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-      containers:
-        - name: *n
-          image: busybox:latest
-          command: ["sleep", "infinity"]
-          volumeMounts:
-            - name: *s
-              mountPath: /grafana-postgres-secret
-              readOnly: true
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: ["ALL"]
-            seccompProfile:
-              type: RuntimeDefault
-          resources: {}

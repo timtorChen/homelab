@@ -6,7 +6,7 @@ metadata:
   namespace: unifi-controller
   name: unifi-controller-data
 spec:
-  storageClassName: fs-fast
+  storageClassName: rbd-fast
   resources:
     requests:
       storage: 5Gi

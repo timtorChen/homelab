@@ -7,10 +7,10 @@ metadata:
   name: &name immich-postgres
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:15.6
-  instances: 2
+  instances: 1
   storage:
     pvcTemplate:
-      storageClassName: fs-fast
+      storageClassName: rbd-fast
       resources:
         requests:
           storage: 5Gi

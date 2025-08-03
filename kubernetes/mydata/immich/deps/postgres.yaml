@@ -13,7 +13,7 @@ spec:
   instances: 1
   storage:
     pvcTemplate:
-      storageClassName: fs-fast
+      storageClassName: rbd-fast
       resources:
         requests:
           storage: 5Gi
@@ -25,18 +25,20 @@ spec:
       secret:
         name: immich-postgres-secret
       postInitApplicationSQL:
-        - |
+        - | #sql
             BEGIN;
-            CREATE EXTENSION vectors;
-            CREATE EXTENSION earthdistance CASCADE;
-            ALTER DATABASE immich SET search_path TO "$user", public, vectors;
+            -- vectors
+            CREATE EXTENSION IF NOT EXISTS vectors;
             ALTER SCHEMA vectors OWNER TO immich;
+            -- immich requres earthdistance, cube in public schema
+            CREATE EXTENSION IF NOT EXISTS earthdistance SCHEMA public CASCADE;
+            ALTER DATABASE immich SET search_path TO "$user", public, vectors;
             COMMIT;
   backup:
     retentionPolicy: "1w"
     barmanObjectStore:
       endpointURL: https://s3.us-east-005.backblazeb2.com
-      destinationPath: s3://homelab-amethyst-immich
+      destinationPath: s3://timtor-homelab-immich/
       s3Credentials:
         accessKeyId:
           name: immich-postgres-secret
