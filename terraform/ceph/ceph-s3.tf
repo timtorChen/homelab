@@ -60,3 +60,34 @@ resource "aws_s3_bucket_policy" "mimir" {
   })
 }
 
+resource "aws_s3_bucket" "tempo" {
+  provider = aws.ceph-fast
+  bucket   = "${local.project}-tempo"
+}
+
+resource "aws_s3_bucket_policy" "tempo" {
+  provider = aws.ceph-fast
+  bucket   = aws_s3_bucket.tempo.id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Principal" : {
+          "AWS" : "arn:aws:iam:::user/tempo"
+        }
+        "Action" : [
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ],
+        "Effect" : "Allow"
+        "Resource" : [
+          "${aws_s3_bucket.tempo.arn}",
+          "${aws_s3_bucket.tempo.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+

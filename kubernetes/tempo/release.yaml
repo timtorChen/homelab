@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: tempo
+  name: tempo
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+      chart: tempo-distributed
+      version: 1.46.2
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    tempo:
+      structuredConfig:
+        storage:
+          trace:
+            s3:
+              endpoint: rook-ceph-rgw-fast.rook-ceph.svc:8080
+              bucket: amethyst-tempo
+              access_key_id: ${APP_S3_ACCESS_KEY_ID}
+              secret_access_key: ${APP_S3_SECRET_ACCESS_KEY}
+              insecure: true
+      podSecurityContext:
+        fsGroup: 1000
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
+
+      # query_frontend (stateless)
+      queryFrontend:
+        replicas: 1
+      # querier (stateless)
+      querier:
+        replicas: 2
+      # distributor (stateless)
+      distributor:
+        replicas: 1
+      # ingester (stateful)
+      ingester:
+        replicas: 3
+      # compactor (stateful)
+      compactor:
+        replicas: 2
