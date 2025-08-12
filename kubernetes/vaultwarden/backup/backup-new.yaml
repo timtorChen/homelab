@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  namespace: vaultwarden
+  name: data-backup
+spec:
+  timezone: Asia/Taipei
+  schedules:
+    - "0 8 * * *"
+  concurrencyPolicy: Forbid
+  workflowSpec:
+    entrypoint: main
+    arguments:
+      parameters:
+        - name: pvcName
+          value: vaultwarden-data
+        - name: volumeSnapshotClass
+          value: rook-ceph-rbd
+    workflowTemplateRef:
+      name: pvc-snapshot-to-s3-workflowtemplate
+      clusterScope: true
