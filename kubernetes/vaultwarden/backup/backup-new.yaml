@@ -11,6 +11,7 @@ spec:
     - "0 8 * * *"
   concurrencyPolicy: Forbid
   workflowSpec:
+    serviceAccountName: vaultwarden-backup
     entrypoint: main
     arguments:
       parameters:
@@ -18,6 +19,12 @@ spec:
           value: vaultwarden-data
         - name: volumeSnapshotClass
           value: rook-ceph-rbd
+        - name: storageClassName
+          value: rbd-fast-ec
+        - name: cacheStorageClassName
+          value: rbd-fast-ec
+        - name: cacheSize
+          value: 1Gi
     workflowTemplateRef:
       name: pvc-snapshot-to-s3-workflowtemplate
       clusterScope: true
