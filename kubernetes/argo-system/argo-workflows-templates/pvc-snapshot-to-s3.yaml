@@ -10,11 +10,29 @@ spec:
     parameters:
       - name: pvcName
       - name: volumeSnapshotClass
+      - name: storageClassName
+      - name: snapshotTimeout
+        value: 4h
+      - name: cacheStorageClassName
+      - name: cacheAccessModes
+        value:
+      - name: cacheSize
+      # - name: resticConfig
   templates:
     - name: main
       steps:
         - - name: create-snapshot
             template: create-snapshot
+        - - name: wait-for-snapshot
+            template: wait-for-snapshot
+        - - name: carete-snapshot-pvc
+            template: create-snapshot-pvc
+        - - name: create-cache-pvc
+            template: create-cache-pvc
+          # - name: upload-to-s3
+          #   template: upload-to-s3
+        # - - name: clean-up
+        #     template: clean-up
 
     - name: create-snapshot
       container:
@@ -22,17 +40,19 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-              kubectl apply -f - <<EOF
+              MANIFEST="$(cat <<EOF
               apiVersion: snapshot.storage.k8s.io/v1
               kind: VolumeSnapshot
               metadata:
                 namespace: "{{workflow.namespace}}"
-                name: "{{workflow.parameters.pvcName}}-snapshot-{{workflow.creationTimestamp}}"
+                name: "{{workflow.name}}"
               spec:
                 volumeSnapshotClassName: "{{workflow.parameters.volumeSnapshotClass}}"
                 source:
                   persistentVolumeClaimName: "{{workflow.parameters.pvcName}}"
               EOF
+              )"
+              echo "$MANIFEST" | kubectl create -f -
         securityContext: &sc
           runAsNonRoot: true
           runAsUser: 65534
@@ -43,3 +63,71 @@ spec:
             drop: ["ALL"]
           seccompProfile:
             type: RuntimeDefault
+
+    - name: wait-for-snapshot
+      container:
+        image: bitnami/kubectl
+        securityContext: *sc
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              kubectl wait -n "{{workflow.namespace}}" "volumesnapshot/{{workflow.name}}" \
+                --for=jsonpath='{.status.readyToUse}=true' \
+                --timeout={{workflow.parameters.snapshotTimeout}}
+
+    - name: create-snapshot-pvc
+      container:
+        image: bitnami/kubectl
+        securityContext: *sc
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              SIZE="$(
+                kubectl get -n {{workflow.namespace}} volumesnapshot/{{workflow.name}} \
+                -o jsonpath='{.status.restoreSize}'
+              )"
+
+              MANIFEST="$(cat <<EOF
+              apiVersion: v1
+              kind: PersistentVolumeClaim
+              metadata:
+                namespace: "{{workflow.namespace}}"
+                name: "{{workflow.name}}-src"
+              spec:
+                storageClassName: "{{workflow.parameters.storageClassName}}"
+                dataSource:
+                  apiGroup: snapshot.storage.k8s.io
+                  kind: VolumeSnapshot
+                  name: "{{ workflow.name }}"
+                resources:
+                  requests:
+                    storage: "$SIZE"
+                accessModes: ["ReadWriteOnce"]
+              EOF
+              )"
+              echo "$MANIFEST" | kubectl create -f -
+
+    - name: create-cache-pvc
+      container:
+        image: bitnami/kubectl
+        securityContext: *sc
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              MANIFEST="$(cat <<EOF
+              apiVersion: v1
+              kind: PersistentVolumeClaim
+              metadata:
+                namespace: "{{workflow.namespace}}"
+                name: "{{workflow.name}}-cache"
+              spec:
+                storageClassName: "{{workflow.parameters.cacheStorageClassName}}"
+                resources:
+                  requests:
+                    storage: "{{workflow.parameters.cacheSize}}"
+                accessModes: ["ReadWriteOnce"]
+              EOF
+              )"
+              echo "$MANIFEST" | kubectl create -f -
+
+    # - name: upload-to-s3
