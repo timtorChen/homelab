@@ -26,5 +26,5 @@ spec:
         - name: cacheSize
           value: 1Gi
     workflowTemplateRef:
-      name: pvc-snapshot-to-s3-workflowtemplate
+      name: pvc-backup-to-s3-workflowtemplate
       clusterScope: true
