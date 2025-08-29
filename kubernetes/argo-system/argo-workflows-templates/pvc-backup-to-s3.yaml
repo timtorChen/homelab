@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  name: pvc-snapshot-to-s3-workflowtemplate
+  name: pvc-backup-to-s3-workflowtemplate
 spec:
   entrypoint: main
   arguments:
@@ -14,10 +14,8 @@ spec:
       - name: snapshotTimeout
         value: 4h
       - name: cacheStorageClassName
-      - name: cacheAccessModes
-        value:
       - name: cacheSize
-      # - name: resticConfig
+      - name: resticConfig
   templates:
     - name: main
       steps:
@@ -119,7 +117,7 @@ spec:
               kind: PersistentVolumeClaim
               metadata:
                 namespace: "{{workflow.namespace}}"
-                name: "{{workflow.name}}-cache"
+                name: "{{workflow.parameters.pvcName}}-cache"
               spec:
                 storageClassName: "{{workflow.parameters.cacheStorageClassName}}"
                 resources:
@@ -130,4 +128,14 @@ spec:
               )"
               echo "$MANIFEST" | kubectl create -f -
 
-    # - name: upload-to-s3
+    - name: upload-to-s3
+      container:
+        image: ghcr.io/rustic-rs/rustic:v0.9.5
+        securityContext: *sc
+        command: ["/rustic"]
+        args:
+          - backup
+          - --init
+          - /data
+          - --host
+          - test
