@@ -7,9 +7,9 @@ resources:
   - app/release.yaml
   - app/gatewayclass.yaml
   - app/netpol.yaml
-  - loadbalancer/bgpadvertisement.yaml
-  - loadbalancer/bgpclusterconfig.yaml
-  - loadbalancer/bgppeerconfig.yaml
+  - bgp/bgpadvertisement.yaml
+  - bgp/bgpclusterconfig.yaml
+  - bgp/bgppeerconfig.yaml
   - loadbalancer/ippool.yaml
   - loadbalancer/certificate.yaml
   - loadbalancer/gateway.yaml
