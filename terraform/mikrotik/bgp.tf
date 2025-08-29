@@ -11,4 +11,5 @@ resource "routeros_routing_bgp_connection" "peer-to-talos" {
     port = "179"
   }
   connect = false
+  # TODO: some options cause failed
 }
