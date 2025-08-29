@@ -14,4 +14,5 @@ spec:
           - LoadBalancerIP
       selector:
         matchLabels:
-          gateway.networking.k8s.io/gateway-name: test-gw
+          io.cilium.gateway/owning-gateway: cilium-gateway
+          gateway.networking.k8s.io/gateway-name: cilium-gateway
