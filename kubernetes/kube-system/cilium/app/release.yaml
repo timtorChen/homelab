@@ -54,6 +54,8 @@ spec:
       enabled: true
     gatewayAPI:
       enabled: true
+      gatewayClass:
+        create: auto
     hubble:
       enabled: true
       relay:
