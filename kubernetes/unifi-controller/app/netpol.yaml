@@ -6,6 +6,7 @@ metadata:
   namespace: unifi-controller
   name: unifi-controller-policy
 specs:
+  # TODO: deprecate
   # allow connection from ingress-nginx
   - endpointSelector: &self
       matchLabels:
@@ -15,6 +16,19 @@ specs:
           - matchLabels:
               k8s:io.kubernetes.pod.namespace: ingress-nginx
               app.kubernetes.io/name: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8443"
+              - protocol: TCP
+                port: "8080"
+  # allow connection from cilium ingress
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchExpressions:
+              - key: reserved:ingress
+                operator: Exists
         toPorts:
           - ports:
               - protocol: TCP

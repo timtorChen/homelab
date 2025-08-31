@@ -43,6 +43,7 @@ spec:
           mountPath: /secret
           readOnly: true
       webhookReceiver:
+        # TODO: deprecate
         ingress:
           create: true
           ingressClassName: nginx

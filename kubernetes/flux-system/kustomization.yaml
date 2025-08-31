@@ -7,5 +7,6 @@ resources:
   - app/repo.yaml
   - app/release.yaml
   - app/boostrap.yaml
+  - app/httproute.yaml
   - app/receiver.yaml
   - app/secret.yaml

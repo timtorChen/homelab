@@ -18,6 +18,17 @@ specs:
           - ports:
               - protocol: TCP
                 port: "8080"
+  # allow connection from cilium ingress
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchExpressions:
+              - key: reserved:ingress
+                operator: Exists
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
   # allow kromgo to mimir
   - endpointSelector: *self
     egress:
