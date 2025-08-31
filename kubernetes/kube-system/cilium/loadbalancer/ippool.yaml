@@ -9,5 +9,5 @@ spec:
     - cidr: "192.168.252.100/32"
   serviceSelector:
     matchLabels:
-      io.cilium.gateway/owning-gateway: cilium-gateway
-      gateway.networking.k8s.io/gateway-name: cilium-gateway
+      io.cilium.gateway/owning-gateway: cilium-default
+      gateway.networking.k8s.io/gateway-name: cilium-default

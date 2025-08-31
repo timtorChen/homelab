@@ -3,15 +3,15 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  namespace: grafana
-  name: grafana
+  namespace: argo-system
+  name: argo-workflows-server
 spec:
   parentRefs:
     - namespace: kube-system
       name: cilium-default
       sectionName: https
   hostnames:
-    - "grafana.timtor.dev"
+    - "workflows.timtor.dev"
   rules:
     - matches:
         - path:
@@ -19,22 +19,22 @@ spec:
             value: /
       backendRefs:
         - kind: Service
-          name: grafana
-          port: 80
+          name: argo-workflows-server
+          port: 2746
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  namespace: grafana
-  name: grafana-http-redirect
+  namespace: argo-system
+  name: argo-workflows-server-http-rediect
 spec:
   parentRefs:
     - namespace: kube-system
       name: cilium-default
       sectionName: http
   hostnames:
-    - "grafana.timtor.dev"
+    - "workflows.timtor.dev"
   rules:
     - matches:
         - path:

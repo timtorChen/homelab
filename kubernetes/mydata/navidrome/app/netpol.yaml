@@ -6,8 +6,9 @@ metadata:
   namespace: mydata
   name: navidrome-policy
 specs:
+  # TODO: deprecate
   # navidrome connection from ingress-nginx
-  - endpointSelector:
+  - endpointSelector: &self
       matchLabels:
         app.kubernetes.io/name: navidrome
     ingress:
@@ -15,6 +16,17 @@ specs:
           - matchLabels:
               k8s:io.kubernetes.pod.namespace: ingress-nginx
               app.kubernetes.io/name: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "4533"
+  # allow connection from cilium ingress
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchExpressions:
+              - key: reserved:ingress
+                operator: Exists
         toPorts:
           - ports:
               - protocol: TCP

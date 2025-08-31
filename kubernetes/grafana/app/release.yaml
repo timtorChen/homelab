@@ -132,6 +132,7 @@ spec:
         cpu: 50m
         memory: 256Mi
 
+    # TODO: deprecate
     ingress:
       enabled: true
       ingressClassName: nginx

@@ -129,6 +129,7 @@ spec:
             port: *p
             protocol: HTTP
 
+    # TODO: deprecate
     ingress:
       main:
         className: nginx
@@ -145,3 +146,23 @@ spec:
                 service:
                   identifier: main
                   port: *p
+
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - vault.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: vaultwarden
+                port: *p
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /

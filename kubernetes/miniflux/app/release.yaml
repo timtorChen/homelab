@@ -120,6 +120,7 @@ spec:
             port: &p 8080
             protocol: HTTP
 
+    # TODO: deprecate
     ingress:
       main:
         className: nginx
@@ -131,3 +132,22 @@ spec:
                 service:
                   identifier: main
                   port: *p
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - rss.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: miniflux
+                port: *p
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /

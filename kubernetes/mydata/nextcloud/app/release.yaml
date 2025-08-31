@@ -187,6 +187,7 @@ spec:
             port: &port 8080
             protocol: HTTP
 
+    # TODO: deprecate
     ingress:
       main:
         className: nginx
@@ -200,3 +201,22 @@ spec:
                 service:
                   identifier: main
                   port: *port
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - drive.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: nextcloud
+                port: *port
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /

@@ -6,6 +6,7 @@ metadata:
   namespace: grafana
   name: grafana-app-policy
 specs:
+  # TODO: deprecate
   # allow connection from ingress-nginx
   - endpointSelector: &self
       matchLabels:
@@ -14,6 +15,17 @@ specs:
       - fromEndpoints:
           - matchLabels:
               k8s:io.kubernetes.pod.namespace: ingress-nginx
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3000"
+  # allow connection from cilium ingress
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - matchExpressions:
+              - key: reserved:ingress
+                operator: Exists
         toPorts:
           - ports:
               - protocol: TCP
