@@ -8,11 +8,12 @@ metadata:
     advertise: bgp
 spec:
   advertisements:
-    - advertisementType: "Service"
+    - # advertiste the generated loadbalancer service
+      advertisementType: "Service"
       service:
         addresses:
           - LoadBalancerIP
       selector:
         matchLabels:
-          io.cilium.gateway/owning-gateway: cilium-gateway
-          gateway.networking.k8s.io/gateway-name: cilium-gateway
+          io.cilium.gateway/owning-gateway: cilium-default
+          gateway.networking.k8s.io/gateway-name: cilium-default

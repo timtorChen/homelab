@@ -81,6 +81,7 @@ spec:
             port: &inform 8080
             protocol: TCP
 
+    # TODO: deprecate
     ingress:
       main:
         className: nginx
@@ -106,3 +107,41 @@ spec:
                 service:
                   identifier: main
                   port: *inform
+
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - ui.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - kind: Service
+                name: unifi-controller
+                port: *web
+      inform:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - ui.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /inform
+            backendRefs:
+              - kind: Service
+                name: unifi-controller
+                port: *inform

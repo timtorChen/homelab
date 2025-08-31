@@ -211,6 +211,8 @@ spec:
             port: *p3
             primary: true
             protocol: HTTP
+
+    # TODO: deprecate
     ingress:
       main:
         className: nginx
@@ -224,3 +226,22 @@ spec:
                 service:
                   identifier: server
                   port: *p1
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - photo.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: immich
+                port: *p
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /

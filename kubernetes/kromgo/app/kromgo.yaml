@@ -75,6 +75,8 @@ spec:
             primary: true
             port: *p
             protocol: HTTP
+
+    # TODO: deprecate
     ingress:
       main:
         className: nginx
@@ -86,3 +88,41 @@ spec:
                 service:
                   identifier: main
                   port: *p
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - kromgo.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: kromgo
+                port: *p
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - kromgo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301
