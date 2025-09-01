@@ -172,7 +172,7 @@ spec:
         parentRefs:
           - namespace: kube-system
             name: cilium-default
-            sectionName: https
+            sectionName: http
         hostnames:
           - vault.timtor.dev
         rules:
