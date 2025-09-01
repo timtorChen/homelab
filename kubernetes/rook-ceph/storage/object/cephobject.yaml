@@ -22,6 +22,7 @@ spec:
     port: 8080
     instances: 2
 ---
+# TODO: deprecate
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
