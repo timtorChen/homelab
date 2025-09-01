@@ -157,7 +157,7 @@ spec:
         parentRefs:
           - namespace: kube-system
             name: cilium-default
-            sectionName: https
+            sectionName: http
         hostnames:
           - rss.timtor.dev
         rules:
