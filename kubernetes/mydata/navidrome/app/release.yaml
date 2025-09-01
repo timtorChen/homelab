@@ -131,7 +131,7 @@ spec:
                   value: /
             backendRefs:
               - kind: Service
-                name: vaultwarden
+                name: navidrome
                 port: *p
       http-redirect:
         enabled: true
