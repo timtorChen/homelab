@@ -212,11 +212,30 @@ spec:
         hostnames:
           - drive.timtor.dev
         rules:
-          - backendRefs:
-              - kind: Service
-                name: nextcloud
-                port: *port
-            matches:
+          - matches:
               - path:
                   type: PathPrefix
                   value: /
+            backendRefs:
+              - kind: Service
+                name: nextcloud
+                port: *port
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - drive.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301

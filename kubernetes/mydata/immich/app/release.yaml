@@ -237,11 +237,30 @@ spec:
         hostnames:
           - photo.timtor.dev
         rules:
-          - backendRefs:
-              - kind: Service
-                name: immich
-                port: *p
-            matches:
+          - matches:
               - path:
                   type: PathPrefix
                   value: /
+            backendRefs:
+              - kind: Service
+                name: immich
+                port: *p1
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - photo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301

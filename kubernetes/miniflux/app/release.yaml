@@ -151,3 +151,22 @@ spec:
               - path:
                   type: PathPrefix
                   value: /
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - rss.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301
