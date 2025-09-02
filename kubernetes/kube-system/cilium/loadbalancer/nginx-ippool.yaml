@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumloadbalancerippool_v2alpha1.json
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "nginx-pool"
+spec:
+  blocks:
+    - cidr: "192.168.253.100/32"
+  serviceSelector:
+    matchLabels:
+      app.kubernetes.io/instance: ingress-nginx

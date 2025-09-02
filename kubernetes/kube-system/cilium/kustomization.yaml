@@ -5,11 +5,14 @@ kind: Kustomization
 resources:
   - app/repo.yaml
   - app/release.yaml
-  - app/gatewayclass.yaml
   - app/netpol.yaml
+  # bgp
   - bgp/bgpadvertisement.yaml
   - bgp/bgpclusterconfig.yaml
   - bgp/bgppeerconfig.yaml
-  - loadbalancer/ippool.yaml
+  # loadbalancer
+  - loadbalancer/default-ippool.yaml
+  - loadbalancer/nginx-ippool.yaml
   - loadbalancer/certificate.yaml
+  - loadbalancer/gatewayclass.yaml
   - loadbalancer/gateway.yaml
