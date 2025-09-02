@@ -17,3 +17,11 @@ spec:
         matchLabels:
           io.cilium.gateway/owning-gateway: cilium-default
           gateway.networking.k8s.io/gateway-name: cilium-default
+    - # advertiste ingress-nginx loadbalancer service
+      advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: ingress-nginx
