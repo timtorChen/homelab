@@ -11,8 +11,7 @@ resources:
   - bgp/bgpclusterconfig.yaml
   - bgp/bgppeerconfig.yaml
   # loadbalancer
-  - loadbalancer/default-ippool.yaml
-  - loadbalancer/nginx-ippool.yaml
+  - loadbalancer/default-pool.yaml
   - loadbalancer/certificate.yaml
   - loadbalancer/gatewayclass.yaml
   - loadbalancer/gateway.yaml
