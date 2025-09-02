@@ -6,7 +6,7 @@ metadata:
   name: "default-pool"
 spec:
   blocks:
-    - cidr: "192.168.253.101/32"
+    - cidr: "192.168.252.1/32"
   serviceSelector:
     matchLabels:
       io.cilium.gateway/owning-gateway: cilium-default
