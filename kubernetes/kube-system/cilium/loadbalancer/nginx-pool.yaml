@@ -3,11 +3,10 @@
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
 metadata:
-  name: "default-pool"
+  name: "nginx-pool"
 spec:
   blocks:
-    - cidr: "192.168.33.1/32"
+    - cidr: "192.168.33.2/32"
   serviceSelector:
     matchLabels:
-      io.cilium.gateway/owning-gateway: cilium-default
-      gateway.networking.k8s.io/gateway-name: cilium-default
+      app.kubernetes.io/name: ingress-nginx
