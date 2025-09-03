@@ -67,7 +67,7 @@ spec:
       service:
         type: LoadBalancer
         externalIPs:
-          - 192.168.252.2
+          - 192.168.33.2
         externalTrafficPolicy: Local
       replicaCount: 2
       updateStrategy:
