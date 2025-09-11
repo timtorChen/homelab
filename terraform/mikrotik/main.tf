@@ -21,7 +21,14 @@ provider "routeros" {
   hosturl = "http://192.168.248.1:8080"
   username = local.mikrotik_username
   password = local.mikrotik_password
-
-  
 }
 
+locals {
+  homelab_private_domains = [
+    "ui.timtor.dev",
+    "hass.timtor.dev",
+    "grafana.timtor.dev",
+    "drive.timtor.dev",
+    "rss.timtor.dev"
+  ]
+}
