@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.97.0"
+      version = "~> 6.13.0"
     }
   }
 }
@@ -26,17 +26,5 @@ resource "aws_s3_bucket_versioning" "backend" {
 
   versioning_configuration {
     status = "Enabled"
-  }
-}
-
-resource "aws_dynamodb_table" "tfstate_lock" {
-  name           = "tfstate-lock"
-  read_capacity  = 1
-  write_capacity = 1
-  hash_key       = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
   }
 }

@@ -4,14 +4,14 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.97.0"
+      version = "~> 6.13.0"
     }
   }
   backend "s3" {
-    bucket         = "amethyst-terraform-backend"
-    key            = "amethyst"
-    dynamodb_table = "tfstate-lock"
-    region         = "us-west-2"
+    bucket       = "amethyst-terraform-backend"
+    key          = "homelab/aws"
+    use_lockfile = true
+    region       = "us-west-2"
   }
 }
 
