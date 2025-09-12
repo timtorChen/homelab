@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.97.0"
+      version = "~> 6.13.0"
     }
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -16,10 +16,10 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "amethyst-terraform-backend"
-    key            = "homelab/cloudflare"
-    dynamodb_table = "tfstate-lock"
-    region         = "us-west-2"
+    bucket       = "amethyst-terraform-backend"
+    key          = "homelab/cloudflare"
+    use_lockfile = true
+    region       = "us-west-2"
   }
 }
 
