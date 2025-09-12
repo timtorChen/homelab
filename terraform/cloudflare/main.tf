@@ -8,7 +8,7 @@ terraform {
     }
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 4.52.0"
+      version = "~> 5.9.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -33,9 +33,8 @@ locals {
 }
 
 locals {
-  zone       = "timtor.dev"
-  zone_id    = data.cloudflare_zone.main.zone_id
-  account_id = data.cloudflare_accounts.main.accounts[0].id
+  account_name = "timtor"
+  zone         = "timtor.dev"
 }
 
 locals {
