@@ -117,7 +117,7 @@ spec:
       - name: rustic-backup
         serviceAccountName: etcd-backup
         container:
-          image: ghcr.io/rustic-rs/rustic:v0.9.5
+          image: ghcr.io/rustic-rs/rustic:v0.10.0
           command: ["/rustic"]
           args:
             - backup
@@ -156,7 +156,7 @@ spec:
       - name: rustic-forget
         serviceAccountName: etcd-backup
         container:
-          image: ghcr.io/rustic-rs/rustic:v0.9.5
+          image: ghcr.io/rustic-rs/rustic:v0.10.0
           env: *rustic-env
           command: ["/rustic"]
           args:
