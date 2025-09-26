@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.13.0"
+      version = "~> 5.100.0"
     }
     grafana = {
       source  = "grafana/grafana"
