@@ -864,6 +864,50 @@ resource "aws_iam_role_policy_attachment" "vaultwarden" {
   policy_arn = aws_iam_policy.vaultwarden.arn
 }
 
+resource "aws_iam_role" "vaultwarden-backup" {
+  name = "vaultwarden-backup"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:vaultwarden:vaultwarden-backup",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "vaultwarden-backup" {
+  name = "vaultwarden-backup"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameters",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/vaultwarden/backup"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "vaultwarden-backup" {
+  role       = aws_iam_role.vaultwarden-backup.name
+  policy_arn = aws_iam_policy.vaultwarden-backup.arn
+}
+
+
 resource "aws_iam_role" "vaultwarden-backup-secret-holder" {
   name = "${local.project}-vaultwarden-backup-secret-holder"
   assume_role_policy = jsonencode({
