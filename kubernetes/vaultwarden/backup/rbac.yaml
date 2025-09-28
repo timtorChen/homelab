@@ -5,6 +5,9 @@ kind: ServiceAccount
 metadata:
   namespace: vaultwarden
   name: vaultwarden-backup
+  annotations:
+    eks.amazonaws.com/audience: sts.amazonaws.com
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/vaultwarden-backup
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/role-rbac-v1.json
 apiVersion: rbac.authorization.k8s.io/v1
