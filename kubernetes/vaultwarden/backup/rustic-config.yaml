@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden-backup-rustic-config
+data:
+  rustic.toml: | #toml
+    [repository]
+    repository = "opendal:s3"
+    # password = RUSTIC_PASSWORD
+
+    [repository.options]
+    endpoint = "https://s3.us-east-005.backblazeb2.com"
+    # access_key_id = OPENDAL_ACCESS_KEY_ID
+    # secret_access_key = OPENDAL_SECRET_ACCESS_KEY
+    bucket = "homelab-amethyst-vaultwarden"
+    root = "/"
+    region = "us-east-005"
+
+    [forget]
+    keep-daily = 5
+    keep-weekly = 4

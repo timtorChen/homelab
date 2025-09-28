@@ -1,0 +1,72 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden-data-backup
+spec:
+  timezone: Asia/Taipei
+  schedules:
+    - "0 8 * * *"
+  concurrencyPolicy: Forbid
+  workflowSpec:
+    podGC:
+      strategy: OnPodSuccess
+    serviceAccountName: vaultwarden-backup
+    entrypoint: main
+    templates:
+      - name: main
+        steps:
+          - - name: sync-rusic-secret
+              template: sync-rustic-secret
+          - - name: backup-pvc-to-s3
+              templateRef:
+                clusterScope: true
+                name: backup-pvc-to-s3-workflowtemplate
+                template: main
+              arguments:
+                parameters:
+                  - name: sourcePvcName
+                    value: vaultwarden-data
+                  - name: volumeSnapshotClassName
+                    value: rook-ceph-rbd
+                  - name: storageClassName
+                    value: rbd-fast-ec
+                  - name: cacheStorageClassName
+                    value: rbd-fast-ec
+                  - name: cacheSize
+                    value: 1Gi
+                  - name: rusticConfig
+                    value: vaultwarden-backup-rustic-config
+                  - name: rusticSecret
+                    value: vaultwarden-backup-rustic-secret
+
+      - name: sync-rustic-secret
+        container:
+          image: busybox
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+                echo "Sync rustic secret"
+          volumeMounts:
+            - name: rustic-secret
+              mountPath: /secret
+              readOnly: true
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+        volumes:
+          - name: rustic-secret
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: vaultwarden-backup-rustic-secret
