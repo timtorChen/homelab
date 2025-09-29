@@ -1,14 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  namespace: external-secrets
-  name: external-secrets
-spec:
-  url: https://charts.external-secrets.io
-  interval: 24h
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -21,26 +11,37 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: external-secrets
-      # disable renovate: registryUrl=https://charts.external-secrets.io
       chart: external-secrets
-      version: 0.9.4
+      version: 0.20.1
   install:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
   interval: 1h
   maxHistory: 1
+  timeout: 1m0s
   values:
     installCRDs: true
+    crds:
+      createClusterExternalSecret: false
+      createClusterSecretStore: false
+      createClusterGenerator: false
+      createClusterPushSecret: false
+      createPushSecret: true
 
     # -- controller
     replicaCount: 1
     processClusterExternalSecret: false
     processClusterStore: false
+    processClusterPushSecret: false
+    processClusterGenerator: false
+    processPushSecret: true
     securityContext: &securityContext
       runAsNonRoot: true
-      readOnlyRootFilesystem: true
+      runAsUser: 1000
+      runAsGroup: 1000
       allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
       capabilities:
         drop: ["ALL"]
       seccompProfile:
