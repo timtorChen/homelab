@@ -114,7 +114,7 @@ spec:
           - name: volumeSnapshotClassName
           - name: pvcName
       container:
-        image: bitnami/kubectl
+        image: public.ecr.aws/bitnami/kubectl:latest
         command: ["/bin/sh", "-c"]
         args:
           - |
@@ -149,7 +149,7 @@ spec:
           - name: name
           - name: timeout
       container:
-        image: bitnami/kubectl
+        image: public.ecr.aws/bitnami/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
@@ -166,7 +166,7 @@ spec:
           - name: storageClassName
           - name: snapshotName
       container:
-        image: bitnami/kubectl
+        image: public.ecr.aws/bitnami/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
@@ -204,7 +204,7 @@ spec:
           - name: storageClassName
           - name: size
       container:
-        image: bitnami/kubectl
+        image: public.ecr.aws/bitnami/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
@@ -296,7 +296,7 @@ spec:
           - name: namespace
           - name: snapshotName
       container:
-        image: bitnami/kubectl
+        image: public.ecr.aws/bitnami/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
@@ -310,7 +310,7 @@ spec:
           - name: namespace
           - name: pvcName
       container:
-        image: bitnami/kubectl
+        image: public.ecr.aws/bitnami/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
