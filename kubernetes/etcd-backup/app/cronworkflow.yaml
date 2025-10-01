@@ -69,9 +69,8 @@ spec:
             - name: control-plane-ip
               valueFrom:
                 path: /tmp/control-plane-ip
-
         container:
-          image: bitnami/kubectl
+          image: public.ecr.aws/bitnami/kubectl:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
