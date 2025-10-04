@@ -132,7 +132,7 @@ tasks:
   upgrade-nuc11tnhi50l-1:
     cmds:
       - task: upgrade
-        vars: *pi4b-1-vars
+        vars: *nuc11-1-vars
   shutdown-nuc11tnhi50l-1:
     cmds:
       - task: shutdown

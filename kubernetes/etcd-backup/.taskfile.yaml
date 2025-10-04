@@ -4,19 +4,22 @@ version: "3"
 silent: true
 
 tasks:
-  trigger:
-    cmd: |
-      NAMESPACE="etcd-backup"
-      CRONJOB="cronjob/etcd-backup"
-      NAME="manual"
-      TIMESTAMP="$(date +%Y%m%d%H%M%S%z)"
-      TIMESTAMP="${TIMESTAMP/+/plus}"
-      TIMESTAMP="${TIMESTAMP/-/minus}"
-      FULLNAME="$NAME-$TIMESTAMP"
-      TIMEOUT="5m"
-
-      kubectl create job -n "$NAMESPACE" --from "$CRONJOB" "$FULLNAME"
-      echo "Waiting for etcd-backup..."
-      kubectl wait --for=condition=complete --timeout "$TIMEOUT" -n "$NAMESPACE" "job/$FULLNAME"
-      kubectl delete -n "$NAMESPACE" "job/$FULLNAME"
-      echo "Etcd-backup is completed"
+  list-backup:
+    env:
+      BACKUP_SECRET:
+        sh: |
+          aws ssm get-parameter --name /kubernetes/etcd-backup \
+          --query "Parameter.Value" --with-decryption
+      OPENDAL_ENDPOINT: "https://s3.us-east-005.backblazeb2.com"
+      OPENDAL_BUCKET:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
+      OPENDAL_ACCESS_KEY_ID:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+      OPENDAL_SECRET_ACCESS_KEY:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+      RUSTIC_PASSWORD:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+    cmds:
+      - |
+          echo "Listing etcd backups..."
+          rustic snapshots -r "opendal:s3" --log-level=error

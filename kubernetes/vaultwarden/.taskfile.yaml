@@ -6,22 +6,8 @@ silent: true
 includes:
   volsync:
     taskfile: ../../.tasks/volsync.yaml
-  restic:
-    taskfile: ../../.tasks/restic.yaml
 
 tasks:
-  secrets:
-    internal: true
-    silent: true
-    env:
-      REPO: &repo s3://s3.us-east-005.backblazeb2.com/homelab-amethyst-vaultwarden
-      PASSWORD: &restic-password
-        sh: |
-          AWS_PROFILE=sso-admin@aws-homelab
-          aws ssm get-parameter --with-decryption \
-          --name /amethyst/nextcloud-backup \
-          | jq -r '.Parameter.Value | fromjson | .RESTIC_PASSWORD'
-
   backup:
     cmds:
       - task: volsync:backup
@@ -29,22 +15,6 @@ tasks:
           TEMPLATE: maintain/manual-backup.tmpl.yaml
           NAMESPACE: vaultwarden
           NAME: vaultwarden-backup
-
-  list-backup:
-    cmds:
-      - echo "Listing vaultwarden snapshots..."
-      - task: restic:list
-        vars:
-          REPO: *repo
-          PASSWORD: *restic-password
-
-  unlock-backup:
-    cmds:
-      - echo "Unlocking vaultwarden repository..."
-      - task: restic:unlock
-        vars:
-          REPO: *repo
-          PASSWORD: *restic-password
 
   restore:
     prompt: "Restore will delete the current vaultwarden data... continune?"
@@ -81,3 +51,23 @@ tasks:
     cmd: |
       echo "Starting vaultwarden..."
       kubectl scale --replicas 1 -n vaultwarden deployment/vaultwarden
+
+  list-backup:
+    env:
+      BACKUP_SECRET:
+        sh: |
+          aws ssm get-parameter --name /kubernetes/vaultwarden/backup \
+          --query "Parameter.Value" --with-decryption
+      OPENDAL_ENDPOINT: "https://s3.us-east-005.backblazeb2.com"
+      OPENDAL_BUCKET:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
+      OPENDAL_ACCESS_KEY_ID:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+      OPENDAL_SECRET_ACCESS_KEY:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+      RUSTIC_PASSWORD:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+    cmds:
+      - |
+          echo "Listing backups..."
+          rustic snapshots -r "opendal:s3" --log-level=error

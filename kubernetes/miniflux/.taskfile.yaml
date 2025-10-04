@@ -4,8 +4,6 @@ version: "3"
 silent: true
 
 includes:
-  aws:
-    taskfile: ../../.tasks/aws.yaml
   cnpg:
     taskfile: ../../.tasks/cnpg.yaml
 
@@ -71,8 +69,18 @@ tasks:
       - task: start
 
   list-backup:
+    env:
+      BACKUP_SECRET:
+        sh: |
+          aws ssm get-parameter --name /kubernetes/miniflux/miniflux-postgres \
+          --query "Parameter.Value" --with-decryption
+      S3_ENDPOINT_URL: https://s3.us-east-005.backblazeb2.com
+      POSTGRES_REPO: s3://timtor-homelab-miniflux/miniflux-postgres/base/
+      AWS_ACCESS_KEY_ID:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .POSTGRES_B2_ACCESS_KEY_ID'
+      AWS_SECRET_ACCESS_KEY:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .POSTGRES_B2_ACCESS_SECRET_KEY'
     cmds:
-      - echo "Listing miniflux-postgres backups..."
-      - task: aws:s3-ls
-        vars:
-          REPO: *repo-db
+      - |
+          echo "Listing immich-postgres backups..."
+          aws s3 ls --endpoint-url="$S3_ENDPOINT_URL" "$POSTGRES_REPO" | tr -s ' '
