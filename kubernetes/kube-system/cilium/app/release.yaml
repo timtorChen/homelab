@@ -13,6 +13,11 @@ spec:
         name: cilium
       chart: cilium
       version: 1.16.6
+  # crd installation is managed in cilium-opeator
+  # install:
+  #   crds: CreateReplace
+  # upgrade:
+  #   crds: CreateReplace
   interval: 1h
   maxHistory: 1
   values:
@@ -47,7 +52,7 @@ spec:
         enabled: false
       hostRoot: /sys/fs/cgroup
     k8sServiceHost: localhost
-    k8sServicePort: 7745
+    k8sServicePort: 7445
     nodePort:
       enabled: true
     bgpControlPlane:

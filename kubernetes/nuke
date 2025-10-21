@@ -1,0 +1,9 @@
+1. kubectl bootstrap to first node
+2. directly install cilium cni 
+
+** fix the wrong port of kube prism, it should be 7445
+https://www.talos.dev/v1.11/kubernetes-guides/configuration/kubeprism/
+
+** add coredns prefer on worker node, but still possible on server node (only one pod)
+
+**disable mimir and loki depends on PVC
