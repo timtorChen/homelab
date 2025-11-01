@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: grafana
       chart: promtail
-      version: 6.17.0
+      version: 6.17.1
   interval: 1h
   maxHistory: 1
   values:
