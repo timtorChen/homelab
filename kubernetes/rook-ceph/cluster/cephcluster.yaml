@@ -9,6 +9,17 @@ spec:
   cephVersion:
     image: quay.io/ceph/ceph:v19.2.2
   dataDirHostPath: /var/lib/rook
+  network:
+    provider: host
+    addressRanges:
+      public:
+        - 192.168.253.11/21
+        - 192.168.253.12/21
+        - 192.168.253.13/21
+      cluster:
+        - 192.168.253.101/32
+        - 192.168.253.102/32
+        - 192.168.253.103/32
   mon:
     count: 3
     allowMultiplePerNode: false
@@ -58,8 +69,6 @@ spec:
         memory: 64Mi
       requests:
         memory: 64Mi
-  network:
-    provider: host
   dashboard:
     enabled: true
   monitoring:

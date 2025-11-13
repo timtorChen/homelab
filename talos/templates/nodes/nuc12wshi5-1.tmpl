@@ -1,0 +1,38 @@
+{{ define "nuc12wshi5-1" }}
+machine:
+  type: controlplane
+  network:
+    hostname: nuc12wshi5-1
+    interfaces:
+      - interface: eth0
+        addresses: 
+          - 192.168.253.1/21
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.248.1
+        vip:
+          ip: 192.168.253.10
+    nameservers:
+      - 192.168.248.1
+  udev:
+    # check /usr/etc/udev/rules.d/99-talos.rules
+    rules:
+      - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:5f:fd:8c", NAME="eth0"
+  install:
+    disk: /dev/sda
+    # renovate: depName=ghcr.io/siderolabs/installer
+    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.9.0
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.32.0
+cluster:
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.32.0
+  controllerManager:
+    image: registry.k8s.io/kube-controller-manager:v1.32.0
+  scheduler:
+    image: registry.k8s.io/kube-scheduler:v1.32.0
+  coreDNS:
+    image: docker.io/coredns/coredns:1.12.0
+  etcd:
+    image: gcr.io/etcd-development/etcd:v3.5.17
+{{ end }}

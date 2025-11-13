@@ -21,12 +21,7 @@ machine:
       - talos.logging.kernel=tcp://192.168.253.100:3001
       # disable predictable interface naming
       - net.ifnames=0
-  network:
-    interfaces:
-      - interface: eth0
-        dhcp: true
-        vip:
-          ip: 192.168.253.10
+  network: {}
   logging:
     destinations:
       - endpoint: tcp://192.168.253.100:3002
@@ -50,7 +45,7 @@ machine:
     apidCheckExtKeyUsage: true
     kubePrism:
       enabled: true
-      port: 7745
+      port: 7445
 cluster:
   # -- Setup
   clusterName: amethyst

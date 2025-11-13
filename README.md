@@ -40,7 +40,7 @@ This is a mono repository for my home infrastructure and Kubernetes cluster. I u
 
 |                                                                                                                                                      | Name                                                                                      | Description                                                         |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-|                                             <img width="32" src="https://www.talos.dev/images/logo.svg">                                             | [Talos](https://github.com/siderolabs/talos)                                              | Immutable Linux distribution for Kubernetes.                        |
+|                                     <img width="32" src="https://avatars.githubusercontent.com/u/13804887?v=4">                                      | [Talos](https://github.com/siderolabs/talos)                                              | Immutable Linux distribution for Kubernetes.                        |
 |               <img width="28" src="https://raw.githubusercontent.com/cncf/artwork/main/projects/flux/icon/color/flux-icon-color.svg">                | [Flux](https://github.com/fluxcd/flux2)                                                   | Gitops tool to reconcile sources from Git repository to Kubernetes. |
 |            <img width="32" src="https://raw.githubusercontent.com/cncf/artwork/main/projects/kyverno/icon/color/kyverno-icon-color.svg">             | [Kyverno](https://github.com/kyverno/kyverno)                                             | Kubernetes policy manager.                                          |
 |             <img width="32" src="https://raw.githubusercontent.com/cncf/artwork/main/projects/cilium/icon/color/cilium_icon-color.svg">              | [Cilium](https://github.com/cilium/cilium)                                                | Advanced networking.                                                |
@@ -61,12 +61,12 @@ This is a mono repository for my home infrastructure and Kubernetes cluster. I u
 | :------------ | :----------------------------------------- | :-------------- |
 | Github        | Code repository and automation chores/jobs | Free            |
 | JumpCloud     | SSO identity provider                      | Free            |
-| Cloudflare    | Domain registrar and tunnel                | $10/year        |
-| Backblaze     | S3 bucket for buckup                       | ~$1/month       |
+| Cloudflare    | Domain registrar and tunnel                | $12/year        |
+| Backblaze     | S3 bucket for buckup                       | ~$5/month       |
 | AWS           | Parameter storage and terraform backend    | Free            |
 | Grafana Cloud | External montoring                         | Free            |
 | Let's Encrypt | Public certificate authroity               | Free            |
-|               |                                            | Total ~$22/year |
+|               |                                            | Total ~$6/month |
 
 ## 🔧 Hardware
 
@@ -75,14 +75,14 @@ This is a mono repository for my home infrastructure and Kubernetes cluster. I u
 <img src="docs/src/rack-20241103.jpg" width="400px"/>
 </details>
 
-| Device                          | Description                  | Count | RAM                        | Disk                                                                      |
-| ------------------------------- | ---------------------------- | ----- | -------------------------- | ------------------------------------------------------------------------- |
-| Askey RTF8207W                  | Chunghwa Telecom modem       | 1     |                            |                                                                           |
-| Mikrotik RB4011iGS+RM           | Router                       | 1     |                            |                                                                           |
-| Mikrotik CRS328-24P-4S+RM       | PoE Switch                   | 1     |                            |                                                                           |
-| Raspberry Pi 4B with PoE hat    | Kubernetes control planes    | 1     | 8GB                        | 960GB SSD Micron 5200                                                     |
-| Intel NUC11TNHi50L              | Kubernetes worker nodes      | 3     | 16\*2 Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
-| Ubiquiti Power Distribution Pro | 16p Switched and metered PDU | 1     |                            |                                                                           |
+| Device                          | Description                  | Count | RAM                          | Disk                                                                      |
+| ------------------------------- | ---------------------------- | ----- | ---------------------------- | ------------------------------------------------------------------------- |
+| Askey RTF8207W                  | Chunghwa Telecom modem       | 1     |                              |                                                                           |
+| Mikrotik RB4011iGS+RM           | Router                       | 1     |                              |                                                                           |
+| Mikrotik CRS328-24P-4S+RM       | PoE Switch                   | 1     |                              |                                                                           |
+| Intel NUC12WSHi5                | Kubernetes control planes    | 1     | 16GB Mircon CT16G4SFRA32A    | 960GB SSD Micron 5200                                                     |
+| Intel NUC11TNHi50L              | Kubernetes worker nodes      | 3     | 16GB\*2 Mircon CT16G4SFRA32A | <div>• OS: 960GB SSD Mircon 5300<div/><div>• Data: 960GB NVMe Mircon 7450 |
+| Ubiquiti Power Distribution Pro | 16p Switched and metered PDU | 1     |                              |                                                                           |
 
 ## 🤝 Acknowledgments
 

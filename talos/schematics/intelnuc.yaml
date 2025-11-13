@@ -3,4 +3,4 @@ overlay: {}
 customization:
   systemExtensions:
     officialExtensions:
-      - siderolabs/i915-ucode
+      - siderolabs/i915

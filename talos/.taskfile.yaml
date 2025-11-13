@@ -5,10 +5,8 @@ silent: true
 
 tasks:
   # schematics id
-  get-nuc11tnhi50l-schematic-id:
-    cmd: curl -s -X POST --data-binary @schematics/nuc11tnhi50l.yaml https://factory.talos.dev/schematics | jq --raw-output .id
-  get-raspi-schematic-id:
-    cmd: curl -s -X POST --data-binary @schematics/raspi.yaml https://factory.talos.dev/schematics | jq --raw-output .id
+  get-intelnuc-schematic-id:
+    cmd: curl -s -X POST --data-binary @schematics/intelnuc.yaml https://factory.talos.dev/schematics | jq --raw-output .id
 
   # talos task functions
   render:
@@ -34,7 +32,7 @@ tasks:
       IP="{{.IP}}"
 
       echo "> (dry-run) Apply configuration on $IP $TALOS_ROLE/$TALOS_NODE"
-      talosctl apply-config --dry-run -n "$IP" -f <(echo "$CONFIG")
+      talosctl apply-config --dry-run -n "$IP" -f <(echo "$CONFIG") {{.CLI_ARGS}}
 
   apply:
     internal: true
@@ -48,7 +46,7 @@ tasks:
       IP="{{.IP}}"
 
       echo "> Apply configuration on $IP $TALOS_ROLE/$TALOS_NODE"
-      talosctl apply-config -n "$IP" -f <(echo "$CONFIG")
+      talosctl apply-config -n "$IP" -f <(echo "$CONFIG") {{.CLI_ARGS}}
 
   upgrade:
     internal: true
@@ -71,7 +69,7 @@ tasks:
     prompt: Shutdown the node {{.TALOS_ROLE}}/{{.TALOS_NODE}}... continue?
     cmd: |
       IP="{{.IP}}"
-      talosctl shutdonw -n "$IP"
+      talosctl shutdown -n "$IP"
 
   reset:
     internal: true
@@ -84,34 +82,39 @@ tasks:
       --system-labels-to-wipe=META \
       --reboot --graceful -n "$IP"
 
-  # pi4b-1
-  render-pi4b-1:
+  # bootstrap
+  bootstrap:
+    cmd: |
+      talosctl bootstrap {{.CLI_ARGS}}
+
+  # nuc12wshi5-1
+  render-nuc12wshi5-1:
     cmds:
       - task: render
-        vars: &pi4b-1-vars
+        vars: &nuc12wshi5-1-vars
           IP: 192.168.253.1
-          TALOS_NODE: pi4b-1
+          TALOS_NODE: nuc12wshi5-1
           TALOS_ROLE: controlplane
-  plan-pi4b-1:
+  plan-nuc12wshi5-1:
     cmds:
       - task: plan
-        vars: *pi4b-1-vars
-  apply-pi4b-1:
+        vars: *nuc12wshi5-1-vars
+  apply-nuc12wshi5-1:
     cmds:
       - task: apply
-        vars: *pi4b-1-vars
-  upgrade-pi4b-1:
+        vars: *nuc12wshi5-1-vars
+  upgrade-nuc12wshi5-1:
     cmds:
       - task: upgrade
-        vars: *pi4b-1-vars
-  shutdown-pi4b-1:
+        vars: *nuc12wshi5-1-vars
+  shutdown-nuc12wshi5-1:
     cmds:
       - task: shutdown
-        vars: *pi4b-1-vars
-  reset-pi4b-1:
+        vars: *nuc12wshi5-1-vars
+  reset-nuc12wshi5-1:
     cmds:
       - task: reset
-        vars: *pi4b-1-vars
+        vars: *nuc12wshi5-1-vars
 
   # nuc11tnhi50l-1
   render-nuc11tnhi50l-1:

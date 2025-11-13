@@ -8,7 +8,6 @@ resources:
   - app/release.yaml
   # cluster
   - cluster/cephcluster.yaml
-  - cluster/rook-config-override.yaml
   # block
   - storage/block/cephblock.yaml
   - storage/block/snapshotclass.yaml

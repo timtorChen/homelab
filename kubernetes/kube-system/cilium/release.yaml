@@ -47,7 +47,7 @@ spec:
         enabled: false
       hostRoot: /sys/fs/cgroup
     k8sServiceHost: localhost
-    k8sServicePort: 7745
+    k8sServicePort: 7445
     hubble:
       enabled: true
       relay:

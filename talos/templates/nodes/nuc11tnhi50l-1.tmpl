@@ -3,6 +3,24 @@ machine:
   type: worker
   network:
     hostname: nuc11tnhi50l-1
+    interfaces:
+      # external network
+      - interface: eth0
+        addresses: 
+          - 192.168.253.11/21
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.248.1
+      # internal ceph communication
+      - interface: eth1
+        addresses:
+          - 192.168.253.101/21
+        routes:
+          - network: 192.168.253.101/32
+          - network: 192.168.253.102/32
+          - network: 192.168.253.103/32
+    nameservers:
+      - 192.168.248.1
   udev:
     # check /usr/etc/udev/rules.d/99-talos.rules
     rules:
@@ -11,7 +29,7 @@ machine:
   install:
     disk: /dev/sda
     # renovate: depName=ghcr.io/siderolabs/installer
-    image: factory.talos.dev/installer/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62:v1.9.0
+    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.9.0
   kubelet:
     image: ghcr.io/siderolabs/kubelet:v1.32.0
 {{ end }}
