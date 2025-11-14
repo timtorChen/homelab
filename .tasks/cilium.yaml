@@ -15,3 +15,9 @@ tasks:
 
   status:
     cmd: cilium status
+
+  bgp-peers:
+    cmd: cilium bgp peers {{.CLI_ARGS}}
+
+  bgp-routes:
+    cmd: cilium bgp routes {{.CLI_ARGS}}

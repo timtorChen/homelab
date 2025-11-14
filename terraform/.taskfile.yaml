@@ -115,3 +115,25 @@ tasks:
       - task: tf:output
         vars:
           DIR: cloudflare
+
+  ## mikrotik
+  mikrotik:init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: mikrotik
+  mikrotik:plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: mikrotik
+  mikrotik:apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: mikrotik
+  mikrotik:output:
+    cmds:
+      - task: tf:output
+        vars:
+          DIR: mikrotik
