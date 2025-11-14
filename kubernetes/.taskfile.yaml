@@ -48,28 +48,32 @@ tasks:
     cmds:
       - task: k8s:delete-unused-persistentvolume
 
-  # yamllint disable rule:line-length
-  init:
+  init-cilium:
     cmds:
-      - echo "Install Cilium on kube-system/cilium (helm)"
+      - echo "Install Cilium on kube-system namespace"
+      - helm repo add cilium https://helm.cilium.io/
       - |
           helm upgrade --install cilium cilium/cilium \
           --namespace kube-system \
-          --version 1.14.0-snapshot.4 \
+          --version 1.16.6 \
           --set ipam.mode=kubernetes \
-          --set kubeProxyReplacement=strict \
+          --set kubeProxyReplacement=true \
           --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
           --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
           --set cgroup.autoMount.enabled=false \
           --set cgroup.hostRoot=/sys/fs/cgroup \
           --set k8sServiceHost="localhost" \
-          --set k8sServicePort="7745"
+          --set k8sServicePort="7445"
 
-      - echo "Install Flux on flux-system namespace (manifests)"
-      # flux install creates a flux-system namespace
-      - flux install --version v2.0.0-rc.5
-      - kubectl apply -f ./kubernetes/flux-system/boostrap.yaml
-  # yamllint enable
+  init-flux:
+    cmds:
+      - echo "Install Flux on flux-system namespace"
+      - helm repo add fluxcd-community https://fluxcd-community.github.io/helm-charts
+      - |
+          helm upgrade --install flux2 fluxcd-community/flux2 \
+          --create-namespace --namespace flux-system \
+          --version 2.14.1 \
+          --set installCRDs=true
 
   get-oidc-config:
     silent: true
