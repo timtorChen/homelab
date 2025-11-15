@@ -8,6 +8,7 @@ resources:
   - app/release.yaml
   # cluster
   - cluster/cephcluster.yaml
+  - cluster/httproute.yaml
   # block
   - storage/block/cephblock.yaml
   - storage/block/snapshotclass.yaml
@@ -17,5 +18,6 @@ resources:
   - storage/filesystem/snapshotclass.yaml
   - storage/filesystem/storageclass.yaml
   # object
+  - storage/object/httproute.yaml
   - storage/object/cephobject.yaml
   - storage/object/objectuser.yaml

@@ -6,15 +6,15 @@ metadata:
   namespace: mydata
   name: nextcloud-app-policy
 specs:
-  # allow connection from ingress-nginx
+  # allow connection from cilium ingress
   - endpointSelector: &self
       matchLabels:
         app.kubernetes.io/name: nextcloud
     ingress:
       - fromEndpoints:
-          - matchLabels:
-              k8s:io.kubernetes.pod.namespace: ingress-nginx
-              app.kubernetes.io/name: ingress-nginx
+          - matchExpressions:
+              - key: reserved:ingress
+                operator: Exists
         toPorts:
           - ports:
               - protocol: TCP

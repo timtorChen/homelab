@@ -21,22 +21,3 @@ spec:
   gateway:
     port: 8080
     instances: 2
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  namespace: rook-ceph
-  name: s3-fast
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: s3-fast.timtor.dev
-      http:
-        paths:
-          - pathType: Prefix
-            path: /
-            backend:
-              service:
-                name: rook-ceph-rgw-fast
-                port:
-                  number: 8080
