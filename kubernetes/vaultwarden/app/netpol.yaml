@@ -11,10 +11,8 @@ specs:
       matchLabels:
         app.kubernetes.io/name: vaultwarden
     ingress:
-      - fromEndpoints:
-          - matchExpressions:
-              - key: reserved:ingress
-                operator: Exists
+      - fromEntities:
+          - ingress
         toPorts:
           - ports:
               - protocol: TCP
