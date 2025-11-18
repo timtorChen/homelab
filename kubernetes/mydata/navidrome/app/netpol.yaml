@@ -11,10 +11,8 @@ specs:
       matchLabels:
         app.kubernetes.io/name: navidrome
     ingress:
-      - fromEndpoints:
-          - matchExpressions:
-              - key: reserved:ingress
-                operator: Exists
+      - fromEntities:
+          - ingress
         toPorts:
           - ports:
               - protocol: TCP
