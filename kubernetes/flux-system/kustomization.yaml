@@ -9,4 +9,4 @@ resources:
   - app/boostrap.yaml
   - app/receiver.yaml
   - app/receiver-httproute.yaml
-  - app/reveiver-secret.yaml
+  - app/receiver-secret.yaml
