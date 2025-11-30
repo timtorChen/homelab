@@ -14,16 +14,11 @@ specs:
       - {}
     egress:
       - {}
-  # allow immich-server connection from ingress-nginx
-  - endpointSelector:
-      matchLabels:
-        app.kubernetes.io/name: immich
-        app.kubernetes.io/component: server
+  # allow connection from cilium ingress
+  - endpointSelector: *self
     ingress:
-      - fromEndpoints:
-          - matchLabels:
-              k8s:io.kubernetes.pod.namespace: ingress-nginx
-              app.kubernetes.io/name: ingress-nginx
+      - fromEntities:
+          - ingress
         toPorts:
           - ports:
               - protocol: TCP

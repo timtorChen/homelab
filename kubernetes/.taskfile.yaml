@@ -73,7 +73,8 @@ tasks:
           helm upgrade --install flux2 fluxcd-community/flux2 \
           --create-namespace --namespace flux-system \
           --version 2.14.1 \
-          --set installCRDs=true
+          --set installCRDs=true \
+          --set policies.create=false
 
   get-oidc-config:
     silent: true
