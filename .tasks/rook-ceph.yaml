@@ -10,8 +10,11 @@ tasks:
   osd-status:
     cmd: kubectl rook-ceph ceph osd status
 
-  list-crush-rule:
+  osd-crush-rule-dump:
     cmd: kubectl rook-ceph ceph osd crush rule dump
+
+  radosgw-user-list:
+    cmd: kubectl rook-ceph radosgw-admin user list
 
   direct-mount:install:
     cmd: |

@@ -11,23 +11,3 @@ spec:
   capabilities:
     user: "*"
     bucket: "*"
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephobjectstoreuser_v1.json
-apiVersion: ceph.rook.io/v1
-kind: CephObjectStoreUser
-metadata:
-  name: loki
-  namespace: rook-ceph
-spec:
-  store: fast
-  displayName: loki
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/ceph.rook.io/cephobjectstoreuser_v1.json
-apiVersion: ceph.rook.io/v1
-kind: CephObjectStoreUser
-metadata:
-  name: mimir
-  namespace: rook-ceph
-spec:
-  store: fast
-  displayName: mimir
