@@ -6,21 +6,10 @@ metadata:
   namespace: miniflux
   name: miniflux-app-policy
 specs:
-  # TODO: deprecate
-  # allow connection from ingress-nginx
+  # allow connection from cilium ingress
   - endpointSelector: &self
       matchLabels:
         app.kubernetes.io/name: miniflux
-    ingress:
-      - fromEndpoints:
-          - matchLabels:
-              k8s:io.kubernetes.pod.namespace: ingress-nginx
-        toPorts:
-          - ports:
-              - protocol: TCP
-                port: "8080"
-  # allow connection from cilium ingress
-  - endpointSelector: *self
     ingress:
       - fromEntities:
           - ingress

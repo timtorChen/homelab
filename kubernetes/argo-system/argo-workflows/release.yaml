@@ -60,12 +60,6 @@ spec:
         redirectUrl: https://workflows.timtor.dev/oauth2/callback
         scopes: ["group"]
         sessionExpiry: 168h # 7 days
-      # TODO: deprecate
-      ingress:
-        enabled: true
-        ingressClassName: nginx
-        hosts:
-          - workflows.timtor.dev
       securityContext: &sc
         runAsNonRoot: true
         allowPrivilegeEscalation: false

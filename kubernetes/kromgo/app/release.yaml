@@ -66,18 +66,6 @@ spec:
             port: *p
             protocol: HTTP
 
-    # TODO: deprecate
-    ingress:
-      main:
-        className: nginx
-        hosts:
-          - host: kromgo.timtor.dev
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: *p
     route:
       main:
         enabled: true
