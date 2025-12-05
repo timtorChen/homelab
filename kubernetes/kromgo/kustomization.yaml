@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - base/namespace.yaml
   - base/networkpolicy.yaml
+  - app/repo.yaml
+  - app/release.yaml
   - app/kromgo-config.yaml
-  - app/kromgo.yaml
   - app/networkpolicy.yaml

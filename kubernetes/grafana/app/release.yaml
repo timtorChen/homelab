@@ -131,12 +131,6 @@ spec:
       requests:
         cpu: 50m
         memory: 256Mi
-
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      hosts:
-        - grafana.timtor.dev
 ---
 apiVersion: v1
 kind: Service
