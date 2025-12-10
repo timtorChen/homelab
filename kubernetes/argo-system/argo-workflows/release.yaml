@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: argo
       chart: argo-workflows
-      version: 0.45.26
+      version: 0.46.2
   install:
     crds: CreateReplace
   upgrade:
