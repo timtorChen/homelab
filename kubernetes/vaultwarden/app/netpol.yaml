@@ -6,14 +6,13 @@ metadata:
   namespace: vaultwarden
   name: vaultwarden-policy
 specs:
-  # allow connection from ingress-nginx
+  # allow connection from cilium ingress
   - endpointSelector: &self
       matchLabels:
         app.kubernetes.io/name: vaultwarden
     ingress:
-      - fromEndpoints:
-          - matchLabels:
-              k8s:io.kubernetes.pod.namespace: ingress-nginx
+      - fromEntities:
+          - ingress
         toPorts:
           - ports:
               - protocol: TCP

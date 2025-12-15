@@ -6,15 +6,13 @@ metadata:
   namespace: mydata
   name: navidrome-policy
 specs:
-  # navidrome connection from ingress-nginx
+  # allow connection from cilium ingress
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/name: navidrome
     ingress:
-      - fromEndpoints:
-          - matchLabels:
-              k8s:io.kubernetes.pod.namespace: ingress-nginx
-              app.kubernetes.io/name: ingress-nginx
+      - fromEntities:
+          - ingress
         toPorts:
           - ports:
               - protocol: TCP

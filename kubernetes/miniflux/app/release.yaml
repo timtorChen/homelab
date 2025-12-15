@@ -120,14 +120,41 @@ spec:
             port: &p 8080
             protocol: HTTP
 
-    ingress:
+    route:
       main:
-        className: nginx
-        hosts:
-          - host: rss.timtor.dev
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: *p
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - rss.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: miniflux
+                port: *p
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - rss.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301
