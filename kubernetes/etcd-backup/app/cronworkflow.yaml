@@ -97,7 +97,7 @@ spec:
           parameters:
             - name: ip
         container:
-          image: ghcr.io/siderolabs/talosctl:v1.9.1
+          image: ghcr.io/siderolabs/talosctl:v1.10.9
           command: ["/talosctl"]
           args:
             - -n
