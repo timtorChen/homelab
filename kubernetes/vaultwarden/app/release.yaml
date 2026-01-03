@@ -129,19 +129,41 @@ spec:
             port: *p
             protocol: HTTP
 
-    ingress:
+    route:
       main:
-        className: nginx
-        hosts:
-          - host: vault.timtor.dev
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: *p
-              - path: /notifications/hub
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: *p
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - vault.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - kind: Service
+                name: vaultwarden
+                port: *p
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - vault.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301

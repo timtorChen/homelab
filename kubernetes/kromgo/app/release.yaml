@@ -1,14 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: kromgo
-  name: bjw-s
-spec:
-  url: https://bjw-s-labs.github.io/helm-charts
-  interval: 24h
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -75,14 +65,42 @@ spec:
             primary: true
             port: *p
             protocol: HTTP
-    ingress:
+
+    route:
       main:
-        className: nginx
-        hosts:
-          - host: kromgo.timtor.dev
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: *p
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - kromgo.timtor.dev
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: kromgo
+                port: *p
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - kromgo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301

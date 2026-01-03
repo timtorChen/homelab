@@ -106,3 +106,6 @@ spec:
                 service:
                   identifier: main
                   port: *inform
+
+    # TODO: check TLS backend implementation in cilium https://github.com/cilium/cilium/issues/20960
+    route: {}

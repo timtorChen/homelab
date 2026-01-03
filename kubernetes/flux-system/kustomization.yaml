@@ -8,4 +8,5 @@ resources:
   - app/release.yaml
   - app/boostrap.yaml
   - app/receiver.yaml
-  - app/secret.yaml
+  - app/receiver-httproute.yaml
+  - app/receiver-secret.yaml

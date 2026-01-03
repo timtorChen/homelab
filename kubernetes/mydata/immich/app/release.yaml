@@ -211,16 +211,42 @@ spec:
             port: *p3
             primary: true
             protocol: HTTP
-    ingress:
+
+    route:
       main:
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        hosts:
-          - host: photo.timtor.dev
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: server
-                  port: *p1
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - photo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - kind: Service
+                name: immich
+                port: *p1
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - photo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301
