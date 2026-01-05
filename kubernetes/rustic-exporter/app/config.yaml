@@ -56,7 +56,7 @@ data:
 
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
-    bucket = "homelab-amethyst-immich"
+    bucket = "timtor-homelab-immich"
     root = "/app"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
@@ -85,7 +85,7 @@ data:
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
     bucket = "home-amethyst-unifi-controller"
-    root = "/data"
+    root = "/"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
     secret_access_key = "${b2_general_secret_access_key}"
