@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  namespace: vaultwarden
+  name: vaultwarden-backup
+spec:
+  entrypoint: main
+  templates:
+    - name: main
+      steps:
+        - - name: create-backup
+            template: create-backup
+        - - name: wait-backup
+            templateRef:
+              clusterScope: true
+              name: volsync-template
+              template: wait-replicationsource
+            arguments:
+              parameters:
+                - name: namespace
+                  value: "{{workflow.namespace}}"
+                - name: name
+                  value: "{{workflow.name}}"
+                - name: serviceAccount
+                  value: vaultwarden-backup
+
+    - name: create-backup
+      serviceAccountName: vaultwarden-backup
+      container:
+        image: public.ecr.aws/bitnami/kubectl:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        command: ["/bin/sh", "-c"]
+        args:
+          - | #bash
+              RESOURCE="$(cat <<EOF
+              ---
+              apiVersion: volsync.backube/v1alpha1
+              kind: ReplicationSource
+              metadata:
+                namespace: "{{workflow.namespace}}"
+                name: "{{workflow.name}}"
+              spec:
+                trigger:
+                  manual: "{{workflow.name}}"
+                sourcePVC: vaultwarden-data
+                restic:
+                  repository: vaultwarden-backup-secret
+                  copyMethod: Snapshot
+                  volumeSnapshotClassName: rook-ceph-rbd
+                  storageClassName: rbd-fast-ec
+                  accessModes: ["ReadWriteOnce"]
+                  cacheStorageClassName: rbd-fast-ec
+                  cacheAccessModes: ["ReadWriteOnce"]
+                  cacheCapacity: 1Gi
+                  moverSecurityContext:
+                    runAsNonRoot: true
+                    runAsUser: 65534
+                    runAsGroup: 65534
+                    fsGroup: 65534
+                    seccompProfile:
+                      type: RuntimeDefault
+              EOF
+              )"
+              echo "$RESOURCE" | kubectl create -f -

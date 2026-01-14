@@ -2,14 +2,12 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  # namespace: vaultwarden
-  # name: vaultwarden-manual-backup
-  {}
+  namespace: vaultwarden
+  name: vaultwarden-backup
 spec:
-  trigger:
-    # manual: vaultwarden-manual-backup
-    {}
   sourcePVC: vaultwarden-data
+  trigger:
+    schedule: "0 * * * *"
   restic:
     pruneIntervalDays: 14
     repository: vaultwarden-backup-secret
@@ -19,9 +17,8 @@ spec:
       weekly: 4
       monthly: 3
     copyMethod: Snapshot
-    # volume created from snapshot
-    volumeSnapshotClassName: rook-ceph-rbd
-    storageClassName: rbd-fast-ec
+    volumeSnapshotClassName: rook-ceph-fs
+    storageClassName: fs-fast-ec
     accessModes: ["ReadWriteOnce"]
     cacheStorageClassName: rbd-fast-ec
     cacheAccessModes: ["ReadWriteOnce"]

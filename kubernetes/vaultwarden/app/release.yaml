@@ -104,20 +104,9 @@ spec:
         existingClaim: vaultwarden-data
         globalMounts:
           - path: *dir
-      secret:
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
 
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-vaultwarden
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      name: vaultwarden
 
     service:
       main:

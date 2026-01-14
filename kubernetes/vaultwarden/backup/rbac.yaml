@@ -23,18 +23,15 @@ rules:
     verbs:
       - create
       - patch
-  - apiGroups:
-      - snapshot.storage.k8s.io
+  - apiGroups: ["volsync.backube"]
     resources:
-      - volumesnapshots
-      - volumesnapshotcontents
+      - replicationsources
+      - replicationdestinations
     verbs:
-      - "*"
-  - apiGroups: [""]
-    resources:
-      - persistentvolumeclaims
-    verbs:
-      - "*"
+      - "create"
+      - "get"
+      - "watch"
+      - "delete"
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/rolebinding-rbac-v1.json
 apiVersion: rbac.authorization.k8s.io/v1
