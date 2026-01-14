@@ -7,10 +7,12 @@ resources:
   - base/netpol.yaml
   - app/repo.yaml
   - app/release.yaml
+  - app/rbac.yaml
   - app/pvc.yaml
   - app/secret.yaml
   - app/netpol.yaml
-  - backup/backup.yaml
   - backup/secret.yaml
-  - backup/secret-holder-sa.yaml
-  - backup/secret-holder.yaml
+  - backup/rbac.yaml
+  - backup/backup.yaml
+  - backup/backup-workflowtemplate.yaml
+  - backup/restore-workflowtemplate.yaml
