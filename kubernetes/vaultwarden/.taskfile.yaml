@@ -3,9 +3,12 @@
 version: "3"
 silent: true
 
-# sync-secret
-
 tasks:
+  secret-sync:
+    cmd: |
+      kubectl annotate -n vaultwarden externalsecret vaultwarden-secret vaultwarden-backup-secret \
+      force-sync=$(date +%s) --overwrite
+
   backup:
     cmd: argo submit -n vaultwarden --from workflowtemplate/vaultwarden-backup --watch
 
