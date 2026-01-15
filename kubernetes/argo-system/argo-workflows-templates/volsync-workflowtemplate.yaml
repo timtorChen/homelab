@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: volsync-template
+spec:
+  templates:
+    - name: wait-replicationsource
+      inputs:
+        parameters:
+          - name: serviceAccount
+          - name: namespace
+          - name: name
+          - name: timeout
+            value: 30m
+      serviceAccountName: "{{inputs.parameters.serviceAccount}}"
+      container:
+        image: public.ecr.aws/bitnami/kubectl:latest
+        securityContext: &sc
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              kubectl wait -n {{inputs.parameters.namespace}} "replicationsources.volsync.backube/"{{inputs.parameters.name}}"" \
+                --for=jsonpath='{.status.lastManualSync}'="{{inputs.parameters.name}}" \
+                --timeout="{{inputs.parameters.timeout}}"
+
+    - name: delete-replicationsource
+      inputs:
+        parameters:
+          - name: serviceAccount
+          - name: namespace
+          - name: name
+      serviceAccountName: "{{inputs.parameters.serviceAccount}}"
+      container:
+        image: public.ecr.aws/bitnami/kubectl:latest
+        securityContext: *sc
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              kubectl delete -n {{inputs.parameters.namespace}} "replicationsources.volsync.backube/{{inputs.parameters.name}}"
+
+    - name: wait-replicationdestination
+      inputs:
+        parameters:
+          - name: serviceAccount
+          - name: namespace
+          - name: name
+          - name: timeout
+            value: 30m
+      serviceAccountName: "{{inputs.parameters.serviceAccount}}"
+      container:
+        image: public.ecr.aws/bitnami/kubectl:latest
+        securityContext: *sc
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              kubectl wait -n {{inputs.parameters.namespace}} "replicationdestinations.volsync.backube/"{{inputs.parameters.name}}"" \
+                --for=jsonpath='{.status.lastManualSync}'="{{inputs.parameters.name}}" \
+                --timeout="{{inputs.parameters.timeout}}"
+
+    - name: delete-replicationdestination
+      inputs:
+        parameters:
+          - name: serviceAccount
+          - name: namespace
+          - name: name
+      serviceAccountName: "{{inputs.parameters.serviceAccount}}"
+      container:
+        image: public.ecr.aws/bitnami/kubectl:latest
+        securityContext: *sc
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              kubectl delete -n {{inputs.parameters.namespace}} "replicationsources.volsync.backube/{{inputs.parameters.name}}"

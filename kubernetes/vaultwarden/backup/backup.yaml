@@ -17,7 +17,6 @@ spec:
       weekly: 4
       monthly: 3
     copyMethod: Snapshot
-    # volume created from snapshot
     volumeSnapshotClassName: rook-ceph-fs
     storageClassName: fs-fast-ec
     accessModes: ["ReadWriteOnce"]

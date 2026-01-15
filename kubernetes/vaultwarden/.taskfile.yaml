@@ -3,18 +3,14 @@
 version: "3"
 silent: true
 
-includes:
-  volsync:
-    taskfile: ../../.tasks/volsync.yaml
-
 tasks:
+  secret-sync:
+    cmd: |
+      kubectl annotate -n vaultwarden externalsecret vaultwarden-secret vaultwarden-backup-secret \
+      force-sync=$(date +%s) --overwrite
+
   backup:
-    cmds:
-      - task: volsync:backup
-        vars:
-          TEMPLATE: maintain/manual-backup.tmpl.yaml
-          NAMESPACE: vaultwarden
-          NAME: vaultwarden-backup
+    cmd: argo submit -n vaultwarden --from workflowtemplate/vaultwarden-backup --watch
 
   restore:
     prompt: "Restore will delete the current vaultwarden data... continune?"
@@ -22,11 +18,8 @@ tasks:
       - task: stop
       - task: delete-volume
       - task: create-volume
-      - task: volsync:restore
-        vars:
-          TEMPLATE: maintain/manual-restore.tmpl.yaml
-          NAMESPACE: vaultwarden
-          NAME: vaultwarden-restore
+      - cmd: |
+          argo submit -n vaultwarden --from workflowtemplate/vaultwarden-restore --watch
       - task: start
 
   delete-volume:
