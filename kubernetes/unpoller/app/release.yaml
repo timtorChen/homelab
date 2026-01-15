@@ -1,14 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: unpoller
-  name: bjw-s
-spec:
-  url: https://bjw-s-labs.github.io/helm-charts
-  interval: 24h
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -81,10 +71,7 @@ spec:
                 type: RuntimeDefault
 
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-unpoller
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      name: unpoller
 
     persistence:
       config:

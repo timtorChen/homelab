@@ -433,7 +433,7 @@ resource "aws_iam_role_policy_attachment" "mimir" {
 }
 
 resource "aws_iam_role" "unpoller" {
-  name = "${local.project}-unpoller"
+  name = "unpoller"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -456,15 +456,15 @@ resource "aws_iam_role" "unpoller" {
 }
 
 resource "aws_iam_policy" "unpoller" {
-  name = "${local.project}-unpoller"
+  name = "unpoller"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/unpoller"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/unpoller"
         ]
       }
     ]
