@@ -55,11 +55,11 @@ tasks:
       OPENDAL_BUCKET:
         sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
       OPENDAL_ACCESS_KEY_ID:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .AWS_ACCESS_KEY_ID'
       OPENDAL_SECRET_ACCESS_KEY:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .AWS_SECRET_ACCESS_KEY'
       RUSTIC_PASSWORD:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RESTIC_PASSWORD'
     cmds:
       - |
           echo "Listing backups..."

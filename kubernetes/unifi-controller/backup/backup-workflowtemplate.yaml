@@ -59,6 +59,8 @@ spec:
                 sourcePVC: unifi-controller-data
                 restic:
                   repository: unifi-controller-backup-secret
+                  retain:
+                    within: "100y"
                   copyMethod: Snapshot
                   volumeSnapshotClassName: rook-ceph-rbd
                   storageClassName: rbd-fast-ec
