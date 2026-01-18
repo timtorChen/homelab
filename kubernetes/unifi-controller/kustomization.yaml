@@ -9,7 +9,9 @@ resources:
   - app/release.yaml
   - app/pvc.yaml
   - app/netpol.yaml
-  - backup/backup.yaml
+  - backup/rbac.yaml
   - backup/secret.yaml
-  - backup/secret-holder.yaml
-  - backup/secret-holder-sa.yaml
+  - backup/backup.yaml
+  - backup/backup-manual.yaml
+  - backup/restore-manual.yaml
+  - backup/netpol.yaml

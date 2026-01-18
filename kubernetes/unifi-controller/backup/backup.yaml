@@ -3,7 +3,7 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   namespace: unifi-controller
-  name: unifi-controller-data-backup
+  name: unifi-controller-backup-schedule
 spec:
   sourcePVC: unifi-controller-data
   trigger:
@@ -16,16 +16,16 @@ spec:
       weekly: 4
       monthly: 3
     copyMethod: Snapshot
-    volumeSnapshotClassName: rook-ceph-fs
-    storageClassName: fs-fast-ec
+    volumeSnapshotClassName: rook-ceph-rbd
+    storageClassName: rbd-fast-ec
     accessModes: ["ReadWriteOnce"]
     cacheStorageClassName: rbd-fast-ec
     cacheAccessModes: ["ReadWriteOnce"]
     cacheCapacity: 1Gi
     moverSecurityContext:
       runAsNonRoot: true
-      runAsUser: 65534
-      runAsGroup: 65534
-      fsGroup: 65534
+      runAsUser: 999
+      runAsGroup: 999
+      fsGroup: 999
       seccompProfile:
         type: RuntimeDefault

@@ -3,18 +3,14 @@
 version: "3"
 silent: true
 
-includes:
-  volsync:
-    taskfile: ../../.tasks/volsync.yaml
-
 tasks:
+  secret-sync:
+    cmd: |
+      kubectl annotate -n unifi-controller externalsecret unifi-controller-backup-secret unifi-controller-backup-secret \
+      force-sync=$(date +%s) --overwrite
+
   backup:
-    cmds:
-      - task: volsync:backup
-        vars:
-          TEMPLATE: maintain/manual-backup.tmpl.yaml
-          NAMESPACE: unifi-controller
-          NAME: unifi-controller-backup
+    cmd: argo submit -n unifi-controller --from workflowtemplate/unifi-controller-backup-manual --watch
 
   restore:
     prompt: "Restore will delete the current unifi-controller data... continune?"
@@ -22,11 +18,8 @@ tasks:
       - task: stop
       - task: delete-volume
       - task: create-volume
-      - task: volsync:restore
-        vars:
-          TEMPLATE: maintain/manual-restore.tmpl.yaml
-          NAMESPACE: unifi-controller
-          NAME: unifi-controller-restore
+      - cmd: |
+          argo submit -n unifi-controller --from workflowtemplate/unifi-controller-restore-manual --watch
       - task: start
 
   delete-volume:
@@ -62,11 +55,11 @@ tasks:
       OPENDAL_BUCKET:
         sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
       OPENDAL_ACCESS_KEY_ID:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .AWS_ACCESS_KEY_ID'
       OPENDAL_SECRET_ACCESS_KEY:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .AWS_SECRET_ACCESS_KEY'
       RUSTIC_PASSWORD:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RESTIC_PASSWORD'
     cmds:
       - |
           echo "Listing backups..."

@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  namespace: unifi-controller
+  name: &name unifi-controller-restore-manual
+spec:
+  entrypoint: main
+  podMetadata:
+    labels:
+      workflows.argoproj.io/workflow-template: *name
+  templates:
+    - name: main
+      steps:
+        - - name: create-restore
+            template: create-restore
+            arguments:
+              parameters:
+                - name: previous
+                  value: "0"
+        - - name: wait-restore
+            templateRef:
+              clusterScope: true
+              name: volsync-template
+              template: wait-replicationdestination
+            arguments:
+              parameters:
+                - name: namespace
+                  value: "{{workflow.namespace}}"
+                - name: name
+                  value: "{{workflow.name}}"
+                - name: serviceAccount
+                  value: unifi-controller-backup
+
+    - name: create-restore
+      inputs:
+        parameters:
+          - name: previous
+      serviceAccountName: unifi-controller-backup
+      container:
+        image: public.ecr.aws/bitnami/kubectl:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+          runAsGroup: 999
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        command: ["/bin/sh", "-c"]
+        args:
+          - | #bash
+              RESOURCE="$(cat <<EOF
+              ---
+              apiVersion: volsync.backube/v1alpha1
+              kind: ReplicationDestination
+              metadata:
+                namespace: "{{workflow.namespace}}"
+                name: "{{workflow.name}}"
+              spec:
+                trigger:
+                  manual: "{{workflow.name}}"
+                restic:
+                  repository: unifi-controller-backup-secret
+                  previous: {{inputs.parameters.previous}}
+                  copyMethod: Direct
+                  destinationPVC: unifi-controller-data
+                  cacheStorageClassName: rbd-fast-delete
+                  cacheCapacity: 1Gi
+                  cacheAccessModes: ["ReadWriteOnce"]
+                  moverSecurityContext:
+                    runAsNonRoot: true
+                    runAsUser: 999
+                    runAsGroup: 999
+                    fsGroup: 999
+                    seccompProfile:
+                      type: RuntimeDefault
+              EOF
+              )"
+              echo "$RESOURCE" | kubectl create -f -

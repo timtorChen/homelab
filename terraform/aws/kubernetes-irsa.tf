@@ -476,8 +476,8 @@ resource "aws_iam_role_policy_attachment" "unpoller" {
   policy_arn = aws_iam_policy.unpoller.arn
 }
 
-resource "aws_iam_role" "unifi-controller" {
-  name = "${local.project}-unifi-controller"
+resource "aws_iam_role" "unifi-controller-backup" {
+  name = "unifi-controller-backup"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -489,7 +489,7 @@ resource "aws_iam_role" "unifi-controller" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller-backup",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -498,25 +498,25 @@ resource "aws_iam_role" "unifi-controller" {
   })
 }
 
-resource "aws_iam_policy" "unifi-controller" {
-  name = "${local.project}-unifi-controller"
+resource "aws_iam_policy" "unifi-controller-backup" {
+  name = "unifi-controller-backup"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/unifi-controller"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/unifi-controller/backup"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "unifi-controller" {
-  role       = aws_iam_role.unifi-controller.name
-  policy_arn = aws_iam_policy.unifi-controller.arn
+resource "aws_iam_role_policy_attachment" "unifi-controller-backup" {
+  role       = aws_iam_role.unifi-controller-backup.name
+  policy_arn = aws_iam_policy.unifi-controller-backup.arn
 }
 
 resource "aws_iam_role" "rustic-exporter" {
@@ -562,49 +562,6 @@ resource "aws_iam_role_policy_attachment" "rustic-exporter" {
   policy_arn = aws_iam_policy.rustic-exporter.arn
 }
 
-
-resource "aws_iam_role" "unifi-controller-backup-secret-holder" {
-  name = "${local.project}-unifi-controller-backup-secret-holder"
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
-        },
-        "Action" : "sts:AssumeRoleWithWebIdentity",
-        "Condition" : {
-          "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:unifi-controller:unifi-controller-backup-secret-holder",
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
-          }
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_policy" "unifi-controller-backup-secret-holder" {
-  name = "${local.project}-unifi-controller-backup-secret-holder"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Action" : "ssm:GetParameters",
-        "Effect" : "Allow",
-        "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/unifi-controller-backup"
-        ]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "unifi-controller-backup-secret-holder" {
-  role       = aws_iam_role.unifi-controller-backup-secret-holder.name
-  policy_arn = aws_iam_policy.unifi-controller-backup-secret-holder.arn
-}
 
 resource "aws_iam_role" "wego" {
   name = "${local.project}-wego"
