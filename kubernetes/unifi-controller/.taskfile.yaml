@@ -10,7 +10,7 @@ tasks:
       force-sync=$(date +%s) --overwrite
 
   backup:
-    cmd: argo submit -n unifi-controller --from workflowtemplate/unifi-controller-backup --watch
+    cmd: argo submit -n unifi-controller --from workflowtemplate/unifi-controller-backup-manual --watch
 
   restore:
     prompt: "Restore will delete the current unifi-controller data... continune?"
@@ -19,7 +19,7 @@ tasks:
       - task: delete-volume
       - task: create-volume
       - cmd: |
-          argo submit -n unifi-controller --from workflowtemplate/unifi-controller-restore --watch
+          argo submit -n unifi-controller --from workflowtemplate/unifi-controller-restore-manual --watch
       - task: start
 
   delete-volume:

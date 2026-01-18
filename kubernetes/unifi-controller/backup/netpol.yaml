@@ -6,7 +6,7 @@ metadata:
   namespace: unifi-controller
   name: unifi-controller-backup-policy
 specs:
-  # allow replicationsource connect to B2
+  # allow replicationsource/dest pod connect to B2
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/created-by: volsync
@@ -27,10 +27,14 @@ specs:
           - ports:
               - protocol: TCP
                 port: "443"
-  # allow workflow pod access api-server
+  # allow argo workflow pod access api-server
   - endpointSelector:
-      matchLabels:
-        workflows.argoproj.io/workflow-template: unifi-controller-backup
+      matchExpressions:
+        - key: workflows.argoproj.io/workflow-template
+          operator: In
+          values:
+            - unifi-controller-backup-manual
+            - unifi-controller-restore-manual
     egress:
       - toEntities: [kube-apiserver]
         toPorts:

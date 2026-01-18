@@ -4,7 +4,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
   namespace: unifi-controller
-  name: &name unifi-controller-restore
+  name: &name unifi-controller-restore-manual
 spec:
   entrypoint: main
   podMetadata:
@@ -42,8 +42,8 @@ spec:
         image: public.ecr.aws/bitnami/kubectl:latest
         securityContext:
           runAsNonRoot: true
-          runAsUser: 65534
-          runAsGroup: 65534
+          runAsUser: 999
+          runAsGroup: 999
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
           capabilities:
@@ -73,9 +73,9 @@ spec:
                   cacheAccessModes: ["ReadWriteOnce"]
                   moverSecurityContext:
                     runAsNonRoot: true
-                    runAsUser: 65534
-                    runAsGroup: 65534
-                    fsGroup: 65534
+                    runAsUser: 999
+                    runAsGroup: 999
+                    fsGroup: 999
                     seccompProfile:
                       type: RuntimeDefault
               EOF
