@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - base/ns.yaml
   - base/netpol.yaml
+  - app/rbac.yaml
   - app/config.yaml
   - app/secret.yaml
   - app/repo.yaml

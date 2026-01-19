@@ -520,7 +520,7 @@ resource "aws_iam_role_policy_attachment" "unifi-controller-backup" {
 }
 
 resource "aws_iam_role" "rustic-exporter" {
-  name = "${local.project}-rustic-exporter"
+  name = "rustic-exporter"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -542,12 +542,12 @@ resource "aws_iam_role" "rustic-exporter" {
 }
 
 resource "aws_iam_policy" "rustic-exporter" {
-  name = "${local.project}-rustic-exporter"
+  name = "rustic-exporter"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/rustic-exporter"
