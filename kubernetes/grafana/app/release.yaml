@@ -13,7 +13,7 @@ spec:
         namespace: grafana
         name: grafana
       chart: grafana
-      version: 10.5.5
+      version: 10.5.8
   interval: 1h
   maxHistory: 1
   values:
