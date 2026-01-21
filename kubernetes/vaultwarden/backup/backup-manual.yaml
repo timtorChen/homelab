@@ -4,9 +4,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
   namespace: vaultwarden
-  name: vaultwarden-backup
+  name: &name vaultwarden-backup-manual
 spec:
   entrypoint: main
+  podMetadata:
+    labels:
+      workflows.argoproj.io/workflow-template: *name
   templates:
     - name: main
       steps:

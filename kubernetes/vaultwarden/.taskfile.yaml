@@ -10,7 +10,7 @@ tasks:
       force-sync=$(date +%s) --overwrite
 
   backup:
-    cmd: argo submit -n vaultwarden --from workflowtemplate/vaultwarden-backup --watch
+    cmd: argo submit -n vaultwarden --from workflowtemplate/vaultwarden-backup-manual --watch
 
   restore:
     prompt: "Restore will delete the current vaultwarden data... continune?"
@@ -19,7 +19,7 @@ tasks:
       - task: delete-volume
       - task: create-volume
       - cmd: |
-          argo submit -n vaultwarden --from workflowtemplate/vaultwarden-restore --watch
+          argo submit -n vaultwarden --from workflowtemplate/vaultwarden-restore-manual --watch
       - task: start
 
   delete-volume:
@@ -55,11 +55,11 @@ tasks:
       OPENDAL_BUCKET:
         sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
       OPENDAL_ACCESS_KEY_ID:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .AWS_ACCESS_KEY_ID'
       OPENDAL_SECRET_ACCESS_KEY:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .AWS_SECRET_ACCESS_KEY'
       RUSTIC_PASSWORD:
-        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RESTIC_PASSWORD'
     cmds:
       - |
           echo "Listing backups..."

@@ -14,5 +14,6 @@ resources:
   - backup/secret.yaml
   - backup/rbac.yaml
   - backup/backup.yaml
-  - backup/backup-workflowtemplate.yaml
-  - backup/restore-workflowtemplate.yaml
+  - backup/backup-manual.yaml
+  - backup/restore-manual.yaml
+  - backup/netpol.yaml
