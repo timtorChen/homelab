@@ -6,6 +6,7 @@ resources:
   - base/ns.yaml
   - base/netpol.yaml
   - app/repo.yaml
+  - app/rbac.yaml
   - app/release.yaml
   - app/secret.yaml
   - app/netpol.yaml

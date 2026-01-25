@@ -1123,7 +1123,7 @@ resource "aws_iam_role_policy_attachment" "immich-valkey" {
 }
 
 resource "aws_iam_role" "miniflux" {
-  name = "${local.project}-miniflux"
+  name = "miniflux"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1145,15 +1145,15 @@ resource "aws_iam_role" "miniflux" {
 }
 
 resource "aws_iam_policy" "miniflux" {
-  name = "${local.project}-miniflux"
+  name = "miniflux"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/miniflux/miniflux"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/miniflux"
         ]
       }
     ]

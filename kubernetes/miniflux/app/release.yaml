@@ -94,21 +94,8 @@ spec:
               seccompProfile:
                 type: RuntimeDefault
 
-    persistence:
-      secret:
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-miniflux
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      name: miniflux
 
     service:
       main:

@@ -36,16 +36,3 @@ spec:
       wal:
         compression: gzip
         maxParallel: 8
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/postgresql.cnpg.io/scheduledbackup_v1.json
-apiVersion: postgresql.cnpg.io/v1
-kind: ScheduledBackup
-metadata:
-  namespace: miniflux
-  name: miniflux-postgres-backup
-spec:
-  schedule: "0 0 0/12 * *"
-  backupOwnerReference: self
-  cluster:
-    name: miniflux-postgres
-  target: prefer-standby
