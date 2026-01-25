@@ -1208,8 +1208,8 @@ resource "aws_iam_role_policy_attachment" "miniflux-postgres-secret-holder" {
   policy_arn = aws_iam_policy.miniflux-postgres-secret-holder.arn
 }
 
-resource "aws_iam_role" "argo-workflows" {
-  name = "${local.project}-argo-workflows"
+resource "aws_iam_role" "argo-workflows-server" {
+  name = "argo-workflows-server"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1230,23 +1230,23 @@ resource "aws_iam_role" "argo-workflows" {
   })
 }
 
-resource "aws_iam_policy" "argo-workflows" {
-  name = "${local.project}-argo-workflows"
+resource "aws_iam_policy" "argo-workflows-server" {
+  name = "argo-workflows-server"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/argo-workflows"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/argo-system/argo-workflows-server"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "argo-workflows" {
-  role       = aws_iam_role.argo-workflows.name
-  policy_arn = aws_iam_policy.argo-workflows.arn
+resource "aws_iam_role_policy_attachment" "argo-workflows-server" {
+  role       = aws_iam_role.argo-workflows-server.name
+  policy_arn = aws_iam_policy.argo-workflows-server.arn
 }

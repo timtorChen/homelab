@@ -6,11 +6,15 @@ resources:
   - base/ns.yaml
   - base/argo-repo.yaml
   - base/nats-repo.yaml
-  - argo-workflows/release.yaml
+  # argo-workflows
+  - argo-workflows/rbac.yaml
   - argo-workflows/secret.yaml
+  - argo-workflows/release.yaml
   - argo-workflows/httproute.yaml
   - argo-workflows-templates/volsync-workflowtemplate.yaml
+  # argo-events
   - argo-events/release.yaml
+  # sso rbac
   - sso-rbac/aggregate-role/argo-events-admin-clusterrole.yaml
   - sso-rbac/aggregate-role/argo-workflows-admin-clusterrole.yaml
   - sso-rbac/aggregate-role/argo-workflows-log-view-clusterrole.yaml
