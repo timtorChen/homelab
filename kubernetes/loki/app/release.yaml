@@ -1,14 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: loki
-  name: grafana
-spec:
-  url: https://grafana.github.io/helm-charts
-  interval: 24h
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -27,11 +17,7 @@ spec:
   maxHistory: 1
   values:
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-loki
-        eks.amazonaws.com/audience: sts.amazonaws.com
-
+      name: loki
     loki:
       config: ""
       structuredConfig:
@@ -99,19 +85,7 @@ spec:
         - -config.expand-env=true
       extraEnvFrom: &envFrom
         - secretRef:
-            name: loki-secret
-      extraVolumes: &volumes
-        - name: *s
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-      extraVolumeMounts: &mounts
-        - name: *s
-          mountPath: /loki-secret
-          readOnly: true
-      ## -- EOL
+            name: *s
       persistence:
         size: 10Gi
         storageClass: rbd-fast-delete
@@ -122,16 +96,12 @@ spec:
       podAnnotations: *annotations
       extraArgs: *args
       extraEnvFrom: *envFrom
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       resources: {}
     backend:
       replicas: 3
       podAnnotations: *annotations
       extraArgs: *args
       extraEnvFrom: *envFrom
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       persistence:
         size: 10Gi
         storageClass: rbd-fast-delete

@@ -347,7 +347,7 @@ resource "aws_iam_role_policy_attachment" "grafana-postgres-secret-holder" {
 }
 
 resource "aws_iam_role" "loki" {
-  name = "${local.project}-loki"
+  name = "loki"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -369,15 +369,15 @@ resource "aws_iam_role" "loki" {
 }
 
 resource "aws_iam_policy" "loki" {
-  name = "${local.project}-loki"
+  name = "loki"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/loki"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/loki"
         ]
       }
     ]
