@@ -31,7 +31,7 @@ spec:
       serviceAccount:
         name: argo-workflows-server
       deploymentAnnotations:
-        secret.reloader.stakater.com/reload: &secret argo-workflows-secret
+        secret.reloader.stakater.com/reload: &secret argo-workflows-server-secret
       authModes: ["sso"]
       sso:
         enabled: true
