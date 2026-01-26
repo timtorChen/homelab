@@ -1,14 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: cloudflared
-  name: bjw-s
-spec:
-  url: https://bjw-s-labs.github.io/helm-charts
-  interval: 24h
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -80,10 +70,7 @@ spec:
                 type: RuntimeDefault
 
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-cloudflared
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      name: cloudflared
 
     persistence:
       config:
@@ -92,16 +79,6 @@ spec:
         globalMounts:
           - path: /config
             readOnly: true
-      ## Get the secret with `cloudflared tunnel token <tunnel-nam> --cred-file credential.json`
-      ## The tunnel token fetched on UI is generally the base64 compact version of credential.json
-      secret:
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
 
     service:
       main:

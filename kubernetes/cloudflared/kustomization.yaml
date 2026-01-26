@@ -3,7 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - namespace.yaml
-  - cloudflared-secret.yaml
-  - cloudflared-config.yaml
-  - cloudflared.yaml
+  - base/ns.yaml
+  - app/rbac.yaml
+  - app/secret.yaml
+  - app/config.yaml
+  - app/repo.yaml
+  - app/release.yaml

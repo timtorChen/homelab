@@ -85,7 +85,7 @@ resource "aws_iam_role_policy_attachment" "cert-manager" {
 }
 
 resource "aws_iam_role" "cloudflared" {
-  name = "${local.project}-cloudflared"
+  name = "cloudflared"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -107,15 +107,15 @@ resource "aws_iam_role" "cloudflared" {
 }
 
 resource "aws_iam_policy" "cloudflared" {
-  name = "${local.project}-cloudflared"
+  name = "cloudflared"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/cloudflared"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/cloudflared"
         ]
       }
     ]
