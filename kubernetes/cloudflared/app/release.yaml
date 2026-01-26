@@ -79,6 +79,13 @@ spec:
         globalMounts:
           - path: /config
             readOnly: true
+      secret:
+        type: secret
+        name: *s
+        globalMounts:
+          - path: /secret/homelab.json
+            subPath: homelab.json
+            readOnly: true
 
     service:
       main:
