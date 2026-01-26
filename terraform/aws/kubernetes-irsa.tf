@@ -390,7 +390,7 @@ resource "aws_iam_role_policy_attachment" "loki" {
 }
 
 resource "aws_iam_role" "mimir" {
-  name = "${local.project}-mimir"
+  name = "mimir"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -412,15 +412,15 @@ resource "aws_iam_role" "mimir" {
 }
 
 resource "aws_iam_policy" "mimir" {
-  name = "${local.project}-mimir"
+  name = "mimir"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/mimir"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/mimir"
         ]
       }
     ]

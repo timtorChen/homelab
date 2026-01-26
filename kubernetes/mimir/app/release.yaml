@@ -1,14 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  namespace: mimir
-  name: grafana
-spec:
-  url: https://grafana.github.io/helm-charts
-  interval: 24h
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -27,10 +17,7 @@ spec:
   maxHistory: 1
   values:
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-mimir
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      name: mimir
 
     global:
       podAnnotations:
@@ -79,17 +66,6 @@ spec:
     # query_frontend (stateless)
     query_frontend:
       replicas: 1
-      extraVolumes: &volumes
-        - name: *s
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-      extraVolumeMounts: &mounts
-        - name: *s
-          mountPath: /mimir-secret
-          readOnly: true
       resources: &resources
         requests:
           cpu: 100m
@@ -109,8 +85,6 @@ spec:
     # querier (stateless)
     querier:
       replicas: 2
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       resources: *resources
       strategy: *strategy
       readinessProbe: *readiness
@@ -119,8 +93,6 @@ spec:
     # store_gateway (stateful, index and chunk cache)
     store_gateway:
       replicas: 3
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       resources: *resources
       strategy: *strategy
       readinessProbe: *readiness
@@ -138,8 +110,6 @@ spec:
     # receive data from prometheus, and divide data to downstream ingesters
     distributor:
       replicas: 1
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       resources: *resources
       strategy: *strategy
       readinessProbe: *readiness
@@ -149,8 +119,6 @@ spec:
     # data is stored for 2 hours and uploads to object storage
     ingester:
       replicas: 3
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       resources: *resources
       strategy: *strategy
       readinessProbe: *readiness
@@ -168,8 +136,6 @@ spec:
     # and compact mutiple period blocks to a large block
     compactor:
       replicas: 2
-      extraVolumes: *volumes
-      extraVolumeMounts: *mounts
       resources: *resources
       strategy: *strategy
       readinessProbe: *readiness

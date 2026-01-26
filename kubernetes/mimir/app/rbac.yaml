@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/serviceaccount-v1.json
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: mimir
+  name: mimir
+  annotations:
+    eks.amazonaws.com/audience: sts.amazonaws.com
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/mimir
