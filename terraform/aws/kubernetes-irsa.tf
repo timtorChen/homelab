@@ -41,8 +41,8 @@ resource "aws_iam_role_policy_attachment" "notification-controller" {
   policy_arn = aws_iam_policy.notification-controller.arn
 }
 
-resource "aws_iam_role" "cert-manager" {
-  name = "${local.project}-cert-manager"
+resource "aws_iam_role" "cert-manager-timtor-dev-clusterissuer" {
+  name = "cert-manager-timtor-dev-clusterissuer"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -54,7 +54,7 @@ resource "aws_iam_role" "cert-manager" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:cert-manager:cert-manager",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:cert-manager:cert-manager-timtor-dev-clusterissuer",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -63,25 +63,25 @@ resource "aws_iam_role" "cert-manager" {
   })
 }
 
-resource "aws_iam_policy" "cert-manager" {
-  name = "${local.project}-cert-manager"
+resource "aws_iam_policy" "cert-manager-timtor-dev-clusterissuer" {
+  name = "cert-manager-timtor-dev-clusterissuer"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter*",
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/cert-manager"
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/cert-manager/clusterissuer/timtor.dev"
         ]
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "cert-manager" {
-  role       = aws_iam_role.cert-manager.name
-  policy_arn = aws_iam_policy.cert-manager.arn
+resource "aws_iam_role_policy_attachment" "cert-manager-timtor-dev-clusterissuer" {
+  role       = aws_iam_role.cert-manager-timtor-dev-clusterissuer.name
+  policy_arn = aws_iam_policy.cert-manager-timtor-dev-clusterissuer.arn
 }
 
 resource "aws_iam_role" "cloudflared" {
