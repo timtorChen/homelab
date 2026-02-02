@@ -117,17 +117,6 @@ spec:
           - path: /config.toml
             subPath: config.toml
             readOnly: true
-      secret:
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *secret
-        globalMounts:
-          - path: /secret
-            readOnly: true
 
     service:
       main:
