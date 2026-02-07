@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: cloudflare/cloudflared
-              tag: 2025.11.1
+              tag: 2026.2.0
             args:
               - tunnel
               - --no-autoupdate
