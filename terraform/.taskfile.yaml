@@ -137,3 +137,20 @@ tasks:
       - task: tf:output
         vars:
           DIR: mikrotik
+
+  ## b2
+  b2:init:
+    cmds:
+      - task: tf:switch-init
+        vars:
+          DIR: b2
+  b2:plan:
+    cmds:
+      - task: tf:plan
+        vars:
+          DIR: b2
+  b2:apply:
+    cmds:
+      - task: tf:apply
+        vars:
+          DIR: b2
