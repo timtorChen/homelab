@@ -34,4 +34,17 @@ locals {
   bucket_prefix         = "timtor-homelab"
   b2_application_key_id = jsondecode(data.aws_ssm_parameter.b2.value)["application_key_id"]
   b2_application_key    = jsondecode(data.aws_ssm_parameter.b2.value)["application_key"]
+  b2_read_write_capabilities = [
+    "deleteFiles",
+    "listBuckets",
+    "listFiles",
+    "readBucketEncryption",
+    "readBucketReplications",
+    "readBuckets",
+    "readFiles",
+    "shareFiles",
+    "writeBucketEncryption",
+    "writeBucketReplications",
+    "writeFiles"
+  ]
 }
