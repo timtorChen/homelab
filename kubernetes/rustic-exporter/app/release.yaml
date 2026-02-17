@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/timtorchen/rustic-exporter
-              tag: v0.1.0-rc.7
+              tag: v0.1.0-rc.8
             args: ["--config", "/config.toml"]
             env:
               PORT: &port 8080
