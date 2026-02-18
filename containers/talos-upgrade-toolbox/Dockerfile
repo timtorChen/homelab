@@ -4,7 +4,7 @@ FROM hairyhenderson/gomplate:v4.3.2 AS gomplate
 FROM ghcr.io/jqlang/jq:1.8.0 AS jq
 FROM mikefarah/yq:4.45.4 AS yq
 
-FROM alpine:3.22.0
+FROM alpine:3.23.3
 COPY --from=kubectl /bin/kubectl /bin/kubectl
 COPY --from=talosctl /talosctl /bin/talosctl
 COPY --from=gomplate /gomplate /bin/gomplate
