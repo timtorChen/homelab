@@ -15,7 +15,7 @@ data:
 
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
-    bucket = "homelab-amethyst-vaultwarden"
+    bucket = "timtor-homelab-vaultwarden"
     root = "/"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
@@ -29,7 +29,7 @@ data:
 
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
-    bucket = "homelab-amethyst-nextcloud"
+    bucket = "timtor-homelab-nextcloud"
     root = "/install"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
@@ -42,7 +42,7 @@ data:
 
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
-    bucket = "homelab-amethyst-nextcloud"
+    bucket = "timtor-homelab-nextcloud"
     root = "/data"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
@@ -70,7 +70,7 @@ data:
 
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
-    bucket = "homelab-amethyst-navidrome"
+    bucket = "timtor-homelab-navidrome"
     root = "/data"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
@@ -84,7 +84,7 @@ data:
 
     [backup.options]
     endpoint = "https://s3.us-east-005.backblazeb2.com"
-    bucket = "home-amethyst-unifi-controller"
+    bucket = "timtor-homelab-unifi-controller"
     root = "/"
     region = "auto"
     access_key_id = "${b2_general_access_key_id}"
