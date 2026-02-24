@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: external-secrets
       chart: external-secrets
-      version: 0.20.1
+      version: 0.20.4
   install:
     crds: CreateReplace
   upgrade:
