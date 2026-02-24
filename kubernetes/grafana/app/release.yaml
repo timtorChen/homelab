@@ -17,10 +17,6 @@ spec:
   interval: 1h
   maxHistory: 1
   values:
-    image:
-      registry: docker.io
-      repository: grafana/grafana
-      tag: 12.0.1
     replicas: 2
     serviceAccount:
       create: true

@@ -30,7 +30,7 @@ spec:
         containers:
           main:
             image:
-              repository: deluan/navidrome
+              repository: docker.io/deluan/navidrome
               tag: 0.55.2
             ## debug only
             # command: ["sleep", "infinity"]

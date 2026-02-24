@@ -30,7 +30,7 @@ spec:
         containers:
           main:
             image:
-              repository: jacobalberty/unifi
+              repository: docker.io/jacobalberty/unifi
               tag: v10.0
             probes:
               startup:

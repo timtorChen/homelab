@@ -31,7 +31,7 @@ spec:
         containers:
           main:
             image:
-              repository: miniflux/miniflux
+              repository: docker.io/miniflux/miniflux
               tag: 2.2.17-distroless
             ## Debug only, uncomment
             # command: ["sleep", "infinity"]

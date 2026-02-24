@@ -39,7 +39,7 @@ spec:
         containers:
           main:
             image:
-              repository: matusnovak/prometheus-smartctl
+              repository: docker.io/matusnovak/prometheus-smartctl
               tag: v2.5.0
             env:
               SMARTCTL_EXPORTER_PORT: &port 9902

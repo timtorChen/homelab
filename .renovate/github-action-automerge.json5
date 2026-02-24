@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "automerge": true,
+      "matchDepTypes": [
+        "action"
+      ],
+      "matchDatasources": [
+        "github-tags"
+      ],
+      "matchDepNames": [
+        "actions/checkout",
+        "dprint/check",
+        "renovatebot/github-action",
+        "fluxcd/flux2",
+        "allenporter/flux-local",
+        "mshick/add-pr-comment"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ]
+    }
+  ]
+}

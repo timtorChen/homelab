@@ -34,7 +34,7 @@ spec:
         containers:
           main:
             image:
-              repository: cloudflare/cloudflared
+              repository: docker.io/cloudflare/cloudflared
               tag: 2025.11.1
             args:
               - tunnel

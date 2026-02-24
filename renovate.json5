@@ -5,7 +5,9 @@
     ":disableRateLimiting",
     "github>timtorChen/homelab//.renovate/groups.json5",
     "github>timtorChen/homelab//.renovate/customManagers.json5",
-    "github>timtorChen/homelab//.renovate/autoMerge.json5"
+    "github>timtorChen/homelab//.renovate/github-action-automerge.json5",
+    "github>timtorChen/homelab//.renovate/terraform-automerge.json5",
+    "github>timtorChen/homelab//.renovate/kubernetes-automerge.json5"
   ],
   "timezone": "Asia/Taipei",
   "dependencyDashboard": true,

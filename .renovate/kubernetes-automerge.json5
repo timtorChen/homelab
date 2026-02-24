@@ -1,0 +1,105 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    // flux release
+    {
+      "automerge": true,
+      "automergeType": "branch",
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchDepNames": [
+        "grafana",
+        "kube-prometheus-stack",
+        "prometheus-node-exporter",
+        "metrics-server",
+        "promtail",
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "automerge": true,
+      "automergeType": "branch",
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchDepNames": [
+        "cert-manager",
+        "external-secrets",
+        "reloader",
+        "volsync",
+        "snapscheduler",
+        "mimir-distributed",
+        "loki",
+        "argo-events",
+        "argo-workflows",
+        "app-template"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "automerge": true,
+      "automergeType": "branch",
+      "matchDatasources": [
+        "helm"
+      ],
+      "matchDepNames": [
+        "flux2",
+        "rook-ceph",
+        "cilium",
+        "cloudnative-pg"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ]
+    },
+    // docker
+    {
+      "automerge": true,
+      "automergeType": "branch",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchDepNames": [
+        // monitoring
+        "docker.io/matusnovak/prometheus-smartctl",
+        "ghcr.io/kashalls/kromgo",
+        "ghcr.io/unpoller/unpoller",
+        "ghcr.io/timtorchen/rustic-exporter",
+        // app
+        "docker.io/jacobalberty/unifi",
+        "ghcr.io/dani-garcia/vaultwarden",
+        "docker.io/miniflux/miniflux",
+        "docker.io/deluan/navidrome",
+        "ghcr.io/immich-app/immich-**"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "automerge": true,
+      "automergeType": "branch",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchDepNames": [
+        // app
+        "docker.io/nextcloud"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    }
+  ]
+}

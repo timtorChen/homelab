@@ -34,7 +34,7 @@ spec:
         containers:
           main:
             image:
-              repository: nextcloud
+              repository: docker.io/nextcloud
               tag: 32.0.4-apache
             env:
               OVERWRITECLIURL: https://drive.timtor.dev

@@ -21,8 +21,6 @@ spec:
   maxHistory: 1
   timeout: 1m0s
   values:
-    images:
-      tag: v1.9.6
     crds:
       install: true
       keep: true
