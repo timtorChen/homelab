@@ -13,7 +13,7 @@ spec:
         namespace: mydata
         name: bjw-s
       chart: app-template
-      version: 3.7.3
+      version: 4.6.2
   interval: 1h
   maxHistory: 1
   timeout: 1m0s
