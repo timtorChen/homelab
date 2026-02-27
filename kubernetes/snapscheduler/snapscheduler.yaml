@@ -22,7 +22,7 @@ spec:
         kind: HelmRepository
         name: backube
       chart: snapscheduler
-      version: 3.4.0
+      version: 3.5.0
   install:
     crds: CreateReplace
   upgrade:
