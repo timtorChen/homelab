@@ -1,4 +1,4 @@
-FROM registry.k8s.io/kubectl:v1.33.0 AS kubectl
+FROM registry.k8s.io/kubectl:v1.35.2 AS kubectl
 FROM ghcr.io/siderolabs/talosctl:v1.10.4 AS talosctl
 FROM hairyhenderson/gomplate:v4.3.2 AS gomplate
 FROM ghcr.io/jqlang/jq:1.8.0 AS jq
