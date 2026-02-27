@@ -1,34 +1,44 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended", 
-    ":disableRateLimiting",
-    "github>timtorChen/homelab//.renovate/groups.json5",
-    "github>timtorChen/homelab//.renovate/customManagers.json5",
-    "github>timtorChen/homelab//.renovate/github-action-automerge.json5",
-    "github>timtorChen/homelab//.renovate/terraform-automerge.json5",
-    "github>timtorChen/homelab//.renovate/kubernetes-automerge.json5"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    ':disableRateLimiting',
+    'github>timtorChen/homelab//.renovate/groups.json5',
+    'github>timtorChen/homelab//.renovate/customManagers.json5',
+    'github>timtorChen/homelab//.renovate/github-action-automerge.json5',
+    'github>timtorChen/homelab//.renovate/terraform-automerge.json5',
+    'github>timtorChen/homelab//.renovate/kubernetes-automerge.json5',
   ],
-  "timezone": "Asia/Taipei",
-  "dependencyDashboard": true,
-  "kubernetes": {
-    "fileMatch": ["^kubernetes/.*\\.yaml$"]
+  timezone: 'Asia/Taipei',
+  dependencyDashboard: true,
+  kubernetes: {
+    managerFilePatterns: [
+      '/^kubernetes/.*\\.yaml$/',
+    ],
   },
-  "flux": {
-    "fileMatch": ["^kubernetes/.*\\.yaml$"]
+  flux: {
+    managerFilePatterns: [
+      '/^kubernetes/.*\\.yaml$/',
+    ],
   },
-  "helm-values": {
-    "fileMatch": ["^(kubernetes|talos)/.*\\.yaml$"]
+  'helm-values': {
+    managerFilePatterns: [
+      '/^(kubernetes|talos)/.*\\.yaml$/',
+    ],
   },
-  "ignorePaths": ["**/archive/**"],
-  "customManagers": [
+  ignorePaths: [
+    '**/archive/**',
+  ],
+  customManagers: [
     {
-      "customType": "regex",
-      "fileMatch": ["^talos/.*\\.yaml$"],
-      "datasourceTemplate": "docker",
-      "matchStrings": [
-        "# renovate: depName=(?<depName>.*?)\n *image: factory\\.talos\\.dev\/installer\/[a-z0-9]+:(?<currentValue>v[\\d\\.]+)"
-      ]
-    }
-  ]
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^talos/.*\\.yaml$/',
+      ],
+      datasourceTemplate: 'docker',
+      matchStrings: [
+        '# renovate: depName=(?<depName>.*?)\n *image: factory\\.talos\\.dev/installer/[a-z0-9]+:(?<currentValue>v[\\d\\.]+)',
+      ],
+    },
+  ],
 }
