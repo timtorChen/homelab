@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: docker.io/deluan/navidrome
-              tag: 0.55.2
+              tag: 0.60.3
             ## debug only
             # command: ["sleep", "infinity"]
             env:
