@@ -31,7 +31,7 @@ spec:
       reloadStrategy: default
       readOnlyRootFileSystem: true
       deployment:
-        securityContext:
+        containerSecurityContext:
           runAsNonRoot: true
           runAsUser: 65534
           runAsGroup: 65534
@@ -43,6 +43,8 @@ spec:
             type: RuntimeDefault
         replicas: 1
         resources:
+          limits:
+            memory: 100Mi
           requests:
             cpu: 10m
             memory: 100Mi
