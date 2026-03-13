@@ -18,7 +18,8 @@
         "mshick/add-pr-comment"
       ],
       "matchUpdateTypes": [
-        "digest"
+        "minor",
+        "patch",
       ]
     }
   ]

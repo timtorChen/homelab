@@ -22,7 +22,7 @@ jobs:
           sources: homelab
           resource: ${{ matrix.resource }}
       - name: PR Comments
-        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2
+        uses: mshick/add-pr-comment@d17ab6ee39f3224f573468f6426f351e409b1000 # v3.2.0
         if: ${{ steps.diff.outputs.diff != '' }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
