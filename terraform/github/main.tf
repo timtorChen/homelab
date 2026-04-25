@@ -25,7 +25,7 @@ locals {
   github_labels = {
     "area/core" = {
       color       = "#7db9de" # 勿忘草
-      description = "OS, Kubernetes cluster, or platform changes"
+      description = "OS, Kubernetes, or platform changes"
     },
     "area/app" = {
       color       = "#a8d8b9" # 白綠
@@ -33,15 +33,15 @@ locals {
     },
     "type/feat" = {
       color       = "#fad689" # 淺黃
-      description = "New applications or enhancements"
+      description = "Feature or new things"
     },
     "type/chore" = {
       color       = "#bdc0ba" # 白鼠
-      description = "Version bumps"
+      description = "Version bumps or boring things"
     },
     "type/migration" = {
       color       = "#d4c5f9"
-      description = "Moving between system, APIs or architectures"
+      description = "Moving in APIs, systems, or architectures"
     },
     "risk/high" = {
       color       = "#f4a7b9" # 一斥染
@@ -52,7 +52,6 @@ locals {
 
 # !NOTICE
 # github_issue_label id is stored as "repo_name:label_name"
-# so that it only do creation, update existing color/description, and deletion of labels
 resource "github_issue_label" "main" {
   repository  = "homelab"
   for_each    = local.github_labels
