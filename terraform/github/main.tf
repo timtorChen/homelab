@@ -35,13 +35,17 @@ locals {
       color       = "#fad689" # 淺黃
       description = "Feature or new things"
     },
-    "type/chore" = {
-      color       = "#bdc0ba" # 白鼠
-      description = "Version bumps or boring things"
-    },
     "type/migration" = {
       color       = "#d4c5f9"
       description = "Moving in APIs, systems, or architectures"
+    },
+    "type/bug" = {
+      color       = "#336774" # 錆御納戶
+      description = "Unexpected behavior"
+    },
+    "type/chore" = {
+      color       = "#bdc0ba" # 白鼠
+      description = "Version bumps or boring things"
     },
     "risk/high" = {
       color       = "#f4a7b9" # 一斥染
