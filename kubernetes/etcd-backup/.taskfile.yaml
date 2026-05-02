@@ -4,6 +4,9 @@ version: "3"
 silent: true
 
 tasks:
+  backup:
+    cmd: argo submit -n etcd-backup --from cronworkflow/etcd-backup-cornworkflow --watch
+
   list-backup:
     env:
       BACKUP_SECRET:
