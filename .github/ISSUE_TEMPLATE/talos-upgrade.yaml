@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Talos upgrade
-title: Upgrade Talos to {{v1.9}}
+title: Upgrade Talos to {{v1.11}}
 description: Talos upgrade template
 body:
   - type: textarea
@@ -14,8 +14,8 @@ body:
         - [x] Related Issue(s):
           - #issue-number
 
-        ## Talos {{v1.9}}
-        Support Kubernetes {{1.27}}-{{1.32}}
+        ## Talos {{v1.11}}
+        Support Kubernetes {{1.29}}-{{1.34}}
 
         ### Features
         - feature-1
@@ -31,7 +31,7 @@ body:
           ```
         - [ ] Backup etcd
           ```bash
-          task kubernetes:etcd-backup:trigger
+          task kubernetes:etcd-backup:backup
           ```
 
         ### Upgrade execution
@@ -41,13 +41,13 @@ body:
           ```
         - [ ] Upgrade control plane(s) first
           ```bash
-            task talos:plan-pi4b-1
-            task talos:apply-pi4b-1
-            ```
+          task talos:plan-nuc12wshi5-1
+          task talos:upgrade-nuc12wshi5-1
+          ```
         - [ ] Upgrade worker(s)
           ```bash
           task talos:plan-nuc11tnhi50l-1
-          task talos:apply-nuc11tnhi50l-1
+          task talos:upgrade-nuc11tnhi50l-1
           # continue to other workers
           ```
 
@@ -58,4 +58,4 @@ body:
           ```
 
         ## References
-        https://www.talos.dev/{{v1.9}}/introduction/what-is-new/
+        https://docs.siderolabs.com/talos/{{v1.11}}/overview/what-is-talos
