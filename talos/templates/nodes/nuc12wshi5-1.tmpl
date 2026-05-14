@@ -21,7 +21,7 @@ machine:
   install:
     disk: /dev/sda
     # renovate: depName=ghcr.io/siderolabs/installer
-    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.12.7
+    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.13.2
   kubelet:
     image: ghcr.io/siderolabs/kubelet:v1.32.0
 cluster:
@@ -32,7 +32,7 @@ cluster:
   scheduler:
     image: registry.k8s.io/kube-scheduler:v1.32.0
   coreDNS:
-    image: registry.k8s.io/coredns/coredns:1.13.1
+    image: registry.k8s.io/coredns/coredns:1.14.2
   etcd:
-    image: registry.k8s.io/etcd:v3.6.6
+    image: registry.k8s.io/etcd:v3.6.9
 {{ end }}
