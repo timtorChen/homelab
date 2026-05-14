@@ -8,6 +8,14 @@ tasks:
   get-intelnuc-schematic-id:
     cmd: curl -s -X POST --data-binary @schematics/intelnuc.yaml https://factory.talos.dev/schematics | jq --raw-output .id
 
+  # image tags
+  list-image-tags:
+    desc: List available version by -- CLI_ARGS
+    cmd: |
+      skopeo list-tags docker://ghcr.io/siderolabs/installer |\
+        jq -r  '.Tags.[]' |\
+        grep "{{.CLI_ARGS}}"
+
   # talos task functions
   render:
     internal: true
