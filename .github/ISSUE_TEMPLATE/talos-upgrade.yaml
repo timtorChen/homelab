@@ -16,6 +16,9 @@ body:
 
         ## Talos {{v1.11}}
         Support Kubernetes {{1.29}}-{{1.34}}
+        Core components default version:
+        - CoreDNS: {{1.12.2}}
+        - etcd: {{3.6.4}}
 
         ### Features
         - feature-1
