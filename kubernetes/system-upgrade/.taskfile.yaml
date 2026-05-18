@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+
+tasks:
+  talos:suspend:
+    cmd: kubectl annotate talosupgrade main tuppr.home-operations.com/suspend="true"
+  talos:resume:
+    cmd: kubectl annotate talosupgrade main tuppr.home-operations.com/suspend-
+  talos:retry:
+    cmd: kubectl annotate talosupgrade main tuppr.home-operations.com/reset="$(date)"
+
+  k8s:suspend:
+    cmd: kubectl annotate kubernetesupgrade main tuppr.home-operations.com/suspend="true"
+  k8s:resume:
+    cmd: kubectl annotate kubernetesupgrade main tuppr.home-operations.com/suspend-
+  k8s:retry:
+    cmd: kubectl annotate kubernetesupgrade main tuppr.home-operations.com/reset="$(date)"
