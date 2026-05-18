@@ -1,0 +1,32 @@
+---
+# yaml-language-server: TODO
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: TalosUpgrade
+metadata:
+  name: main
+spec:
+  talos:
+    version: v1.13.2
+  policy:
+    debug: true
+    force: false
+    placement: soft
+    rebootMode: default
+    stage: false
+  parallelism: 1
+  drain:
+    deleteLocalData: true
+    ignoreDaemonSets: true
+  healthChecks:
+    # Check nodes
+    - apiVersion: v1
+      kind: Node
+      expr: |
+        status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m
+    # Check ceph
+    - apiVersion: ceph.rook.io/v1
+      kind: CephCluster
+      name: rook-ceph
+      namespace: rook-ceph
+      expr: status.ceph.health in ["HEALTH_OK"]
