@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  namespace: system-upgrade
+  name: tuppr
+spec:
+  type: oci
+  url: oci://ghcr.io/home-operations/charts
+  interval: 24h

@@ -14,6 +14,9 @@ includes:
   cilium:
     optional: true
     taskfile: ../.tasks/cilium.yaml
+  system-upgrade:
+    optional: true
+    taskfile: talos-upgrade/.taskfile.yaml
   nextcloud:
     optional: true
     taskfile: mydata/nextcloud/.taskfile.yaml
