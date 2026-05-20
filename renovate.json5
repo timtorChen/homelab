@@ -4,7 +4,6 @@
     "config:recommended", 
     ":disableRateLimiting",
     "github>timtorChen/homelab//.renovate/groups.json5",
-    "github>timtorChen/homelab//.renovate/customManagers.json5",
     "github>timtorChen/homelab//.renovate/github-action-automerge.json5",
     "github>timtorChen/homelab//.renovate/terraform-automerge.json5",
     "github>timtorChen/homelab//.renovate/kubernetes-automerge.json5"
@@ -18,7 +17,7 @@
     "fileMatch": ["^kubernetes/.*\\.yaml$"]
   },
   "helm-values": {
-    "fileMatch": ["^(kubernetes|talos)/.*\\.yaml$"]
+    "fileMatch": ["^kubernetes/.*\\.yaml$"]
   },
   "ignorePaths": ["**/archive/**"],
   "customManagers": [
