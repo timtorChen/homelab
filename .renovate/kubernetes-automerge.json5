@@ -102,7 +102,7 @@
       ]
     },
     {
-      "automerge": true
+      "automerge": true,
       "automergeType": "branch",
       "matchDatasources": [
         "docker"
