@@ -24,10 +24,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^talos/.*\\.yaml$"],
-      "datasourceTemplate": "docker",
+      "fileMatch": ["^talos/.*\\.tmpl$"],
       "matchStrings": [
-        "# renovate: depName=(?<depName>.*?)\n *image: factory\\.talos\\.dev\/installer\/[a-z0-9]+:(?<currentValue>v[\\d\\.]+)"
+        "# renovate: datasource=(?<datasource>.*) depName=(?<depName>.*?)\n *image: factory\\.talos\\.dev\/installer\/[a-z0-9]+:(?<currentValue>v[\\d\\.]+)"
       ]
     }
   ]
