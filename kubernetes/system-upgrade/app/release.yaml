@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: tuppr
       chart: tuppr
-      version: 0.1.33
+      version: 0.1.35
   interval: 1h
   maxHistory: 1
   values:
