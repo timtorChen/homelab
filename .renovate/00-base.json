@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "timezone": "Asia/Taipei",
+  "dependencyDashboard": true,
+  "kubernetes": {
+    "managerFilePatterns": ["/^kubernetes/.*\\.yaml$/"]
+  },
+  "flux": {
+    "managerFilePatterns": ["/^kubernetes/.*\\.yaml$/"]
+  },
+  "helm-values": {
+    "managerFilePatterns": ["/^kubernetes/.*\\.yaml$/"]
+  },
+  "ignorePaths": ["**/archive/**"],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "",
+  "commitMessageAction": "update",
+  "commitMessageExtra": "-> {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}{{prettyNewMajor}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}{{/if}}",
+  "addLabels": ["type/chore"]
+}

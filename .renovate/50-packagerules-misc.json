@@ -1,0 +1,87 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      // common chart - group
+      "groupName": "common chart",
+      "semanticCommitScope": "misc",
+      "addLabels": ["area/misc"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["app-template"]
+    },
+    {
+      // common chart - automerge
+      "groupName": "common chart",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["app-template"]
+    },
+    {
+      // github action - group
+      "groupName": "github action",
+      "semanticCommitScope": "misc",
+      "addLabels": ["area/misc"],
+      "matchFileNames": [".github/workflows/**"],
+      "matchDatasources": ["github-tags"],
+      "matchDepNames": [
+        "actions/checkout",
+        "dprint/check",
+        "fluxcd/flux2",
+        "allenporter/flux-local",
+        "mshick/add-pr-comment"
+      ]
+    },
+    {
+      // github action - automerge
+      "schedule": ["* * 1-5 * *"],
+      "groupName": "github action",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": [".github/workflows/**"],
+      "matchDatasources": ["github-tags"],
+      "matchDepNames": [
+        "actions/checkout",
+        "dprint/check",
+        "fluxcd/flux2",
+        "allenporter/flux-local",
+        "mshick/add-pr-comment"
+      ]
+    },
+    {
+      // terraform - group
+      "groupName": "terraform",
+      "semanticCommitScope": "misc",
+      "addLabels": ["area/misc"],
+      "matchFileNames": ["terraform/**"],
+      "matchDatasources": ["terraform-provider"],
+      "matchPackageNames": [
+        "backblaze/b2",
+        "hashicorp/aws",
+        "cloudflare/cloudflare",
+        "hashicorp/random",
+        "grafana/grafana",
+        "terraform-routeros/routeros"
+      ]
+    },
+    {
+      // terraform - automerge
+      "schedule": ["* * 1-5 * *"],
+      "groupName": "terraform",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["terraform/**"],
+      "matchDatasources": ["terraform-provider"],
+      "matchPackageNames": [
+        "backblaze/b2",
+        "hashicorp/aws",
+        "cloudflare/cloudflare",
+        "hashicorp/random",
+        "grafana/grafana",
+        "terraform-routeros/routeros"
+      ]
+    }
+  ]
+}

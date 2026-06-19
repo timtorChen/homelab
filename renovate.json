@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":disableRateLimiting",
+    "github>timtorChen/homelab//.renovate/00-base.json",
+    "github>timtorChen/homelab//.renovate/10-custommanagers.json",
+    "github>timtorChen/homelab//.renovate/20-packagerules-core.json",
+    "github>timtorChen/homelab//.renovate/30-packagerules-platform.json",
+    "github>timtorChen/homelab//.renovate/40-packagerules-app.json",
+    "github>timtorChen/homelab//.renovate/50-packagerules-misc.json"
+  ]
+}

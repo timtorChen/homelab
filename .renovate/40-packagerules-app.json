@@ -1,0 +1,132 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      // vaultwarden - group
+      "groupName": "vaultwarden",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/dani-garcia/vaultwarden"]
+    },
+    {
+      // vaultwarden - automerge
+      "groupName": "kromgo",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/dani-garcia/vaultwarden"]
+    },
+    {
+      // miniflux - group
+      "groupName": "miniflux",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/miniflux/miniflux"]
+    },
+    {
+      // miniflux - automerge
+      "groupName": "kromgo",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/miniflux/miniflux"]
+    },
+    {
+      // navidrome - group
+      "groupName": "navidrome",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/deluan/navidrome"]
+    },
+    {
+      // navidrome - automerge
+      "groupName": "navidrome",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/deluan/navidrome"]
+    },
+    {
+      // unifi controller - group
+      "groupName": "unifi controller",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/jacobalberty/unifi"]
+    },
+    {
+      // unifi controller - automerge
+      "groupName": "unifi controller",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/jacobalberty/unifi"]
+    },
+    {
+      // unpoller - group
+      "groupName": "unpoller",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/unpoller/unpoller"]
+    },
+    {
+      // unpoller - automerge
+      "groupName": "unpoller",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/unpoller/unpoller"]
+    },
+    {
+      // immich - group
+      "groupName": "immich",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchDatasources": "docker",
+      "matchDepNames": ["ghcr.io/immich-app/immich-**"]
+    },
+    {
+      // immich - automerge
+      "groupName": "immich",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/immich-app/immich-**"]
+    },
+    {
+      // nextcloud - group
+      // TODO: add extra: valkey, postgres
+      "groupName": "nextcloud",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchDatasources": "docker",
+      "matchDepNames": ["docker.io/nextcloud"]
+    },
+    {
+      // nextcloud - automerge
+      "groupName": "nextcloud",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/nextcloud"]
+    }
+  ]
+}

@@ -16,6 +16,8 @@ machine:
     key: {{ $secret.machine_ca_key }}
   certSANs: []
   install:
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.13.2
     wipe: false
     extraKernelArgs:
       - talos.logging.kernel=tcp://192.168.253.100:3001
@@ -28,6 +30,8 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+    image: ghcr.io/siderolabs/kubelet:v1.32.0
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
@@ -84,7 +88,8 @@ cluster:
   proxy:
     disabled: true
   apiServer:
-    image: ""
+    # renovate: datasource=docker depName=registry.k8s.io/kube-apiserver
+    image: registry.k8s.io/kube-apiserver:v1.32.0
     extraArgs:
       oidc-issuer-url: https://oauth.id.jumpcloud.com/
       oidc-client-id: {{ $secret.cluster_apiServer_extraArgs_oidc_client_id }}
@@ -119,7 +124,8 @@ cluster:
       rules:
         - level: Metadata
   etcd:
-    image: ""
+    # renovate: datasource=docker depName=registry.k8s.io/etcd
+    image: registry.k8s.io/etcd:v3.6.9
     # Etcd CA
     ca:
       crt: {{ $secret.cluster_etcd_ca_crt }}
@@ -127,15 +133,18 @@ cluster:
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
   controllerManager:
-    image: ""
+    # renovate: datasource=docker depName=registry.k8s.io/kube-controller-manager
+    image: registry.k8s.io/kube-controller-manager:v1.32.0
     extraArgs:
       bind-address: 0.0.0.0
   scheduler:
-    image: ""
+    # renovate: datasource=docker depName=registry.k8s.io/kube-scheduler
+    image: registry.k8s.io/kube-scheduler:v1.32.0
     extraArgs:
       bind-address: 0.0.0.0
   coreDNS:
-    image: ""
+    # renovate: datasource=docker depName=registry.k8s.io/coredns/coredns
+    image: registry.k8s.io/coredns/coredns:1.14.2
   # -- Extras
   extraManifests: []
   inlineManifests: []

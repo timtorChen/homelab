@@ -1,0 +1,326 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      // intel-device-plugins - group
+      "groupName": "intel-device-plugins",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": "helm",
+      "matchDepNames": [
+        "intel-device-plugins-gpu",
+        "intel-device-plugins-operator"
+      ]
+    },
+    {
+      // TODO: node-feature-discovery
+    },
+    {
+      // cert-manager - group
+      "groupName": "cert-manager",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["cert-manager"]
+    },
+    {
+      // cert-manager - automerge
+      "groupName": "cert-manager",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["cert-manager"]
+    },
+    {
+      // cnpg - group
+      "groupName": "cnpg",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["cloudnative-pg"]
+    },
+    {
+      // cnpg - automerge
+      "groupName": "cnpg",
+      "automerge": true,
+      "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["cloudnative-pg"]
+    },
+    {
+      // volsync - group
+      "groupName": "volsync",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["volsync"]
+    },
+    {
+      // volsync - automerge
+      "groupName": "volsync",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["volsync"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // snapscheduler - group
+      "groupName": "snapscheduler",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["snapscheduler"]
+    },
+    {
+      // snapscheduler - automerge
+      "groupName": "snapscheduler",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["snapscheduler"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // external-secrets - group
+      "groupName": "external-secrets",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["external-secrets"]
+    },
+    {
+      // external-secrets - automerge
+      "groupName": "external-secrets",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["external-secrets"]
+    },
+    {
+      // reloader - group
+      "groupName": "reloader",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["reloader"]
+    },
+    {
+      // reloader - automerge
+      "groupName": "reloader",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["reloader"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // mimir - group
+      "groupName": "mimir-distributed",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["mimir-distributed"]
+    },
+    {
+      // mimir - automerge
+      "groupName": "mimir-distributed",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["mimir-distributed"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // loki - group
+      "groupName": "loki",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["loki"]
+    },
+    {
+      // loki - automerge
+      "groupName": "loki",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["loki"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // grafana - group
+      "groupName": "grafana",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["grafana"]
+    },
+    {
+      // grafana - automerge
+      "groupName": "grafana",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["grafana"]
+    },
+    {
+      // kromgo - group
+      "groupName": "kromgo",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/kashalls/kromgo"]
+    },
+    {
+      // kromgo - automerge
+      "groupName": "kromgo",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/kashalls/kromgo"]
+    },
+    {
+      // kube-prometheus-stack - group
+      "groupName": "kube-prometheus-stack",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["kube-prometheus-stack"]
+    },
+    {
+      // kube-prometheus-stack - automerge
+      "groupName": "kube-prometheus-stack",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["kube-prometheus-stack"]
+    },
+    {
+      // prometheus-node-exporter - group
+      "groupName": "prometheus-node-exporter",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["prometheus-node-exporter"]
+    },
+    {
+      // prometheus-node-exporter - automerge
+      "groupName": "prometheus-node-exporter",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["prometheus-node-exporter"]
+    },
+    {
+      // rustic-exporter - group
+      "groupName": "rustic-exporter",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/timtorchen/rustic-exporter"]
+    },
+    {
+      // rustic-exporter - automerge
+      "groupName": "rustic-exporter",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/timtorchen/rustic-exporter"]
+    },
+    {
+      // smartctl- group
+      "groupName": "smartctl",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/timtorchen/rustic-exporter"]
+    },
+    {
+      // smartctl - automerge
+      "groupName": "smartctl",
+      "automerge": true,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/matusnovak/prometheus-smartctl"]
+    },
+    {
+      // promtail - group
+      "groupName": "promtail",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["promtail"]
+    },
+    {
+      // promtail - automerge
+      "groupName": "promtail",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["promtail"]
+    },
+    {
+      // argo-workflows - group
+      "groupName": "argo-workflows",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["argo-workflows"]
+    },
+    {
+      // argo-workflows - automerge
+      "groupName": "argo-workflows",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["argo-workflows"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // argo-events - group
+      "groupName": "argo-events",
+      "semanticCommitScope": "platform",
+      "addLabels": ["area/platform"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["argo-events"]
+    },
+    {
+      // argo-events - automerge
+      "groupName": "argo-events",
+      "automerge": true,
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["helm"],
+      "matchDepNames": ["argo-events"],
+      "matchUpdateTypes": ["minor", "patch"]
+    }
+  ]
+}

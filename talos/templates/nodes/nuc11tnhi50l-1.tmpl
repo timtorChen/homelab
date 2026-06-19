@@ -28,8 +28,4 @@ machine:
       - SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="48:21:0b:2c:f4:8c", NAME="eth1"
   install:
     disk: /dev/sda
-    # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.13.2
-  kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.32.0
 {{ end }}

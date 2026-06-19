@@ -15,8 +15,8 @@ machine:
     key: ""
   certSANs: []
   install:
-    disk: ""
-    image: ""
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+    image: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee:v1.13.2
     wipe: false
     extraKernelArgs:
       - talos.logging.kernel=tcp://192.168.253.100:3001
@@ -29,7 +29,8 @@ machine:
         format: json_lines
   # -- Services
   kubelet:
-    image: ""
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+    image: ghcr.io/siderolabs/kubelet:v1.32.0
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
