@@ -9,12 +9,15 @@ data:
   config.yaml: | #yaml
     debug: false
     metrics:
-      - name: kubernetes_version
-        query: kubernetes_build_info
-        label: git_version
       - name: talos_version
         query: node_os_info
         label: version_id
+      - name: kubernetes_version
+        query: kubernetes_build_info
+        label: git_version
+      - name: ceph_version
+        query: label_replace(ceph_osd_metadata, "version", "$1", "ceph_version", "ceph version ([0-9]+\\.[0-9]+\\.[0-9]+).*")
+        label: version
       - name: node_age
         query: floor(max((time() - kube_node_created)/86400))
         suffix: "d"
