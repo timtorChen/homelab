@@ -25,11 +25,19 @@ locals {
   github_labels = {
     "area/core" = {
       color       = "#7db9de" # 勿忘草
-      description = "OS, Kubernetes, or platform changes"
+      description = "OS, Kubernetes, CNI, CSI system changes"
+    },
+    "area/platform" = {
+      color       = "#a5dee4" # 瓶覗
+      description = "Ingress, observability, automation tooling changes"
     },
     "area/app" = {
       color       = "#a8d8b9" # 白綠
       description = "Application changes"
+    },
+    "area/misc" = {
+      color = "#d7c4bb" # 灰櫻
+      description = "Non-core, uncatagorized changes"
     },
     "type/feat" = {
       color       = "#fad689" # 淺黃
