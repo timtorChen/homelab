@@ -22,8 +22,8 @@
       "matchDepNames": ["registry.k8s.io/etcd"]
     },
     {
-      // control plane
-      "groupName": "control plane",
+      // kubernetes
+      "groupName": "kubernetes",
       "separateMultipleMinor": true,
       "semanticCommitScope": "core",
       "addLabels": ["area/core", "risk/high"],
@@ -32,18 +32,9 @@
       "matchDepNames": [
         "registry.k8s.io/kube-apiserver",
         "registry.k8s.io/kube-controller-manager",
-        "registry.k8s.io/kube-scheduler"
+        "registry.k8s.io/kube-scheduler",
+        "ghcr.io/siderolabs/kubelet"
       ]
-    },
-    {
-      // kubelet
-      "groupName": "kubelet",
-      "separateMultipleMinor": true,
-      "semanticCommitScope": "core",
-      "addLabels": ["area/core", "risk/high"],
-      "matchFileNames": ["talos/**", "kubernetes/**"],
-      "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["ghcr.io/siderolabs/kubelet"]
     },
     {
       // coredns
