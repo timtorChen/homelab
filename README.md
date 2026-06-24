@@ -11,6 +11,7 @@
 [![Discord](https://img.shields.io/discord/673534664354430999?style=for-the-badge&label&logo=discord&logoColor=white&color=blue)](https://discord.gg/home-operations)&nbsp;&nbsp;
 [![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dtalos_version&style=for-the-badge&logo=talos&logoColor=white&color=blue&label=%20)](https://github.com/siderolabs/talos)&nbsp;&nbsp;
 [![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dkubernetes_version&style=for-the-badge&logo=kubernetes&logoColor=white&color=blue&label=%20)](https://github.com/kubernetes/kubernetes)&nbsp;&nbsp;
+[![Cilium](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dcilium_version&style=for-the-badge&logo=cilium&logoColor=white&color=blue&label=%20)](https://github.com/cilium/cilium)&nbsp;&nbsp;
 [![Ceph](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.timtor.dev%2Fquery%3Fformat%3Dendpoint%26metric%3Dceph_version&style=for-the-badge&logo=ceph&logoColor=white&color=blue&label=%20)](https://github.com/ceph/ceph)&nbsp;&nbsp;
 
 </div>

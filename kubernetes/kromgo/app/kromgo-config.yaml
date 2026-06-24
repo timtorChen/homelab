@@ -18,6 +18,9 @@ data:
       - name: ceph_version
         query: label_replace(ceph_osd_metadata, "version", "$1", "ceph_version", "ceph version ([0-9]+\\.[0-9]+\\.[0-9]+).*")
         label: version
+      - name: cilium_version
+        query: cilium_operator_version
+        label: version
       - name: node_age
         query: floor(max((time() - kube_node_created)/86400))
         suffix: "d"
