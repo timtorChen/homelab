@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: docker.io/miniflux/miniflux
-              tag: 2.3.1-distroless
+              tag: 2.3.2-distroless
             ## Debug only, uncomment
             # command: ["sleep", "infinity"]
 
