@@ -65,6 +65,42 @@
       "matchDepNames": ["metrics-server"]
     },
     {
+      // gateway-api-crd - group
+      "groupName": "gateway-api-crd",
+      "semanticCommitScope": "core",
+      "addLabels": ["area/core"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["github-tags"],
+      "matchDepNames": ["gateway-api-crd"]
+    },
+    {
+      // gateway-api-crd - automerge
+      "groupName": "gateway-api-crd",
+      "automerge": true,
+      "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["github-tags"],
+      "matchDepNames": ["gateway-api-crd"]
+    },
+    {
+      // snapshot-controller - group
+      "groupName": "snapshot-controller",
+      "semanticCommitScope": "core",
+      "addLabels": ["area/core"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["github-tags"],
+      "matchDepNames": ["snapshot-controller", "external-snapshotter-crd"]
+    },
+    {
+      // snapshot-controller - automerge
+      "groupName": "snapshot-controller",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/**"],
+      "matchDatasources": ["github-tags"],
+      "matchDepNames": ["snapshot-controller", "external-snapshotter-crd"]
+    },
+    {
       // cilium - group
       "groupName": "cilium",
       "separateMultipleMinor": true,
@@ -138,15 +174,6 @@
       "matchFileNames": ["kubernetes/**"],
       "matchDatasources": ["docker"],
       "matchDepNames": ["quay.io/ceph/ceph"]
-    },
-    {
-      // snapshot-controller - group
-      "groupName": "snapshot-controller",
-      "semanticCommitScope": "core",
-      "addLabels": ["area/core"],
-      "matchFileNames": ["kubernetes/**"],
-      "matchDatasources": ["github-tags"],
-      "matchDepNames": ["snapshot-controller", "external-snapshotter-crd"]
     },
     {
       // tuppr - group
