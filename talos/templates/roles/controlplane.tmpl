@@ -31,7 +31,7 @@ machine:
   # -- Services
   kubelet:
     # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-    image: ghcr.io/siderolabs/kubelet:v1.34.9
+    image: ghcr.io/siderolabs/kubelet:v1.35.6
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
   # -- Talos features
@@ -89,7 +89,7 @@ cluster:
     disabled: true
   apiServer:
     # renovate: datasource=docker depName=registry.k8s.io/kube-apiserver
-    image: registry.k8s.io/kube-apiserver:v1.34.9
+    image: registry.k8s.io/kube-apiserver:v1.35.6
     extraArgs:
       oidc-issuer-url: https://oauth.id.jumpcloud.com/
       oidc-client-id: {{ $secret.cluster_apiServer_extraArgs_oidc_client_id }}
@@ -134,12 +134,12 @@ cluster:
       listen-metrics-urls: http://0.0.0.0:2381
   controllerManager:
     # renovate: datasource=docker depName=registry.k8s.io/kube-controller-manager
-    image: registry.k8s.io/kube-controller-manager:v1.34.9
+    image: registry.k8s.io/kube-controller-manager:v1.35.6
     extraArgs:
       bind-address: 0.0.0.0
   scheduler:
     # renovate: datasource=docker depName=registry.k8s.io/kube-scheduler
-    image: registry.k8s.io/kube-scheduler:v1.34.9
+    image: registry.k8s.io/kube-scheduler:v1.35.6
     extraArgs:
       bind-address: 0.0.0.0
   coreDNS:
