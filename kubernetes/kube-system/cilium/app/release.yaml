@@ -61,12 +61,30 @@ spec:
       enabled: true
       gatewayClass:
         create: auto
+    # cilium operator
     operator:
       prometheus:
-        trustCRDsExist: true
+        enabled: true
+        metricsService: true
         serviceMonitor:
           enabled: true
           interval: 1m
+          metricRelabelings:
+            - action: drop
+              sourceLabels: [__name__]
+              regex: ^(go|process).*
+    # cilium agents
+    prometheus:
+      enabled: true
+      metricsService: true
+      trustCRDsExist: true
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+        metricRelabelings:
+          - action: drop
+            sourceLabels: [__name__]
+            regex: ^(go|process).*
     hubble:
       enabled: true
       relay:
