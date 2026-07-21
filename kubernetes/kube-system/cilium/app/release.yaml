@@ -63,6 +63,7 @@ spec:
         create: auto
     operator:
       prometheus:
+        trustCRDsExist: true
         serviceMonitor:
           enabled: true
           interval: 1m
