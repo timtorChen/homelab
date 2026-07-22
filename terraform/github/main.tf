@@ -36,7 +36,7 @@ locals {
       description = "Application changes"
     },
     "area/misc" = {
-      color = "#d7c4bb" # 灰櫻
+      color       = "#d7c4bb" # 灰櫻
       description = "Non-core, uncatagorized changes"
     },
     "type/feat" = {
@@ -50,6 +50,10 @@ locals {
     "type/bug" = {
       color       = "#336774" # 錆御納戶
       description = "Unexpected behavior"
+    },
+    "type/doc" = {
+      color       = "#f7f3e8"
+      description = "Docs, ADRs, and notes"
     },
     "type/chore" = {
       color       = "#bdc0ba" # 白鼠
