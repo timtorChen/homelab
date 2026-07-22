@@ -66,9 +66,9 @@ spec:
       allowSnippetAnnotations: false
       service:
         type: LoadBalancer
-        externalIPs:
-          - 192.168.33.2
         externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.33.2
       replicaCount: 2
       updateStrategy:
         type: RollingUpdate
