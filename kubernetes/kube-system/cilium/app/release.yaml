@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: cilium
       chart: cilium
-      version: 1.19.6
+      version: 1.20.0
   # crd installation is managed in cilium-opeator
   # install:
   #   crds: CreateReplace
