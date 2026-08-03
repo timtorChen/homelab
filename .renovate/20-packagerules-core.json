@@ -169,6 +169,7 @@
     {
       // ceph - group
       "groupName": "ceph",
+      "separateMultipleMajor": true,
       "semanticCommitScope": "core",
       "addLabels": ["area/core", "risk/high"],
       "matchFileNames": ["kubernetes/**"],
