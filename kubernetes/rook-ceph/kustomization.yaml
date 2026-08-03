@@ -6,6 +6,9 @@ resources:
   - base/ns.yaml
   - app/repo.yaml
   - app/release.yaml
+  # drivers
+  - drivers/release.yaml
+  - drivers/repo.yaml
   # cluster
   - cluster/cephcluster.yaml
   - cluster/httproute.yaml

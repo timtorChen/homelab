@@ -20,14 +20,10 @@ spec:
   interval: 1h
   maxHistory: 1
   values:
+    # rook-ceph
     crds:
       enabled: true
     currentNamespaceOnly: true
-    csi:
-      pluginTolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
     resources:
       limits:
         memory: 256Mi
@@ -36,3 +32,6 @@ spec:
         memory: 256Mi
     monitoring:
       enabled: true
+    # ceph-csi-operator
+    csi:
+      installCsiOperator: true
