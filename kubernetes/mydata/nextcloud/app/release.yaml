@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: docker.io/nextcloud
-              tag: 34.0.2-apache
+              tag: 34.0.3-apache
             env:
               OVERWRITECLIURL: https://drive.timtor.dev
               OVERWRITEPROTOCOL: https
