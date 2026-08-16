@@ -37,6 +37,7 @@
     {
       // cnpg - group
       "groupName": "cnpg",
+      "separateMultipleMinor": true,
       "semanticCommitScope": "platform",
       "addLabels": ["area/platform"],
       "matchFileNames": ["kubernetes/**"],
