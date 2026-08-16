@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         namespace: grafana
         name: grafana
-      chart: grafana
+      chart: grafana-community
       version: 10.5.15
   interval: 1h
   maxHistory: 1
