@@ -13,7 +13,7 @@ spec:
       storageClassName: rbd-fast
       resources:
         requests:
-          storage: 10Gi
+          storage: 15Gi
       accessModes: ["ReadWriteOnce"]
   bootstrap:
     initdb:
