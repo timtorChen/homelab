@@ -17,7 +17,7 @@ spec:
   interval: 1h
   maxHistory: 1
   values:
-    replicas: 2
+    replicas: 1
     serviceAccount:
       create: true
       annotations:
@@ -123,10 +123,10 @@ spec:
 
     resources:
       limits:
-        memory: 256Mi
+        memory: 512Mi
       requests:
-        cpu: 50m
-        memory: 256Mi
+        cpu: 100m
+        memory: 512Mi
 ---
 apiVersion: v1
 kind: Service
