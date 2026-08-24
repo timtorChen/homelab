@@ -13,7 +13,7 @@ spec:
         namespace: grafana
         name: grafana-community
       chart: grafana
-      version: 12.11.1
+      version: 12.11.2
   interval: 1h
   maxHistory: 1
   values:
