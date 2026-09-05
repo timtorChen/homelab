@@ -88,4 +88,14 @@ locals {
     "openid",
     "profile"
   ]
+
+  # argo workflows
+  entra_app_argo_workflows_web_redirect_uris = ["https://workflows.timtor.dev/oauth2/callback"]
+  entra_app_argo_workflows_web_logout_url    = "https://workflows.timtor.dev"
+  entra_app_argo_workflows_graph_scopes = [
+    "email",
+    "openid",
+    "profile",
+    "groups"
+  ]
 }

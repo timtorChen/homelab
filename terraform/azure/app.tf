@@ -172,6 +172,41 @@ resource "azuread_application_password" "opencode" {
   }
 }
 
+# Argo Workflows
+resource "azuread_application" "argo_workflows" {
+  display_name = "Argo Workflows (terraform)"
+
+  web {
+    redirect_uris = local.entra_app_argo_workflows_web_redirect_uris
+    logout_url    = local.entra_app_argo_workflows_web_logout_url
+  }
+
+  required_resource_access {
+    resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
+    dynamic "resource_access" {
+      for_each = local.entra_app_argo_workflows_graph_scopes
+
+      content {
+        type = "Scope"
+        id   = data.azuread_service_principal.main.oauth2_permission_scope_ids[resource_access.value]
+      }
+    }
+  }
+}
+
+resource "time_rotating" "argo_workflows" {
+  rotation_hours = local.entra_app_rotate_hours
+}
+
+resource "azuread_application_password" "argo_workflows" {
+  display_name   = "main (terraform)"
+  application_id = azuread_application.argo_workflows.id
+
+  rotate_when_changed = {
+    rotation = time_rotating.argo_workflows.id
+  }
+}
+
 # Output
 output "_entra_tenant_id" {
   value = data.azuread_client_config.main.tenant_id
@@ -215,6 +250,14 @@ output "entra_app_opencode_application_id" {
 
 output "entra_app_opencode_application_secret" {
   value = nonsensitive(azuread_application_password.opencode.value)
+}
+
+output "entra_app_argo_workflows_application_id" {
+  value = azuread_application.argo_workflows.client_id
+}
+
+output "entra_app_argo_workflows_application_secret" {
+  value = nonsensitive(azuread_application_password.argo_workflows.value)
 }
 
 
