@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: argo
       chart: argo-events
-      version: 2.4.25
+      version: 2.4.26
   install:
     crds: CreateReplace
   upgrade:
