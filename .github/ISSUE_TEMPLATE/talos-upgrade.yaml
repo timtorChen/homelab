@@ -9,13 +9,13 @@ body:
       value: |
         Talos upgrade note.
 
-        - [x] Related PR(s):
-          - #pr-number
-        - [x] Related Issue(s):
-          - #issue-number
+        Related PR(s):
+        - #pr-number
 
         ## Talos {{v1.11}}
-        Support Kubernetes {{1.29}}-{{1.34}}
+        Release doc: https://docs.siderolabs.com/talos/{{v1.11}}/getting-started/what's-new-in-talos
+
+        Support Kubernetes {{1.29}} - {{1.34}}
         Core components default version:
         - CoreDNS: {{1.12.2}}
         - etcd: {{3.6.4}}
@@ -26,39 +26,12 @@ body:
         ### Deprecated
         - drop-d1
 
-        ## Upgrade process
-        ### Pre-upgrade tasks
-        - [ ] Check Kubernetes cluster health
-          ```bash
-          talosctl health
-          ```
-        - [ ] Backup etcd
-          ```bash
-          task kubernetes:etcd-backup:backup
-          ```
+        ### Upgrade process
+        - [ ] 1. Backup etcd. Trigger the backup workflow:
+        ```
+        task kubernetes:etcd-backup:backup
+        ```
 
-        ### Upgrade execution
-        - [ ] Login to secrert provider
-          ```bash
-          aws sso login
-          ```
-        - [ ] Upgrade control plane(s) first
-          ```bash
-          task talos:plan-nuc12wshi5-1
-          task talos:upgrade-nuc12wshi5-1
-          ```
-        - [ ] Upgrade worker(s)
-          ```bash
-          task talos:plan-nuc11tnhi50l-1
-          task talos:upgrade-nuc11tnhi50l-1
-          # continue to other workers
-          ```
+        - [ ] 2. Merge the PR, and Tuppr will handle the upgrade process
 
-        ### Post-upgrade verification
-        - [ ] Check Kubernetes cluster health again
-          ```bash
-          talosctl health
-          ```
-
-        ## References
-        https://docs.siderolabs.com/talos/{{v1.11}}/getting-started/what's-new-in-talos
+        - [ ] 3. Check the upgrade result
