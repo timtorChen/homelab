@@ -6,7 +6,7 @@ metadata:
   name: main
 spec:
   talos:
-    # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/installer-base
     version: v1.13.2
   policy:
     debug: true

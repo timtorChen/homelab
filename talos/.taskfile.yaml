@@ -12,7 +12,7 @@ tasks:
   list-image-tags:
     desc: List available version by -- CLI_ARGS
     cmd: |
-      skopeo list-tags docker://ghcr.io/siderolabs/installer |\
+      skopeo list-tags docker://ghcr.io/siderolabs/installer-base |\
         jq -r  '.Tags.[]' |\
         grep "{{.CLI_ARGS}}"
 

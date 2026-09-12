@@ -9,7 +9,7 @@
       "addLabels": ["area/core", "risk/high"],
       "matchFileNames": ["talos/**", "kubernetes/**"],
       "matchDatasources": ["docker"],
-      "matchDepNames": ["ghcr.io/siderolabs/installer"]
+      "matchDepNames": ["ghcr.io/siderolabs/installer-base"]
     },
     {
       // etcd
