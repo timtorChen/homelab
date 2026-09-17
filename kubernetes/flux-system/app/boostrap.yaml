@@ -526,7 +526,7 @@ spec:
     kind: GitRepository
     name: homelab
   interval: 10m0s
-  path: /kubernetes/mydata/nextcloud
+  path: /kubernetes/nextcloud/nextcloud
   prune: false
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
