@@ -19,8 +19,8 @@ includes:
     taskfile: system-upgrade/.taskfile.yaml
   nextcloud:
     optional: true
-    taskfile: mydata/nextcloud/.taskfile.yaml
-    dir: mydata/nextcloud
+    taskfile: nextcloud/.taskfile.yaml
+    dir: nextcloud
   navidrome:
     optional: true
     taskfile: mydata/navidrome/.taskfile.yaml
