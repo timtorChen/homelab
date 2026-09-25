@@ -1,0 +1,175 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+
+includes:
+  volsync:
+    taskfile: ../../.tasks/volsync.yaml
+  cnpg:
+    taskfile: ../../.tasks/cnpg.yaml
+
+tasks:
+  shell:
+    cmd: kubectl exec -it -n nextcloud deployment/nextcloud -- bash
+
+  backup:
+    deps:
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/data-manual-backup.tmpl.yaml
+          namespace: nextcloud
+          NAME: nextcloud-data-backup
+          WAIT: false
+      - task: volsync:backup
+        vars:
+          TEMPLATE: maintain/install-manual-backup.tmpl.yaml
+          namespace: nextcloud
+          NAME: nextcloud-install-backup
+          WAIT: false
+      - task: cnpg:backup
+        vars:
+          namespace: nextcloud
+          NAME: nextcloud-postgres
+          WAIT: false
+
+  restore:
+    prompt: |
+      Restore will delete current nextcloud data and database... continue?
+    cmds:
+      - task: stop
+      - task: delete-volume
+      - task: cnpg:delete
+        vars:
+          namespace: nextcloud
+          NAME: nextcloud-postgres
+      - task: create-volume
+      - task: cnpg:pitr
+        vars:
+          TEMPLATE: maintain/postgres-restore.tmpl.yaml
+          WAIT: false
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/install-manual-restore.tmpl.yaml
+          namespace: nextcloud
+          NAME: nextcloud-install-restore
+          WAIT: false
+      - task: volsync:restore
+        vars:
+          TEMPLATE: maintain/data-manual-restore.tmpl.yaml
+          namespace: nextcloud
+          NAME: nextcloud-data-restore
+          WAIT: false
+
+  delete-volume:
+    internal: true
+    cmd: |
+      echo "Deleting nextcloud volume claim..."
+      kubectl delete -f app/data-pvc.yaml
+      kubectl delete -f app/install-pvc.yaml
+
+  create-volume:
+    internal: true
+    cmd: |
+      echo "Creating nextcloud volume claim..."
+      kubectl create -f app/data-pvc.yaml
+      kubectl create -f app/install-pvc.yaml
+
+  stop:
+    cmd: |
+      echo "Stopping nextcloud..."
+      kubectl scale --replicas 0 -n nextcloud deployment/nextcloud
+
+  start:
+    cmd: |
+      echo "Starting nextcloud..."
+      kubectl scale --replicas 2 -n nextcloud deployment/nextcloud
+
+  stop-postgres:
+    cmds:
+      - task: cnpg:stop
+        vars:
+          namespace: nextcloud
+          NAME: nextcloud-postgres
+
+  start-postgres:
+    cmds:
+      - task: cnpg:start
+        vars:
+          namespace: nextcloud
+          NAME: nextcloud-postgres
+
+  stop-all:
+    cmds:
+      - task: stop
+      - task: stop-postgres
+
+  start-all:
+    cmds:
+      - task: start-postgres
+      - task: start
+
+  list-backup:
+    cmds:
+      - task: list-install-backup
+      - task: list-data-backup
+      - task: list-postgres-backup
+
+  list-install-backup:
+    env:
+      BACKUP_SECRET:
+        sh: |
+          aws ssm get-parameter --name /kubernetes/nextcloud/backup \
+          --query "Parameter.Value" --with-decryption
+      OPENDAL_ENDPOINT: "https://s3.us-east-005.backblazeb2.com"
+      OPENDAL_BUCKET:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
+      OPENDAL_ROOT: /install
+      OPENDAL_ACCESS_KEY_ID:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+      OPENDAL_SECRET_ACCESS_KEY:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+      RUSTIC_PASSWORD:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+    cmds:
+      - |
+          echo "Listing nextcloud-install snapshots..."
+          rustic snapshots -r "opendal:s3" --log-level=error
+
+  list-data-backup:
+    env:
+      BACKUP_SECRET:
+        sh: |
+          aws ssm get-parameter --name /kubernetes/mydata/nextcloud/backup \
+          --query "Parameter.Value" --with-decryption
+      OPENDAL_ENDPOINT: "https://s3.us-east-005.backblazeb2.com"
+      OPENDAL_BUCKET:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_BUCKET'
+      OPENDAL_ROOT: /data
+      OPENDAL_ACCESS_KEY_ID:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_ACCESS_KEY_ID'
+      OPENDAL_SECRET_ACCESS_KEY:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .OPENDAL_SECRET_ACCESS_KEY'
+      RUSTIC_PASSWORD:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .RUSTIC_PASSWORD'
+    cmds:
+      - |
+          echo "Listing nextcloud-data snapshots..."
+          rustic snapshots -r "opendal:s3" --log-level=error
+
+  list-postgres-backup:
+    env:
+      BACKUP_SECRET:
+        sh: |
+          aws ssm get-parameter --name /amethyst/nextcloud-postgres \
+          --query "Parameter.Value" --with-decryption
+      S3_ENDPOINT_URL: https://s3.us-east-005.backblazeb2.com
+      POSTGRES_REPO: s3://homelab-amethyst-nextcloud/nextcloud-postgres/base/
+      AWS_ACCESS_KEY_ID:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .POSTGRES_B2_ACCESS_KEY_ID'
+      AWS_SECRET_ACCESS_KEY:
+        sh: echo $BACKUP_SECRET | jq -r 'fromjson | .POSTGRES_B2_ACCESS_SECRET_KEY'
+    cmds:
+      - |
+          echo "Listing nextcloud-postgres backups..."
+          aws s3 ls --endpoint-url="$S3_ENDPOINT_URL" "$POSTGRES_REPO" | tr -s ' '

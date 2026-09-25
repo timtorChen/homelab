@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: nextcloud
+  name: nextcloud-deps-policy
+specs:
+  # allow postgres connection from nextcloud
+  - endpointSelector: &postgres
+      matchLabels:
+        cnpg.io/cluster: nextcloud-postgres
+    ingress:
+      - fromEndpoints: &nextcloud
+          - matchLabels:
+              app.kubernetes.io/name: nextcloud
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+  # allow redis connection from nextcloud
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: nextcloud-valkey
+    ingress:
+      - fromEndpoints: *nextcloud
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6379"
+  # allow postgres internal components
+  # - dns resolution to primary
+  # - replica connect to primary
+  # - health check probe from cnpg operator
+  # - get information from kube-apiserver
+  - endpointSelector: *postgres
+    ingress:
+      - fromEndpoints:
+          - *postgres
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: cnpg
+              app.kubernetes.io/instance: cnpg
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8000"
+    egress:
+      - toEndpoints:
+          - *postgres
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "nextcloud-postgres-rw.mydata.svc.cluster.local."
+  # backup and restore
+  - endpointSelector: *postgres
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &b2
+                - matchName: s3.us-east-005.backblazeb2.com
+      - toFQDNs: *b2
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
