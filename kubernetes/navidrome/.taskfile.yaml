@@ -5,7 +5,7 @@ silent: true
 
 includes:
   volsync:
-    taskfile: ../../../.tasks/volsync.yaml
+    taskfile: ../../.tasks/volsync.yaml
 
 tasks:
   backup:
@@ -13,12 +13,12 @@ tasks:
       - task: volsync:backup
         vars:
           TEMPLATE: maintain/db-manual-backup.tmpl.yaml
-          NAMESPACE: mydata
+          NAMESPACE: navidrome
           NAME: navidrome-db-backup
       - task: volsync:backup
         vars:
           TEMPLATE: maintain/data-manual-backup.tmpl.yaml
-          NAMESPACE: mydata
+          NAMESPACE: navidrome
           NAME: navidrome-data-backup
           TIMEOUT: 10m
 
@@ -33,12 +33,12 @@ tasks:
       - task: volsync:restore
         vars:
           TEMPLATE: maintain/db-manual-restore.tmpl.yaml
-          NAMESPACE: mydata
+          NAMESPACE: navidrome
           NAME: navidrome-db-restore
       - task: volsync:restore
         vars:
           TEMPLATE: maintain/data-manual-restore.tmpl.yaml
-          NAMESPACE: mydata
+          NAMESPACE: navidrome
           NAME: navidrome-data-restore
           TIMEOUT: 20m
       - task: start
@@ -61,12 +61,12 @@ tasks:
   stop:
     cmd: |
       echo "Stopping navidrome..."
-      kubectl scale --replicas 0 -n mydata deployment/navidrome
+      kubectl scale --replicas 0 -n navidrome deployment/navidrome
 
   start:
     cmd: |
       echo "Starting navidrome..."
-      kubectl scale --replicas 1 -n mydata deployment/navidrome
+      kubectl scale --replicas 1 -n navidrome deployment/navidrome
 
   list-backup:
     env:

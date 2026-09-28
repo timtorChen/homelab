@@ -3,8 +3,8 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: mydata
-  name: navidrome-policy
+  namespace: navidrome
+  name: navidrome-app-policy
 specs:
   # allow connection from cilium ingress
   - endpointSelector:

@@ -3,14 +3,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  namespace: mydata
+  namespace: navidrome
   name: navidrome
 spec:
   chart:
     spec:
       sourceRef:
         kind: HelmRepository
-        namespace: mydata
+        namespace: navidrome
         name: bjw-s
       chart: app-template
       version: 3.7.3

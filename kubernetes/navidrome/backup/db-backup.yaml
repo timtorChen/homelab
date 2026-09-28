@@ -2,20 +2,21 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  namespace: mydata
-  name: navidrome-data-backup
+  namespace: navidrome
+  name: navidrome-db-backup
 spec:
-  sourcePVC: navidrome-data
+  sourcePVC: navidrome-db
   trigger:
     schedule: "0 0/12 * * *"
   restic:
     pruneIntervalDays: 14
-    repository: navidrome-data-backup-secret
+    repository: navidrome-db-backup-secret
     retain:
       daily: 5
       weekly: 4
       monthly: 3
     copyMethod: Snapshot
+    # volume created from snapshot
     volumeSnapshotClassName: rook-ceph-fs
     storageClassName: fs-fast-ec
     accessModes: ["ReadWriteOnce"]
