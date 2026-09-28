@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  namespace: mydata
-  name: navidrome-db
+  namespace: navidrome
+  name: navidrome-data
 spec:
   storageClassName: fs-fast
   resources:
     requests:
-      storage: 1Gi
+      storage: 50Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany

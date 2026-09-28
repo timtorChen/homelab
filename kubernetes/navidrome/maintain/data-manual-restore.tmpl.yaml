@@ -2,7 +2,7 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  # namespace: mydata
+  # namespace: navidrome
   # name: navidrome-data-manual-restore
   {}
 spec:
