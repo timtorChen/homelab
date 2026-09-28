@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - base/ns.yaml
   - base/repo.yaml
+  - base/netpol.yaml
   - app/release.yaml
   - app/netpol.yaml
   - app/data-pvc.yaml
@@ -15,3 +16,4 @@ resources:
   - backup/db-secret.yaml
   - backup/secret-holder-sa.yaml
   - backup/secret-holder.yaml
+  - backup/netpol.yaml
