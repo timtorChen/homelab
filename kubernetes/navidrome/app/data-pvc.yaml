@@ -6,9 +6,9 @@ metadata:
   namespace: navidrome
   name: navidrome-data
 spec:
-  storageClassName: fs-fast
+  storageClassName: rbd-fast
   resources:
     requests:
       storage: 50Gi
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce

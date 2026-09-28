@@ -6,7 +6,7 @@ metadata:
   namespace: navidrome
   name: navidrome-db
 spec:
-  storageClassName: fs-fast
+  storageClassName: rbd-fast
   resources:
     requests:
       storage: 1Gi
