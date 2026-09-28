@@ -18,8 +18,8 @@ spec:
       weekly: 4
       monthly: 3
     copyMethod: Snapshot
-    volumeSnapshotClassName: rook-ceph-fs
-    storageClassName: fs-fast-ec
+    volumeSnapshotClassName: rook-ceph-rbd
+    storageClassName: rbd-fast-ec
     accessModes: ["ReadWriteOnce"]
     cacheStorageClassName: rbd-fast-ec
     cacheAccessModes: ["ReadWriteOnce"]

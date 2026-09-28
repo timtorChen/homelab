@@ -23,8 +23,8 @@ includes:
     dir: nextcloud
   navidrome:
     optional: true
-    taskfile: mydata/navidrome/.taskfile.yaml
-    dir: mydata/navidrome
+    taskfile: navidrome/.taskfile.yaml
+    dir: navidrome
   immich:
     optional: true
     taskfile: mydata/immich/.taskfile.yaml
