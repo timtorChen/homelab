@@ -16,7 +16,7 @@ spec:
             value: 30m
       serviceAccountName: "{{inputs.parameters.serviceAccount}}"
       container:
-        image: public.ecr.aws/bitnami/kubectl:latest
+        image: alpine/kubectl:latest
         securityContext: &sc
           runAsNonRoot: true
           runAsUser: 65534
@@ -42,7 +42,7 @@ spec:
           - name: name
       serviceAccountName: "{{inputs.parameters.serviceAccount}}"
       container:
-        image: public.ecr.aws/bitnami/kubectl:latest
+        image: alpine/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
@@ -59,7 +59,7 @@ spec:
             value: 30m
       serviceAccountName: "{{inputs.parameters.serviceAccount}}"
       container:
-        image: public.ecr.aws/bitnami/kubectl:latest
+        image: alpine/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:
@@ -76,7 +76,7 @@ spec:
           - name: name
       serviceAccountName: "{{inputs.parameters.serviceAccount}}"
       container:
-        image: public.ecr.aws/bitnami/kubectl:latest
+        image: alpine/kubectl:latest
         securityContext: *sc
         command: ["/bin/sh", "-c"]
         args:

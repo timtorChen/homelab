@@ -32,7 +32,7 @@ spec:
     - name: create-backup
       serviceAccountName: vaultwarden-backup
       container:
-        image: public.ecr.aws/bitnami/kubectl:latest
+        image: alpine/kubectl:latest
         securityContext:
           runAsNonRoot: true
           runAsUser: 65534

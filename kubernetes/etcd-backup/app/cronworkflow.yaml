@@ -70,13 +70,14 @@ spec:
               valueFrom:
                 path: /tmp/control-plane-ip
         container:
-          image: public.ecr.aws/bitnami/kubectl:latest
+          image: alpine/kubectl:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
-                kubectl get nodes --selector node-role.kubernetes.io/control-plane=="" -o json \
-                | jq -c '.items[0].status.addresses[] | select(.type=="InternalIP") | .address' \
-                > /tmp/control-plane-ip
+                kubectl get nodes \
+                  --selector='node-role.kubernetes.io/control-plane==' \
+                  -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' \
+                  > /tmp/control-plane-ip
           volumeMounts:
             - name: tmp
               mountPath: /tmp
