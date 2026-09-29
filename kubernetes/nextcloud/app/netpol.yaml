@@ -30,8 +30,8 @@ specs:
                 port: "53"
             rules:
               dns:
-                - matchName: "nextcloud-postgres-rw.mydata.svc.cluster.local."
-                - matchName: "nextcloud-valkey.mydata.svc.cluster.local."
+                - matchName: "nextcloud-postgres-rw.nextcloud.svc.cluster.local."
+                - matchName: "nextcloud-valkey.nextcloud.svc.cluster.local."
       - toEndpoints:
           - matchLabels:
               cnpg.io/cluster: nextcloud-postgres

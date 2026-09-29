@@ -71,7 +71,7 @@ specs:
                 port: "53"
             rules:
               dns:
-                - matchName: "nextcloud-postgres-rw.mydata.svc.cluster.local."
+                - matchName: "nextcloud-postgres-rw.nextcloud.svc.cluster.local."
   # backup and restore
   - endpointSelector: *postgres
     egress:

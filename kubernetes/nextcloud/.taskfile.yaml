@@ -140,7 +140,7 @@ tasks:
     env:
       BACKUP_SECRET:
         sh: |
-          aws ssm get-parameter --name /kubernetes/mydata/nextcloud/backup \
+          aws ssm get-parameter --name /kubernetes/nextcloud/backup \
           --query "Parameter.Value" --with-decryption
       OPENDAL_ENDPOINT: "https://s3.us-east-005.backblazeb2.com"
       OPENDAL_BUCKET:
