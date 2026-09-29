@@ -916,7 +916,7 @@ resource "aws_iam_role" "immich" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -959,7 +959,7 @@ resource "aws_iam_role" "immich-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-backup-secret-holder",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -1002,7 +1002,7 @@ resource "aws_iam_role" "immich-postgres-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-postgres-secret-holder",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -1045,7 +1045,7 @@ resource "aws_iam_role" "immich-valkey" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:mydata:immich-valkey",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-valkey",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
