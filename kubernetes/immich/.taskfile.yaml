@@ -15,12 +15,12 @@ tasks:
       - task: volsync:backup
         vars:
           TEMPLATE: maintain/data-manual-backup.tmpl.yaml
-          NAMESPACE: mydata
+          NAMESPACE: immich
           NAME: immich-data-backup
           TIMEOUT: 10m
       - task: cnpg:backup
         vars:
-          NAMESPACE: mydata
+          NAMESPACE: immich
           NAME: immich-postgres
 
   restore:
@@ -32,7 +32,7 @@ tasks:
       - task: delete-volume
       - task: cnpg:delete
         vars:
-          NAMESPACE: mydata
+          NAMESPACE: immich
           NAME: immich-postgres
       - task: create-volume
       - task: cnpg:pitr
@@ -41,7 +41,7 @@ tasks:
       - task: volsync:restore
         vars:
           TEMPLATE: maintain/data-manual-restore.tmpl.yaml
-          NAMESPACE: mydata
+          NAMESPACE: immich
           NAME: immich-data-restore
           TIMEOUT: 20m
       - task: start
@@ -62,29 +62,29 @@ tasks:
   stop:
     cmd: |
       echo "Stopping immich..."
-      kubectl scale --replicas 0 -n mydata deployment/immich-machine-learning
-      kubectl scale --replicas 0 -n mydata deployment/immich-server
-      kubectl scale --replicas 0 -n mydata deployment/immich-microservices
+      kubectl scale --replicas 0 -n immich deployment/immich-machine-learning
+      kubectl scale --replicas 0 -n immich deployment/immich-server
+      kubectl scale --replicas 0 -n immich deployment/immich-microservices
 
   start:
     cmd: |
       echo "Starting immich..."
-      kubectl scale --replicas 1 -n mydata deployment/immich-machine-learning
-      kubectl scale --replicas 1 -n mydata deployment/immich-server
-      kubectl scale --replicas 1 -n mydata deployment/immich-microservices
+      kubectl scale --replicas 1 -n immich deployment/immich-machine-learning
+      kubectl scale --replicas 1 -n immich deployment/immich-server
+      kubectl scale --replicas 1 -n immich deployment/immich-microservices
 
   stop-postgres:
     cmds:
       - task: cnpg:stop
         vars:
-          NAMESPACE: mydata
+          NAMESPACE: immich
           NAME: immich-postgres
 
   start-postgres:
     cmds:
       - task: cnpg:start
         vars:
-          NAMESPACE: mydata
+          NAMESPACE: immich
           NAME: immich-postgres
 
   stop-all:
@@ -106,7 +106,7 @@ tasks:
     env:
       BACKUP_SECRET:
         sh: |
-          aws ssm get-parameter --name /kubernetes/mydata/immich/backup \
+          aws ssm get-parameter --name /kubernetes/immich/backup \
           --query "Parameter.Value" --with-decryption
       OPENDAL_ENDPOINT: "https://s3.us-east-005.backblazeb2.com"
       OPENDAL_BUCKET:

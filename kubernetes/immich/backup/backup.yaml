@@ -2,7 +2,7 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  namespace: mydata
+  namespace: immich
   name: immich-backup
 spec:
   sourcePVC: immich-data
