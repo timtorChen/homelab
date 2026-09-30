@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: mydata
+  namespace: immich
   name: immich-deps-policy
 specs:
   # allow postgres from immich
@@ -71,7 +71,7 @@ specs:
                 port: "53"
             rules:
               dns:
-                - matchName: "immich-postgres-rw.mydata.svc.cluster.local."
+                - matchName: "immich-postgres-rw.immich.svc.cluster.local."
   # backup and restore
   - endpointSelector: *postgres
     egress:

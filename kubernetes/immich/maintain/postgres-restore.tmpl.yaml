@@ -3,7 +3,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  namespace: mydata
+  namespace: immich
   name: &name immich-postgres
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:15.6
