@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - base/ns.yaml
   - base/netpol.yaml
+  - app/repo.yaml
   - app/release.yaml
   - app/pvc.yaml
   - app/secret.yaml
@@ -12,6 +13,8 @@ resources:
   - deps/valkey-secret.yaml
   - deps/valkey.yaml
   - deps/postgres-secret.yaml
+  - deps/postgres-secret-holder.yaml
+  - deps/postgres-secret-holder-sa.yaml
   - deps/postgres.yaml
   - deps/netpol.yaml
   - backup/backup.yaml
