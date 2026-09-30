@@ -5,9 +5,9 @@ silent: true
 
 includes:
   volsync:
-    taskfile: ../../../.tasks/volsync.yaml
+    taskfile: ../../.tasks/volsync.yaml
   cnpg:
-    taskfile: ../../../.tasks/cnpg.yaml
+    taskfile: ../../.tasks/cnpg.yaml
 
 tasks:
   backup:
