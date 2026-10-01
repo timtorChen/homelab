@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: ceph-csi-operator
       chart: ceph-csi-drivers
-      version: 1.0.5
+      version: 1.1.0
   install:
     crds: CreateReplace
   upgrade:
