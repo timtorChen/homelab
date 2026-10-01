@@ -4,12 +4,12 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.63.0"
+      version = "~> 6.67.0"
     }
 
     b2 = {
       source  = "Backblaze/b2"
-      version = "~> 0.13.0"
+      version = "~> 0.14.0"
     }
   }
   backend "s3" {
