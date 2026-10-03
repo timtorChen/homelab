@@ -47,6 +47,7 @@ locals {
     "GroupMember.Read.All",
   ]
 
+  # grafana
   entra_app_grafana_web_redirect_uris = ["https://grafana.timtor.dev/login/generic_oauth"]
   entra_app_grafana_web_logout_url    = "https://grafana.timtor.dev"
   entra_app_grafana_graph_scopes = [
@@ -68,22 +69,9 @@ locals {
     "https://photo.timtor.dev/auth/login",
     "https://photo.timtor.dev/user-settings",
     "https://photo.timtor.dev/api/oauth/mobile-redirect",
-    # "app.immich:///oauth-callback"
   ]
   entra_app_immich_web_logout_url = "https://photo.timtor.dev"
   entra_app_immich_graph_scopes = [
-    "email",
-    "openid",
-    "profile"
-  ]
-
-  # opencode
-  entra_app_opencode_web_redirect_uris = [
-    "https://oc.timtor.dev/oidc-callback.html",
-    # "http://127.0.0.1"
-  ]
-  entra_app_opencode_web_logout_url = "https://opencode.timtor.dev"
-  entra_app_opencode_graph_scopes = [
     "email",
     "openid",
     "profile"
@@ -95,7 +83,6 @@ locals {
   entra_app_argo_workflows_graph_scopes = [
     "email",
     "openid",
-    "profile",
-    "groups"
+    "profile"
   ]
 }
