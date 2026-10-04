@@ -65,7 +65,7 @@ tasks:
   list-backup:
     env:
       S3_ENDPOINT_URL: https://s3.us-east-005.backblazeb2.com
-      POSTGRES_REPO: s3://homelab-amethyst-grafana/grafana-postgres/base/
+      POSTGRES_REPO: s3://timtor-homelab-grafana/grafana-postgres/base/
       BACKUP_SECRET:
         sh: |
           aws ssm get-parameter --name /amethyst/grafana-postgres \

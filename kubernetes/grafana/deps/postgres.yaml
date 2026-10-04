@@ -13,7 +13,7 @@ spec:
       storageClassName: rbd-fast
       resources:
         requests:
-          storage: 20Gi
+          storage: 10Gi
       accessModes: ["ReadWriteOnce"]
   bootstrap:
     initdb:
@@ -28,7 +28,7 @@ spec:
     retentionPolicy: "2w"
     barmanObjectStore:
       endpointURL: https://s3.us-east-005.backblazeb2.com
-      destinationPath: s3://homelab-amethyst-grafana/
+      destinationPath: s3://timtor-homelab-grafana/
       s3Credentials:
         accessKeyId:
           name: grafana-postgres-secret
