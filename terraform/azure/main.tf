@@ -56,8 +56,8 @@ locals {
   ]
 
   # miniflux
-  entra_app_miniflux_web_redirect_uris = ["https://miniflux.timtor.dev/oauth2/oidc/callback"]
-  entra_app_miniflux_web_logout_url    = "https://miniflux.timtor.dev"
+  entra_app_miniflux_web_redirect_uris = ["https://rss.timtor.dev/oauth2/oidc/callback"]
+  entra_app_miniflux_web_logout_url    = "https://rss.timtor.dev"
   entra_app_miniflux_graph_scopes = [
     "email",
     "openid",
