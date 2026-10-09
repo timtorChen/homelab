@@ -33,7 +33,7 @@ spec:
       authModes: ["sso"]
       sso:
         enabled: true
-        issuer: https://login.microsoftonline.com/a5ccdd11-d4cc-424b-ab4a-6bef963f831c/v2.0
+        issuer: https://oauth.id.jumpcloud.com/
         clientId:
           name: *secret
           key: CLIENT_ID
@@ -41,7 +41,7 @@ spec:
           name: *secret
           key: CLIENT_SECRET
         redirectUrl: https://workflows.timtor.dev/oauth2/callback
-        scopes: ["openid", "profile", "email", "offline_access", "groups"]
+        scopes: ["group"]
         sessionExpiry: 168h # 7 days
       securityContext: &sc
         runAsNonRoot: true
