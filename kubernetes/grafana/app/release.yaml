@@ -70,13 +70,13 @@ spec:
         enabled: true
         allow_sign_up: true
         auto_login: false
-        name: JumpCloud
-        client_id: ${JUMPCLOUD_OIDC_CLIENT_ID}
-        client_secret: ${JUMPCLOUD_OIDC_CLIENT_SECRET}
-        auth_url: https://oauth.id.jumpcloud.com/oauth2/auth
-        token_url: https://oauth.id.jumpcloud.com/oauth2/token
-        api_url: https://oauth.id.jumpcloud.com/userinfo
-        scopes: email profile
+        name: Microsoft Entra ID
+        client_id: ${ENTRA_APP_GRAFANA_APPLICATION_ID}
+        client_secret: ${ENTRA_APP_GRAFANA_APPLICATION_SECRET}
+        auth_url: https://login.microsoftonline.com/a5ccdd11-d4cc-424b-ab4a-6bef963f831c/oauth2/v2.0/authorize
+        token_url: https://login.microsoftonline.com/a5ccdd11-d4cc-424b-ab4a-6bef963f831c/oauth2/v2.0/token
+        api_url: https://graph.microsoft.com/oidc/userinfo
+        scopes: openid email profile
         ## Roles
         allow_assign_grafana_admin: true
         role_attribute_path: >
