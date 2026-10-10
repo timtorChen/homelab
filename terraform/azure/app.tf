@@ -3,13 +3,21 @@ resource "azuread_application" "cloudflare" {
   display_name = "Cloudflare (terraform)"
 
   web {
-    redirect_uris = local.entra_app_cloudflare_web_redirect_uris
+    redirect_uris = ["https://timtor.cloudflareaccess.com/cdn-cgi/access/callback"]
   }
 
   required_resource_access {
     resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
     dynamic "resource_access" {
-      for_each = local.entra_app_cloudflare_graph_scopes
+      for_each = [
+        "email",
+        "offline_access",
+        "openid",
+        "profile",
+        "User.Read",
+        "Directory.Read.All",
+        "GroupMember.Read.All",
+      ]
 
       content {
         type = "Scope"
@@ -37,14 +45,18 @@ resource "azuread_application" "miniflux" {
   display_name = "Miniflux (terraform)"
 
   web {
-    redirect_uris = local.entra_app_miniflux_web_redirect_uris
-    logout_url    = local.entra_app_miniflux_web_logout_url
+    redirect_uris = ["https://rss.timtor.dev/oauth2/oidc/callback"]
+    logout_url    = "https://rss.timtor.dev"
   }
 
   required_resource_access {
     resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
     dynamic "resource_access" {
-      for_each = local.entra_app_miniflux_graph_scopes
+      for_each = [
+        "email",
+        "openid",
+        "profile",
+      ]
 
       content {
         type = "Scope"
@@ -69,17 +81,27 @@ resource "azuread_application_password" "miniflux" {
 
 # Grafana
 resource "azuread_application" "grafana" {
-  display_name = "Grafana (terraform)"
+  display_name            = "Grafana (terraform)"
+  group_membership_claims = ["SecurityGroup"]
 
   web {
-    redirect_uris = local.entra_app_grafana_web_redirect_uris
-    logout_url    = local.entra_app_grafana_web_logout_url
+    redirect_uris = ["https://grafana.timtor.dev/login/generic_oauth"]
+    logout_url    = "https://grafana.timtor.dev"
+  }
+
+  optional_claims {
+    id_token {
+      name = "groups"
+    }
   }
 
   required_resource_access {
     resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
     dynamic "resource_access" {
-      for_each = local.entra_app_grafana_graph_scopes
+      for_each = [
+        "User.Read",
+        "GroupMember.Read.All",
+      ]
 
       content {
         type = "Scope"
@@ -107,14 +129,22 @@ resource "azuread_application" "immich" {
   display_name = "Immich (terraform)"
 
   web {
-    redirect_uris = local.entra_app_immich_web_redirect_uris
-    logout_url    = local.entra_app_immich_web_logout_url
+    redirect_uris = [
+      "https://photo.timtor.dev/auth/login",
+      "https://photo.timtor.dev/user-settings",
+      "https://photo.timtor.dev/api/oauth/mobile-redirect",
+    ]
+    logout_url = "https://photo.timtor.dev"
   }
 
   required_resource_access {
     resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
     dynamic "resource_access" {
-      for_each = local.entra_app_immich_graph_scopes
+      for_each = [
+        "email",
+        "openid",
+        "profile",
+      ]
 
       content {
         type = "Scope"
@@ -142,14 +172,18 @@ resource "azuread_application" "argo_workflows" {
   display_name = "Argo Workflows (terraform)"
 
   web {
-    redirect_uris = local.entra_app_argo_workflows_web_redirect_uris
-    logout_url    = local.entra_app_argo_workflows_web_logout_url
+    redirect_uris = ["https://workflows.timtor.dev/oauth2/callback"]
+    logout_url    = "https://workflows.timtor.dev"
   }
 
   required_resource_access {
     resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
     dynamic "resource_access" {
-      for_each = local.entra_app_argo_workflows_graph_scopes
+      for_each = [
+        "email",
+        "openid",
+        "profile",
+      ]
 
       content {
         type = "Scope"
