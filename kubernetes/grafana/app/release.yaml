@@ -48,7 +48,7 @@ spec:
         ## Debug, change to level: debug
         level: info
       auth:
-        ## Debug, uncomment to enable the default admin user while OIDC failed
+        ## Debug, change to disable_login_form: false to enable password login while SSO failed
         disable_login_form: true
       server:
         root_url: https://grafana.timtor.dev
@@ -70,21 +70,25 @@ spec:
         enabled: true
         allow_sign_up: true
         auto_login: false
-        name: JumpCloud
-        client_id: ${JUMPCLOUD_OIDC_CLIENT_ID}
-        client_secret: ${JUMPCLOUD_OIDC_CLIENT_SECRET}
-        auth_url: https://oauth.id.jumpcloud.com/oauth2/auth
-        token_url: https://oauth.id.jumpcloud.com/oauth2/token
-        api_url: https://oauth.id.jumpcloud.com/userinfo
-        scopes: email profile
+        name: Microsoft Entra ID
+        client_id: ${ENTRA_APP_GRAFANA_APPLICATION_ID}
+        client_secret: ${ENTRA_APP_GRAFANA_APPLICATION_SECRET}
+        auth_url: https://login.microsoftonline.com/a5ccdd11-d4cc-424b-ab4a-6bef963f831c/oauth2/v2.0/authorize
+        token_url: https://login.microsoftonline.com/a5ccdd11-d4cc-424b-ab4a-6bef963f831c/oauth2/v2.0/token
+        api_url: https://graph.microsoft.com/oidc/userinfo
+        scopes: openid email profile
         ## Roles
         allow_assign_grafana_admin: true
+        ## Azure group object IDs
         role_attribute_path: >
-          groups == 'Admin' && 'GrafanaAdmin' ||
-          contains(groups[*], 'Admin') && 'GrafanaAdmin' ||
+          contains(groups[*], 'c435397e-09e6-4311-b8d0-b7096e2a82b6') && 'GrafanaAdmin' ||
+          contains(groups[*], 'c547fbbe-6c98-41b3-8a49-3f2bad80a8f1') && 'GrafanaAdmin' ||
+          contains(groups[*], 'f65ea526-e6b9-41ba-a7db-1b1ffe036e75') && 'Admin' ||
+          contains(groups[*], '66842db9-5502-4e72-a13b-3ba18011486d') && 'Editor' ||
+          contains(groups[*], '5cf92c04-9a8b-4f97-9a96-fc7c148fb209') && 'Viewer' ||
           'no-sorry-not-you'
         role_attribute_strict: true
-        skip_org_role_sync: true
+        skip_org_role_sync: false
       unified_alerting:
         enabled: true
         ha_listen_address: ${POD_IP}:9094
