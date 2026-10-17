@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  namespace: mydata
+  namespace: immich
   name: bjw-s
 spec:
   url: https://bjw-s-labs.github.io/helm-charts
