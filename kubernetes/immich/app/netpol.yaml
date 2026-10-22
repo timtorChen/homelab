@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: mydata
+  namespace: immich
   name: immich-app-policy
 specs:
   # default
@@ -36,7 +36,7 @@ specs:
                 port: "53"
             rules:
               dns:
-                - matchPattern: "immich-machine-learning.mydata.svc.cluster.local."
+                - matchPattern: "immich-machine-learning.immich.svc.cluster.local."
   - endpointSelector: *self
     ingress:
       - fromEndpoints:
@@ -65,8 +65,8 @@ specs:
                 port: "53"
             rules:
               dns:
-                - matchName: "immich-postgres-rw.mydata.svc.cluster.local."
-                - matchName: "immich-valkey.mydata.svc.cluster.local."
+                - matchName: "immich-postgres-rw.immich.svc.cluster.local."
+                - matchName: "immich-valkey.immich.svc.cluster.local."
       - toEndpoints:
           - matchLabels:
               cnpg.io/cluster: immich-postgres
