@@ -57,6 +57,8 @@ specs:
           - matchLabels:
               k8s:io.kubernetes.pod.namespace: prometheus
               app.kubernetes.io/name: prometheus
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: blackbox-exporter
         toPorts:
           - ports:
               - protocol: TCP

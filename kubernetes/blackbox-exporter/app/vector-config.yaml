@@ -1,0 +1,70 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: blackbox-exporter
+  name: vector-config
+data:
+  blackbox.yaml: |
+    api:
+      enabled: true
+      address: 0.0.0.0:8686
+
+    sources:
+      blackbox-duckduckgo:
+        type: prometheus_scrape
+        endpoints:
+          - http://localhost:9115/probe?target=https%3A%2F%2Fduckduckgo.com&module=http_2xx
+        scrape_interval_secs: 60
+        scrape_timeout_secs: 5
+
+      blackbox-github:
+        type: prometheus_scrape
+        endpoints:
+          - http://localhost:9115/probe?target=https%3A%2F%2Fgithub.com&module=http_2xx
+        scrape_interval_secs: 60
+        scrape_timeout_secs: 5
+
+      blackbox-cloudflare-dns:
+        type: prometheus_scrape
+        endpoints:
+          - http://localhost:9115/probe?target=1.1.1.1&module=icmp
+        scrape_interval_secs: 60
+        scrape_timeout_secs: 5
+
+    transforms:
+      blackbox-duckduckgo-labels:
+        type: remap
+        inputs: [blackbox-duckduckgo]
+        source: |
+          .tags.instance = "https://duckduckgo.com"
+
+      blackbox-github-labels:
+        type: remap
+        inputs: [blackbox-github]
+        source: |
+          .tags.instance = "https://github.com"
+
+      blackbox-cloudflare-dns-labels:
+        type: remap
+        inputs: [blackbox-cloudflare-dns]
+        source: |
+          .tags.instance = "1.1.1.1"
+
+      blackbox-prometheus-labels:
+        type: remap
+        inputs:
+          - blackbox-duckduckgo-labels
+          - blackbox-github-labels
+          - blackbox-cloudflare-dns-labels
+        source: |
+          .tags.job = "blackbox-exporter"
+
+    sinks:
+      blackbox-mimir:
+        type: prometheus_remote_write
+        inputs: [blackbox-prometheus-labels]
+        endpoint: http://mimir-distributor.mimir.svc:8080/api/v1/push
+        healthcheck:
+          enabled: false
