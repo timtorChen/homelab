@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: blackbox-exporter
+  name: blackbox-exporter
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+      chart: prometheus-blackbox-exporter
+      version: 11.20.0
+  interval: 1h
+  maxHistory: 1
+  values:
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: vector-config
+    podSecurityContext:
+      sysctls:
+        - name: net.ipv4.ping_group_range
+          value: "65534 65534"
+    config:
+      modules:
+        icmp:
+          prober: icmp
+          timeout: 5s
+          icmp:
+            preferred_ip_protocol: ip4
+            ip_protocol_fallback: true
+    resources:
+      limits:
+        memory: 64Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+    livenessProbe:
+      httpGet:
+        path: /-/healthy
+        port: http
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /-/healthy
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 1
+      failureThreshold: 3
+    securityContext: &sc
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    extraVolumes:
+      - name: vector-config
+        configMap:
+          name: vector-config
+    extraContainers:
+      - name: vector
+        image: timberio/vector:0.59.0-distroless-libc
+        env:
+          - name: VECTOR_CONFIG_DIR
+            value: /etc/vector
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        ports:
+          - name: api
+            containerPort: 8686
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: api
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: api
+          periodSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 3
+        securityContext: *sc
+        volumeMounts:
+          - name: vector-config
+            mountPath: /etc/vector
+            readOnly: true
