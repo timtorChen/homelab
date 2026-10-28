@@ -3,8 +3,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: vector-agent
-  name: vector-agent-config
+  namespace: vector-log
+  name: vector-log-config
 data:
   kubernetes.yaml: |
     data_dir: /var/lib/vector

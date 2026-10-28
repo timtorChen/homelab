@@ -3,15 +3,15 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: vector-agent
-  name: vector-agent
+  namespace: vector-log
+  name: vector-log
 automountServiceAccountToken: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/clusterrole-rbac-v1.json
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: vector-agent
+  name: vector-log
 rules:
   - apiGroups: [""]
     resources: ["pods", "namespaces", "nodes"]
@@ -21,12 +21,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: vector-agent
+  name: vector-log
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: vector-agent
+  name: vector-log
 subjects:
   - kind: ServiceAccount
-    name: vector-agent
-    namespace: vector-agent
+    name: vector-log
+    namespace: vector-log

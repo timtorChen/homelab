@@ -3,12 +3,12 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: vector-agent
-  name: vector-agent-policy
+  namespace: vector-log
+  name: vector-log-policy
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: vector-agent
+      app.kubernetes.io/name: vector-log
   ingress: []
   egress:
     # kube-api

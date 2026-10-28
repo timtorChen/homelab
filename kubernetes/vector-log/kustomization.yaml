@@ -6,5 +6,5 @@ resources:
   - namespace.yaml
   - rbac.yaml
   - vector-config.yaml
-  - vector-agent.yaml
+  - vector-log.yaml
   - networkpolicy.yaml
