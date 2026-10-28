@@ -33,6 +33,7 @@ spec:
             image:
               repository: docker.io/binwiederhier/ntfy
               tag: v2.20.0
+            args: ["serve"]
             env:
               NTFY_LISTEN_HTTP: ":8080"
               NTFY_AUTH_DEFAULT_ACCESS: deny-all
