@@ -4,4 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
-  - promtail.yaml
+  - rbac.yaml
+  - vector-config.yaml
+  - vector-agent.yaml
+  - networkpolicy.yaml

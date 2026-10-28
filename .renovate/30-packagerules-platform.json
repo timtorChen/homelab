@@ -270,22 +270,22 @@
       "matchDepNames": ["docker.io/matusnovak/prometheus-smartctl"]
     },
     {
-      // promtail - group
-      "groupName": "promtail",
+      // vector - group
+      "groupName": "vector",
       "semanticCommitScope": "platform",
       "addLabels": ["area/platform"],
       "matchFileNames": ["kubernetes/**"],
-      "matchDatasources": ["helm"],
-      "matchDepNames": ["promtail"]
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["timberio/vector"]
     },
     {
-      // promtail - automerge
-      "groupName": "promtail",
+      // vector - automerge
+      "groupName": "vector",
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
       "matchFileNames": ["kubernetes/**"],
-      "matchDatasources": ["helm"],
-      "matchDepNames": ["promtail"]
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["timberio/vector"]
     },
     {
       // argo-workflows - group

@@ -47,7 +47,7 @@ specs:
           - ports:
               - protocol: TCP
                 port: "8080"
-  # allow loki-write from promtail
+  # allow loki-write from vector-agent
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/name: loki
@@ -55,8 +55,8 @@ specs:
     ingress:
       - fromEndpoints:
           - matchLabels:
-              k8s:io.kubernetes.pod.namespace: promtail
-              app.kubernetes.io/name: promtail
+              k8s:io.kubernetes.pod.namespace: vector-agent
+              app.kubernetes.io/name: vector-agent
         toPorts:
           - ports:
               - protocol: TCP

@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: vector-agent
+  name: vector-agent-config
+data:
+  kubernetes.yaml: |
+    data_dir: /var/lib/vector
+
+    sources:
+      kubernetes-logs:
+        type: kubernetes_logs
+        self_node_name: "${VECTOR_SELF_NODE_NAME}"
+        auto_partial_merge: true
+
+    sinks:
+      loki:
+        type: loki
+        inputs: [kubernetes-logs]
+        endpoint: http://loki-write-headless.loki.svc:3100
+        out_of_order_action: rewrite_timestamp
+        encoding:
+          codec: json
+        compression: snappy
+        labels:
+          project: amethyst
+          namespace: "{{ kubernetes.pod_namespace }}"
+          pod: "{{ kubernetes.pod_name }}"
+          container: "{{ kubernetes.container_name }}"

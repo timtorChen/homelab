@@ -3,15 +3,13 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  namespace: promtail
-  name: promtail-policy
+  namespace: vector-agent
+  name: vector-agent-policy
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: promtail
-  ingress:
-    # deny all ingress traffic
-    - {}
+      app.kubernetes.io/name: vector-agent
+  ingress: []
   egress:
     # kube-api
     - toEntities: [kube-apiserver]
@@ -19,7 +17,7 @@ spec:
         - ports:
             - protocol: TCP
               port: "6443"
-    # dns resolution
+    # DNS resolution
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
