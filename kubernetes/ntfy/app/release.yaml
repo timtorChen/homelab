@@ -37,7 +37,7 @@ spec:
             env:
               NTFY_LISTEN_HTTP: ":8080"
               NTFY_AUTH_DEFAULT_ACCESS: deny-all
-              NTFY_BASE_URL: https://ntfy.timtor.dev
+              NTFY_BASE_URL: https://notify.timtor.dev
               NTFY_BEHIND_PROXY: "true"
               NTFY_DATABASE_URL:
                 valueFrom:
@@ -95,7 +95,7 @@ spec:
             name: cilium-default
             sectionName: https
         hostnames:
-          - ntfy.timtor.dev
+          - notify.timtor.dev
         rules:
           - matches:
               - path:
@@ -113,7 +113,7 @@ spec:
             name: cilium-default
             sectionName: http
         hostnames:
-          - ntfy.timtor.dev
+          - notify.timtor.dev
         rules:
           - matches:
               - path:
