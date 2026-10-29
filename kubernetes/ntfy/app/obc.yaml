@@ -4,7 +4,7 @@ apiVersion: objectbucket.io/v1alpha1
 kind: ObjectBucketClaim
 metadata:
   namespace: ntfy
-  name: ntfy-s3
+  name: ntfy-attachment
 spec:
   generateBucketName: ntfy
   storageClassName: rgw-fast-retain

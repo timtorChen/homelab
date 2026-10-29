@@ -21,4 +21,4 @@ provisioner: rook-ceph.ceph.rook.io/bucket
 parameters:
   objectStoreNamespace: rook-ceph
   objectStoreName: fast
-reclaimPolicy: delete
+reclaimPolicy: Delete
