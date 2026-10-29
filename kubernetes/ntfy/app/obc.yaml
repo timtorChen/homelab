@@ -7,4 +7,4 @@ metadata:
   name: ntfy-s3
 spec:
   generateBucketName: ntfy
-  storageClassName: rook-ceph-bucket-retain
+  storageClassName: rgw-fast-retain

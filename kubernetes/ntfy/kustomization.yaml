@@ -5,10 +5,11 @@ kind: Kustomization
 resources:
   - base/ns.yaml
   - base/netpol.yaml
-  - app/rbac.yaml
   - app/repo.yaml
   - app/release.yaml
   - app/secret.yaml
+  - app/rbac.yaml
+  - app/obc.yaml
   - app/netpol.yaml
   - deps/postgres.yaml
   - deps/postgres-secret.yaml
