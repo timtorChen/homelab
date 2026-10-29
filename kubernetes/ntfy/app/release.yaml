@@ -37,6 +37,7 @@ spec:
             env:
               NTFY_LISTEN_HTTP: ":8080"
               NTFY_AUTH_DEFAULT_ACCESS: deny-all
+              NTFY_WEB_ROOT: "disable"
               NTFY_BASE_URL: https://notify.timtor.dev
               NTFY_BEHIND_PROXY: "true"
               NTFY_DATABASE_URL:
