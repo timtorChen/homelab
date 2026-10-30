@@ -1,0 +1,127 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: ntfy
+  name: ntfy
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 3.7.3
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    controllers:
+      main:
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: &s ntfy-secret
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            fsGroup: 65534
+        containers:
+          main:
+            image:
+              repository: docker.io/binwiederhier/ntfy
+              tag: v2.20.0
+            args: ["serve"]
+            env:
+              NTFY_LISTEN_HTTP: ":8080"
+              NTFY_AUTH_DEFAULT_ACCESS: deny-all
+              NTFY_WEB_ROOT: "disable"
+              NTFY_BASE_URL: https://notify.timtor.dev
+              NTFY_BEHIND_PROXY: "true"
+              NTFY_DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: NTFY_DATABASE_URL
+              NTFY_ATTACHMENT_CACHE_DIR:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: NTFY_ATTACHMENT_CACHE_DIR
+            probes:
+              startup:
+                enabled: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              limits:
+                memory: 256Mi
+              requests:
+                cpu: 10m
+                memory: 128Mi
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+
+    serviceAccount:
+      name: ntfy-app
+
+    service:
+      main:
+        controller: main
+        primary: true
+        ports:
+          http:
+            primary: true
+            port: 8080
+            protocol: HTTP
+
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - notify.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - kind: Service
+                name: ntfy
+                port: 8080
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - notify.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301

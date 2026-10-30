@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: ntfy
+  name: ntfy-default-policy
+specs:
+  # put every pod in the namespace into default-deny; app and deps policies add the required allows
+  - endpointSelector:
+      matchLabels: {}
+    ingress:
+      - {}
+    egress:
+      - {}

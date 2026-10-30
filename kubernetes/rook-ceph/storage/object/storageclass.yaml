@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
+## StorageClass rgw-fast-retain
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rgw-fast-retain
+provisioner: rook-ceph.ceph.rook.io/bucket
+parameters:
+  objectStoreNamespace: rook-ceph
+  objectStoreName: fast
+reclaimPolicy: Retain
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/storageclass-storage-v1.json
+## StorageClass rgw-fast-delete
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rgw-fast-delete
+provisioner: rook-ceph.ceph.rook.io/bucket
+parameters:
+  objectStoreNamespace: rook-ceph
+  objectStoreName: fast
+reclaimPolicy: Delete
