@@ -62,7 +62,7 @@ spec:
           main:
             image:
               repository: prom/snmp-exporter
-              tag: v0.30.1
+              tag: v0.31.0
             args:
               - --config.file=/config/*.yml
               - --config.file=/secret/*.yml
