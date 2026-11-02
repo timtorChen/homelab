@@ -18,7 +18,7 @@ spec:
       storageClassName: rbd-fast
       resources:
         requests:
-          storage: 10Gi
+          storage: 20Gi
       accessModes: ["ReadWriteOnce"]
   bootstrap:
     initdb:
@@ -30,7 +30,7 @@ spec:
     retentionPolicy: "2w"
     barmanObjectStore:
       endpointURL: https://s3.us-east-005.backblazeb2.com
-      destinationPath: s3://timtor-homelab-ntfy/
+      destinationPath: s3://timtor-homelab-ntfy-postgres/
       s3Credentials:
         accessKeyId:
           name: ntfy-postgres-secret
