@@ -8,6 +8,7 @@ metadata:
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:15.6
   instances: 1
+  enablePDB: false
   storage:
     pvcTemplate:
       storageClassName: rbd-fast

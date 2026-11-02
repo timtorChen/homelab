@@ -11,6 +11,7 @@ spec:
     shared_preload_libraries:
       - "vectors.so"
   instances: 1
+  enablePDB: false
   storage:
     pvcTemplate:
       storageClassName: rbd-fast
