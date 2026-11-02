@@ -28,7 +28,7 @@ spec:
     # Check ceph
     - apiVersion: ceph.rook.io/v1
       kind: CephCluster
-      name: rook-ceph
       namespace: rook-ceph
+      name: main
       expr: status.ceph.health in ["HEALTH_OK"]
       timeout: 10m
