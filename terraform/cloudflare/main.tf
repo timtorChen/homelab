@@ -46,7 +46,7 @@ locals {
     "grafana.timtor.dev",
     "hass.timtor.dev",
     "music.timtor.dev",
-    "photo.timtor.dev",
+    "image.timtor.dev",
     "rss.timtor.dev",
     "s3-fast.timtor.dev",
     "ui.timtor.dev",

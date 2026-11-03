@@ -66,11 +66,11 @@ locals {
 
   # immich
   entra_app_immich_web_redirect_uris = [
-    "https://photo.timtor.dev/auth/login",
-    "https://photo.timtor.dev/user-settings",
-    "https://photo.timtor.dev/api/oauth/mobile-redirect",
+    "https://image.timtor.dev/auth/login",
+    "https://image.timtor.dev/user-settings",
+    "https://image.timtor.dev/api/oauth/mobile-redirect",
   ]
-  entra_app_immich_web_logout_url = "https://photo.timtor.dev"
+  entra_app_immich_web_logout_url = "https://image.timtor.dev"
   entra_app_immich_graph_scopes = [
     "email",
     "openid",

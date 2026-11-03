@@ -221,7 +221,7 @@ spec:
             name: cilium-default
             sectionName: https
         hostnames:
-          - photo.timtor.dev
+          - image.timtor.dev
         rules:
           - matches:
               - path:
@@ -239,7 +239,7 @@ spec:
             name: cilium-default
             sectionName: http
         hostnames:
-          - photo.timtor.dev
+          - image.timtor.dev
         rules:
           - matches:
               - path:
