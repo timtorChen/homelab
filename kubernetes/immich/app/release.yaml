@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 3.7.3
+      version: 5.3.0
   interval: 1h
   maxHistory: 1
   timeout: 1m0s
@@ -27,6 +27,8 @@ spec:
 
     controllers:
       server:
+        serviceAccount:
+          identifier: main
         type: deployment
         replicas: 1
         strategy: RollingUpdate
@@ -85,6 +87,8 @@ spec:
               seccompProfile:
                 type: RuntimeDefault
       microservices:
+        serviceAccount:
+          identifier: main
         type: deployment
         replicas: 2
         strategy: RollingUpdate
@@ -132,6 +136,8 @@ spec:
                 memory: 1Gi
             securityContext: *sc
       machine-learning:
+        serviceAccount:
+          identifier: main
         type: deployment
         replicas: 1
         strategy: RollingUpdate
@@ -160,10 +166,10 @@ spec:
               readOnlyRootFilesystem: false
 
     serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      main:
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich
+          eks.amazonaws.com/audience: sts.amazonaws.com
 
     persistence:
       data:
@@ -180,6 +186,7 @@ spec:
         type: persistentVolumeClaim
         storageClass: fs-fast-delete
         accessMode: ReadWriteMany
+        forceRename: immich-cache
         size: 5Gi
         retain: false
         advancedMounts:
@@ -197,6 +204,7 @@ spec:
 
     service:
       server:
+        forceRename: immich
         controller: server
         primary: true
         ports:

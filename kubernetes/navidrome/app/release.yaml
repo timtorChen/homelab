@@ -13,7 +13,7 @@ spec:
         namespace: navidrome
         name: bjw-s
       chart: app-template
-      version: 3.7.3
+      version: 5.3.0
   interval: 1h
   maxHistory: 1
   timeout: 1m0s
@@ -82,6 +82,7 @@ spec:
               - path: *dir2
       cache:
         type: persistentVolumeClaim
+        forceRename: navidrome-cache
         storageClass: fs-fast-delete
         accessMode: ReadWriteOnce
         size: 1Gi

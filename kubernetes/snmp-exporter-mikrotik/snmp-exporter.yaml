@@ -22,13 +22,15 @@ spec:
         kind: HelmRepository
         name: bjw-s
       chart: app-template
-      version: 3.7.3
+      version: 5.3.0
   interval: 1h
   maxHistory: 1
   timeout: 1m0s
   values:
     controllers:
       main:
+        serviceAccount:
+          identifier: main
         type: deployment
         replicas: 1
         strategy: RollingUpdate
@@ -82,11 +84,11 @@ spec:
             securityContext: *sc
 
     serviceAccount:
-      create: true
-      name: snmp-exporter-mikrotik
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-snmp-exporter-mikrotik
-        eks.amazonaws.com/audience: sts.amazonaws.com
+      main:
+        forceRename: snmp-exporter-mikrotik
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-snmp-exporter-mikrotik
+          eks.amazonaws.com/audience: sts.amazonaws.com
 
     persistence:
       config:
