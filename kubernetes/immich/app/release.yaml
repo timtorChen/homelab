@@ -38,13 +38,13 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.7.5
+              tag: v3.3.5
             env:
               IMMICH_WORKERS_INCLUDE: api
               IMMICH_PORT: &p1 3001
               IMMICH_MEDIA_LOCATION: &data-dir /data
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-              DB_VECTOR_EXTENSION: pgvecto.rs
+              DB_VECTOR_EXTENSION: vectorchord
               DB_URL:
                 valueFrom:
                   secretKeyRef:
@@ -95,12 +95,12 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.7.5
+              tag: v3.3.5
             env:
               IMMICH_WORKERS_EXCLUDE: api
               IMMICH_MEDIA_LOCATION: *data-dir
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-              DB_VECTOR_EXTENSION: pgvecto.rs
+              DB_VECTOR_EXTENSION: vectorchord
               DB_URL:
                 valueFrom:
                   secretKeyRef:
@@ -142,7 +142,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v2.7.5
+              tag: v3.3.5
             env:
               IMMICH_PORT: &p3 3003
               MACHINE_LEARNING_CACHE_FOLDER: &cache-dir /cache

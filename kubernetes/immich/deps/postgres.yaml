@@ -6,10 +6,10 @@ metadata:
   namespace: immich
   name: immich-postgres
 spec:
-  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:15.9-v0.3.0
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:15.19-1.1.1
   postgresql:
     shared_preload_libraries:
-      - "vectors.so"
+      - "vchord.so"
   instances: 1
   enablePDB: false
   storage:
@@ -28,12 +28,8 @@ spec:
       postInitApplicationSQL:
         - | #sql
             BEGIN;
-            -- vectors
-            CREATE EXTENSION IF NOT EXISTS vectors;
-            ALTER SCHEMA vectors OWNER TO immich;
-            -- immich requres earthdistance, cube in public schema
+            CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
             CREATE EXTENSION IF NOT EXISTS earthdistance SCHEMA public CASCADE;
-            ALTER DATABASE immich SET search_path TO "$user", public, vectors;
             COMMIT;
   backup:
     retentionPolicy: "1w"
