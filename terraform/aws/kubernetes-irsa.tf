@@ -931,7 +931,10 @@ resource "aws_iam_policy" "immich" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich"
@@ -974,7 +977,10 @@ resource "aws_iam_policy" "immich-backup-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-backup"
@@ -1017,7 +1023,10 @@ resource "aws_iam_policy" "immich-postgres-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameter",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-postgres"
@@ -1060,7 +1069,10 @@ resource "aws_iam_policy" "immich-valkey" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-valkey"
