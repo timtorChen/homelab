@@ -6,6 +6,11 @@ metadata:
   namespace: immich
   name: immich-postgres
 spec:
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        eks.amazonaws.com/audience: sts.amazonaws.com
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/immich-postgres
   imageName: ghcr.io/tensorchord/cloudnative-vectorchord:15.19-1.1.1
   postgresql:
     shared_preload_libraries:

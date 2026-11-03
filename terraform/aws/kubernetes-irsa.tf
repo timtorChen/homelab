@@ -947,7 +947,7 @@ resource "aws_iam_role_policy_attachment" "immich" {
 }
 
 resource "aws_iam_role" "immich-backup-secret-holder" {
-  name = "${local.project}-immich-backup-secret-holder"
+  name = "immich-backup"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -959,7 +959,7 @@ resource "aws_iam_role" "immich-backup-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-backup-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-backup",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -990,7 +990,7 @@ resource "aws_iam_role_policy_attachment" "immich-backup-secret-holder" {
 }
 
 resource "aws_iam_role" "immich-postgres-secret-holder" {
-  name = "${local.project}-immich-postgres-secret-holder"
+  name = "immich-postgres"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -1002,7 +1002,7 @@ resource "aws_iam_role" "immich-postgres-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich:immich-postgres",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -1017,7 +1017,7 @@ resource "aws_iam_policy" "immich-postgres-secret-holder" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : "ssm:GetParameter",
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-postgres"

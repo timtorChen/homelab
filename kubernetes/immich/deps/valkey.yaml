@@ -92,13 +92,8 @@ spec:
           - path: /config
             readOnly: true
       secret:
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
+        type: secret
+        name: *s
         globalMounts:
           - path: /secret
             readOnly: true

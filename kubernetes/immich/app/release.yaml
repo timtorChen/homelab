@@ -193,15 +193,6 @@ spec:
           machine-learning:
             main:
               - path: *cache-dir
-      secret:
-        type: custom
-        volumeSpec:
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: *s
-
     service:
       server:
         forceRename: immich

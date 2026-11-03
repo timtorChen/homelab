@@ -13,12 +13,9 @@ resources:
   - deps/valkey-secret.yaml
   - deps/valkey.yaml
   - deps/postgres-secret.yaml
-  - deps/postgres-secret-holder.yaml
-  - deps/postgres-secret-holder-sa.yaml
   - deps/postgres.yaml
   - deps/netpol.yaml
   - backup/backup.yaml
-  - backup/secret-hoder-sa.yaml
-  - backup/secret-holder.yaml
+  - backup/rbac.yaml
   - backup/secret.yaml
   - backup/netpol.yaml
