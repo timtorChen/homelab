@@ -8,3 +8,51 @@ metadata:
   annotations:
     eks.amazonaws.com/audience: sts.amazonaws.com
     eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/immich-backup
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/role-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: immich
+  name: immich-backup
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - volsync.backube
+    resources:
+      - replicationsources
+      - replicationdestinations
+    verbs:
+      - create
+      - get
+      - watch
+      - delete
+  - apiGroups:
+      - postgresql.cnpg.io
+    resources:
+      - clusters
+    verbs:
+      - create
+      - get
+      - patch
+      - watch
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/rolebinding-rbac-v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: immich
+  name: immich-backup-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: immich-backup
+subjects:
+  - kind: ServiceAccount
+    name: immich-backup

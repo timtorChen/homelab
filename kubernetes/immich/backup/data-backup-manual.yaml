@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  namespace: immich
+  name: &name immich-data-backup-manual
+spec:
+  entrypoint: main
+  podMetadata:
+    labels:
+      workflows.argoproj.io/workflow-template: *name
+  templates:
+    - name: main
+      steps:
+        - - name: create-backup
+            template: create-backup
+        - - name: wait-backup
+            templateRef:
+              clusterScope: true
+              name: volsync-template
+              template: wait-replicationsource
+            arguments:
+              parameters:
+                - name: namespace
+                  value: "{{workflow.namespace}}"
+                - name: name
+                  value: "{{workflow.name}}"
+                - name: serviceAccount
+                  value: immich-backup
+                - name: timeout
+                  value: 1h
+        - - name: delete-backup
+            templateRef:
+              clusterScope: true
+              name: volsync-template
+              template: delete-replicationsource
+            arguments:
+              parameters:
+                - name: namespace
+                  value: "{{workflow.namespace}}"
+                - name: name
+                  value: "{{workflow.name}}"
+                - name: serviceAccount
+                  value: immich-backup
+
+    - name: create-backup
+      serviceAccountName: immich-backup
+      container:
+        image: alpine/kubectl:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        command: ["/bin/sh", "-c"]
+        args:
+          - | #bash
+              RESOURCE="$(cat <<EOF
+              ---
+              apiVersion: volsync.backube/v1alpha1
+              kind: ReplicationSource
+              metadata:
+                namespace: "{{workflow.namespace}}"
+                name: "{{workflow.name}}"
+              spec:
+                trigger:
+                  manual: "{{workflow.name}}"
+                sourcePVC: immich-data
+                restic:
+                  pruneIntervalDays: 14
+                  repository: immich-backup-secret
+                  retain:
+                    daily: 5
+                    weekly: 4
+                    monthly: 3
+                  copyMethod: Snapshot
+                  volumeSnapshotClassName: rook-ceph-fs
+                  storageClassName: fs-fast-ec
+                  accessModes: ["ReadWriteOnce"]
+                  cacheStorageClassName: rbd-fast-ec
+                  cacheAccessModes: ["ReadWriteOnce"]
+                  cacheCapacity: 1Gi
+                  moverSecurityContext:
+                    runAsNonRoot: true
+                    runAsUser: 65534
+                    runAsGroup: 65534
+                    fsGroup: 65534
+                    seccompProfile:
+                      type: RuntimeDefault
+              EOF
+              )"
+              echo "$RESOURCE" | kubectl create -f -

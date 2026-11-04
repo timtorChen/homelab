@@ -81,4 +81,4 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-              kubectl delete -n {{inputs.parameters.namespace}} "replicationsources.volsync.backube/{{inputs.parameters.name}}"
+              kubectl delete -n {{inputs.parameters.namespace}} "replicationdestinations.volsync.backube/{{inputs.parameters.name}}"

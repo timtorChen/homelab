@@ -26,3 +26,17 @@ specs:
           - ports:
               - protocol: TCP
                 port: "443"
+  - endpointSelector:
+      matchExpressions:
+        - key: workflows.argoproj.io/workflow-template
+          operator: In
+          values:
+            - immich-data-backup-manual
+            - immich-postgres-restore-manual
+            - immich-data-restore-manual
+    egress:
+      - toEntities: [kube-apiserver]
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"

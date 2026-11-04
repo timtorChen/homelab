@@ -11,6 +11,7 @@ resources:
   - argo-workflows/secret.yaml
   - argo-workflows/release.yaml
   - argo-workflows/httproute.yaml
+  - argo-workflows-templates/cnpg-workflowtemplate.yaml
   - argo-workflows-templates/volsync-workflowtemplate.yaml
   # argo-events
   - argo-events/release.yaml

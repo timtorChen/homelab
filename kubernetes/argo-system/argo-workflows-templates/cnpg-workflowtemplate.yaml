@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: cnpg-template
+spec:
+  templates:
+    - name: wait-cluster-healthy
+      inputs:
+        parameters:
+          - name: serviceAccount
+          - name: namespace
+          - name: name
+          - name: timeout
+            value: 10m
+      serviceAccountName: "{{inputs.parameters.serviceAccount}}"
+      container:
+        image: alpine/kubectl:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+              kubectl wait -n {{inputs.parameters.namespace}} \
+                "clusters.postgresql.cnpg.io/{{inputs.parameters.name}}" \
+                --for=jsonpath='{.status.phase}'='Cluster in healthy state' \
+                --timeout="{{inputs.parameters.timeout}}"

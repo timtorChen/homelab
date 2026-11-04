@@ -4,24 +4,21 @@ version: "3"
 silent: true
 
 includes:
-  volsync:
-    taskfile: ../../.tasks/volsync.yaml
   cnpg:
     taskfile: ../../.tasks/cnpg.yaml
 
 tasks:
   backup:
     deps:
-      - task: volsync:backup
-        vars:
-          TEMPLATE: maintain/data-manual-backup.tmpl.yaml
-          NAMESPACE: immich
-          NAME: immich-data-backup
-          TIMEOUT: 10m
+      - task: backup-data
       - task: cnpg:backup
         vars:
           NAMESPACE: immich
           NAME: immich-postgres
+
+  backup-data:
+    internal: true
+    cmd: argo submit -n immich --from workflowtemplate/immich-data-backup-manual --watch
 
   restore:
     prompt: |
@@ -35,28 +32,44 @@ tasks:
           NAMESPACE: immich
           NAME: immich-postgres
       - task: create-volume
-      - task: cnpg:pitr
-        vars:
-          TEMPLATE: maintain/postgres-restore.tmpl.yaml
-      - task: volsync:restore
-        vars:
-          TEMPLATE: maintain/data-manual-restore.tmpl.yaml
-          NAMESPACE: immich
-          NAME: immich-data-restore
-          TIMEOUT: 20m
+      - cmd: |
+          echo -n "Please enter the target time for postgres recovery (leave blank for latest): "
+          read RESTORE_TIME
+          if [ -n "$RESTORE_TIME" ]; then
+            FORMAT="%Y-%m-%d %H:%M:%S%:::z"
+            if [ "{{OS}}" = "linux" ]; then
+              PARSE="$(date --date "$RESTORE_TIME" +"$FORMAT")"
+              RESTORE_TARGET="$(date -u --date "$PARSE" +"$FORMAT")"
+            elif [ "{{OS}}" = "darwin" ]; then
+              PARSE="$(gdate --date "$RESTORE_TIME" +"$FORMAT")"
+              RESTORE_TARGET="$(gdate -u --date "$PARSE" +"$FORMAT")"
+            else
+              echo "Unsupported OS: {{OS}}"
+              exit 1
+            fi
+            if [ -z "$RESTORE_TARGET" ]; then
+              echo "Invalid recovery target time"
+              exit 1
+            fi
+            argo submit -n immich --from workflowtemplate/immich-postgres-restore-manual \
+              -p "targetTime=$RESTORE_TARGET" --watch
+          else
+            argo submit -n immich --from workflowtemplate/immich-postgres-restore-manual --watch
+          fi
+      - cmd: argo submit -n immich --from workflowtemplate/immich-data-restore-manual --watch
       - task: start
 
   delete-volume:
     internal: true
     ignore_error: true
     cmd: |
-      echo "Deleting vaultwarden volume claim..."
+      echo "Deleting immich volume claim..."
       kubectl delete -f app/pvc.yaml
 
   create-volume:
     internal: true
     cmd: |
-      echo "Creating vaultwarden volume claim..."
+      echo "Creating immich volume claim..."
       kubectl create -f app/pvc.yaml
 
   stop:
