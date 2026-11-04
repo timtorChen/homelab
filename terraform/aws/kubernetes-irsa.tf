@@ -1087,6 +1087,190 @@ resource "aws_iam_role_policy_attachment" "immich-valkey" {
   policy_arn = aws_iam_policy.immich-valkey.arn
 }
 
+resource "aws_iam_role" "immich-public" {
+  name = "${local.project}-immich-public"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich-public:immich-public",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "immich-public" {
+  name = "${local.project}-immich-public"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-public"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "immich-public" {
+  role       = aws_iam_role.immich-public.name
+  policy_arn = aws_iam_policy.immich-public.arn
+}
+
+resource "aws_iam_role" "immich-public-backup-secret-holder" {
+  name = "immich-public-backup"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich-public:immich-public-backup",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "immich-public-backup-secret-holder" {
+  name = "${local.project}-immich-public-backup-secret-holder"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-public-backup"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "immich-public-backup-secret-holder" {
+  role       = aws_iam_role.immich-public-backup-secret-holder.name
+  policy_arn = aws_iam_policy.immich-public-backup-secret-holder.arn
+}
+
+resource "aws_iam_role" "immich-public-postgres-secret-holder" {
+  name = "immich-public-postgres"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich-public:immich-public-postgres",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "immich-public-postgres-secret-holder" {
+  name = "${local.project}-immich-public-postgres-secret-holder"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-public-postgres"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "immich-public-postgres-secret-holder" {
+  role       = aws_iam_role.immich-public-postgres-secret-holder.name
+  policy_arn = aws_iam_policy.immich-public-postgres-secret-holder.arn
+}
+
+resource "aws_iam_role" "immich-public-valkey" {
+  name = "${local.project}-immich-public-valkey"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:immich-public:immich-public-valkey",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "immich-public-valkey" {
+  name = "${local.project}-immich-public-valkey"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/immich-public-valkey"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "immich-public-valkey" {
+  role       = aws_iam_role.immich-public-valkey.name
+  policy_arn = aws_iam_policy.immich-public-valkey.arn
+}
+
 resource "aws_iam_role" "miniflux" {
   name = "${local.project}-miniflux"
   assume_role_policy = jsonencode({

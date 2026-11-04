@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-workflows/refs/heads/main/api/jsonschema/schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  namespace: immich-public
+  name: &name immich-public-postgres-restore-manual
+spec:
+  entrypoint: main
+  arguments:
+    parameters:
+      - name: targetTime
+        value: ""
+  podMetadata:
+    labels:
+      workflows.argoproj.io/workflow-template: *name
+  templates:
+    - name: main
+      steps:
+        - - name: create-cluster
+            template: create-cluster
+        - - name: wait-cluster-healthy
+            templateRef:
+              clusterScope: true
+              name: cnpg-template
+              template: wait-cluster-healthy
+            arguments:
+              parameters:
+                - name: serviceAccount
+                  value: immich-public-backup
+                - name: namespace
+                  value: "{{workflow.namespace}}"
+                - name: name
+                  value: immich-public-postgres
+
+    - name: create-cluster
+      serviceAccountName: immich-public-backup
+      container:
+        image: alpine/kubectl:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        command: ["/bin/sh", "-c"]
+        args:
+          - | #bash
+              RESTORE_TARGET="{{workflow.parameters.targetTime}}"
+              if [ -z "$RESTORE_TARGET" ]; then
+                RECOVERY_TARGET="{}"
+              else
+                RECOVERY_TARGET="{targetTime: \"$RESTORE_TARGET\"}"
+              fi
+              RESOURCE="$(cat <<EOF
+              ---
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                namespace: immich-public
+                name: immich-public-postgres
+              spec:
+                serviceAccountTemplate:
+                  metadata:
+                    annotations:
+                      eks.amazonaws.com/audience: sts.amazonaws.com
+                      eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/immich-public-postgres
+                imageName: ghcr.io/cloudnative-pg/postgresql:15.6
+                instances: 1
+                storage:
+                  pvcTemplate:
+                    storageClassName: rbd-fast
+                    resources:
+                      requests:
+                        storage: 5Gi
+                    accessModes: ["ReadWriteOnce"]
+                bootstrap:
+                  recovery:
+                    source: clusterBackup
+                    recoveryTarget: $RECOVERY_TARGET
+                externalClusters:
+                  - name: clusterBackup
+                    barmanObjectStore:
+                      endpointURL: https://s3.us-east-005.backblazeb2.com
+                      destinationPath: s3://timtor-homelab-immich-public/
+                      serverName: immich-public-postgres
+                      s3Credentials:
+                        accessKeyId:
+                          name: immich-public-postgres-secret
+                          key: POSTGRES_B2_ACCESS_KEY_ID
+                        secretAccessKey:
+                          name: immich-public-postgres-secret
+                          key: POSTGRES_B2_ACCESS_SECRET_KEY
+                      wal:
+                        maxParallel: 8
+              EOF
+              )"
+              echo "$RESOURCE" | kubectl apply -f -

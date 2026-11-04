@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: immich-public
+  name: immich-public-app-policy
+specs:
+  # default
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: immich-public
+    ingress:
+      - {}
+    egress:
+      - {}
+  # allow connection from cilium ingress
+  - endpointSelector: *self
+    ingress:
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3001"
+  # allow immich-public internal components
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "immich-public-machine-learning.immich-public.svc.cluster.local."
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3003"
+    egress:
+      - toEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "3003"
+  # allow immich-public to postgres, redis
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "immich-public-postgres-rw.immich-public.svc.cluster.local."
+                - matchName: "immich-public-valkey.immich-public.svc.cluster.local."
+      - toEndpoints:
+          - matchLabels:
+              cnpg.io/cluster: immich-public-postgres
+          - matchLabels:
+              app.kubernetes.io/name: immich-public-valkey
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+              - protocol: TCP
+                port: "6379"
+  # allow immich-public-server to jumpcloud endpoint
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: immich-public
+        app.kubernetes.io/component: server
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &sso
+                - matchPattern: "oauth.id.jumpcloud.com"
+      - toFQDNs: *sso
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
+  # allow machine-learning download model from huggingface.co
+  - endpointSelector:
+      matchLabels:
+        app.kubernetes.io/name: immich-public
+        app.kubernetes.io/component: machine-learning
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns: &model
+                - matchPattern: "huggingface.co."
+                - matchPattern: "*.huggingface.co."
+                - matchPattern: "*.hf.co."
+      - toFQDNs: *model
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"

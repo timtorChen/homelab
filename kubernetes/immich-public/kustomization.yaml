@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - base/ns.yaml
+  - base/netpol.yaml
+  - app/repo.yaml
+  - app/release.yaml
+  - app/pvc.yaml
+  - app/secret.yaml
+  - app/netpol.yaml
+  - deps/valkey-secret.yaml
+  - deps/valkey.yaml
+  - deps/postgres-secret.yaml
+  - deps/postgres.yaml
+  - deps/netpol.yaml
+  - backup/data-backup.yaml
+  - backup/data-backup-manual.yaml
+  - backup/data-restore-manual.yaml
+  - backup/postgres-restore-manual.yaml
+  - backup/rbac.yaml
+  - backup/secret.yaml
+  - backup/netpol.yaml

@@ -137,6 +137,41 @@ resource "azuread_application_password" "immich" {
   }
 }
 
+# Immich Public
+resource "azuread_application" "immich_public" {
+  display_name = "Immich Public (terraform)"
+
+  web {
+    redirect_uris = local.entra_app_immich_public_web_redirect_uris
+    logout_url    = local.entra_app_immich_public_web_logout_url
+  }
+
+  required_resource_access {
+    resource_app_id = data.azuread_application_published_app_ids.main.result["MicrosoftGraph"]
+    dynamic "resource_access" {
+      for_each = local.entra_app_immich_public_graph_scopes
+
+      content {
+        type = "Scope"
+        id   = data.azuread_service_principal.main.oauth2_permission_scope_ids[resource_access.value]
+      }
+    }
+  }
+}
+
+resource "time_rotating" "immich_public" {
+  rotation_hours = local.entra_app_rotate_hours
+}
+
+resource "azuread_application_password" "immich_public" {
+  display_name   = "main (terraform)"
+  application_id = azuread_application.immich_public.id
+
+  rotate_when_changed = {
+    rotation = time_rotating.immich_public.id
+  }
+}
+
 # Argo Workflows
 resource "azuread_application" "argo_workflows" {
   display_name = "Argo Workflows (terraform)"
@@ -213,6 +248,18 @@ output "entra_app_immich_application_secret" {
   value = nonsensitive(azuread_application_password.immich.value)
 }
 
+output "entra_app_immich_public_issuer_url" {
+  value = "https://login.microsoftonline.com/${data.azuread_client_config.main.tenant_id}/v2.0"
+}
+
+output "entra_app_immich_public_application_id" {
+  value = azuread_application.immich_public.client_id
+}
+
+output "entra_app_immich_public_application_secret" {
+  value = nonsensitive(azuread_application_password.immich_public.value)
+}
+
 output "entra_app_argo_workflows_application_id" {
   value = azuread_application.argo_workflows.client_id
 }
@@ -220,5 +267,4 @@ output "entra_app_argo_workflows_application_id" {
 output "entra_app_argo_workflows_application_secret" {
   value = nonsensitive(azuread_application_password.argo_workflows.value)
 }
-
 

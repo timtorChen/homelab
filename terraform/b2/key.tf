@@ -16,6 +16,12 @@ resource "b2_application_key" "immich" {
   capabilities = local.b2_read_write_capabilities
 }
 
+resource "b2_application_key" "immich-public" {
+  key_name     = "immich-public"
+  bucket_ids   = [b2_bucket.immich-public.bucket_id]
+  capabilities = local.b2_read_write_capabilities
+}
+
 resource "b2_application_key" "miniflux" {
   key_name     = "miniflux"
   bucket_ids   = [b2_bucket.miniflux.bucket_id]
@@ -45,4 +51,3 @@ resource "b2_application_key" "etcd-backup" {
   bucket_ids   = [b2_bucket.etcd-backup.bucket_id]
   capabilities = local.b2_read_write_capabilities
 }
-

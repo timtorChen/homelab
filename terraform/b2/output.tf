@@ -22,6 +22,14 @@ output "immich-app-key" {
   value = nonsensitive(b2_application_key.immich.application_key)
 }
 
+output "immich-public-app-key-id" {
+  value = nonsensitive(b2_application_key.immich-public.application_key_id)
+}
+
+output "immich-public-app-key" {
+  value = nonsensitive(b2_application_key.immich-public.application_key)
+}
+
 output "miniflux-app-key-id" {
   value = nonsensitive(b2_application_key.miniflux.application_key_id)
 }

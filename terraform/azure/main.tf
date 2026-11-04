@@ -77,6 +77,19 @@ locals {
     "profile"
   ]
 
+  # immich-public
+  entra_app_immich_public_web_redirect_uris = [
+    "https://photo.timtor.dev/auth/login",
+    "https://photo.timtor.dev/user-settings",
+    "https://photo.timtor.dev/api/oauth/mobile-redirect",
+  ]
+  entra_app_immich_public_web_logout_url = "https://photo.timtor.dev"
+  entra_app_immich_public_graph_scopes = [
+    "email",
+    "openid",
+    "profile"
+  ]
+
   # argo workflows
   entra_app_argo_workflows_web_redirect_uris = ["https://workflows.timtor.dev/oauth2/callback"]
   entra_app_argo_workflows_web_logout_url    = "https://workflows.timtor.dev"

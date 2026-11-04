@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  namespace: immich-public
+  name: immich-public-postgres
+spec:
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        eks.amazonaws.com/audience: sts.amazonaws.com
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/immich-public-postgres
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:15.19-1.1.1
+  postgresql:
+    shared_preload_libraries:
+      - "vchord.so"
+  instances: 1
+  enablePDB: false
+  storage:
+    pvcTemplate:
+      storageClassName: rbd-fast
+      resources:
+        requests:
+          storage: 5Gi
+      accessModes: ["ReadWriteOnce"]
+  bootstrap:
+    initdb:
+      database: immich-public
+      owner: immich-public
+      secret:
+        name: immich-public-postgres-secret
+      postInitApplicationSQL:
+        - | #sql
+            BEGIN;
+            CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+            CREATE EXTENSION IF NOT EXISTS earthdistance SCHEMA public CASCADE;
+            COMMIT;
+  backup:
+    retentionPolicy: "1w"
+    barmanObjectStore:
+      endpointURL: https://s3.us-east-005.backblazeb2.com
+      destinationPath: s3://timtor-homelab-immich-public/
+      s3Credentials:
+        accessKeyId:
+          name: immich-public-postgres-secret
+          key: POSTGRES_B2_ACCESS_KEY_ID
+        secretAccessKey:
+          name: immich-public-postgres-secret
+          key: POSTGRES_B2_ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        maxParallel: 8
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/postgresql.cnpg.io/scheduledbackup_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  namespace: immich-public
+  name: immich-public-postgres-backup
+spec:
+  schedule: "0 0 0/12 * *"
+  backupOwnerReference: self
+  cluster:
+    name: immich-public-postgres
+  target: prefer-standby

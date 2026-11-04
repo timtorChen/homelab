@@ -31,6 +31,17 @@ resource "b2_bucket" "immich" {
   }
 }
 
+resource "b2_bucket" "immich-public" {
+  bucket_name = "${local.bucket_prefix}-immich-public"
+  bucket_type = "allPrivate"
+
+  lifecycle_rules {
+    file_name_prefix                                       = ""
+    days_from_hiding_to_deleting                           = "1"
+    days_from_starting_to_canceling_unfinished_large_files = "1"
+  }
+}
+
 resource "b2_bucket" "miniflux" {
   bucket_name = "${local.bucket_prefix}-miniflux"
   bucket_type = "allPrivate"

@@ -1,0 +1,251 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  namespace: immich-public
+  name: immich-public
+spec:
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+      chart: app-template
+      version: 5.3.0
+  interval: 1h
+  maxHistory: 1
+  timeout: 1m0s
+  values:
+    global:
+      nameOverride: immich-public
+
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+
+    controllers:
+      server:
+        serviceAccount:
+          identifier: main
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations: &annotations
+          secret.reloader.stakater.com/reload: &s immich-public-secret
+        labels:
+          app.kubernetes.io/component: server
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v3.3.5
+            env:
+              IMMICH_WORKERS_INCLUDE: api
+              IMMICH_PORT: &p1 3001
+              IMMICH_MEDIA_LOCATION: &data-dir /data
+              IMMICH_MACHINE_LEARNING_URL: http://immich-public-machine-learning:3003
+              DB_VECTOR_EXTENSION: vectorchord
+              DB_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: DB_URL
+              REDIS_HOSTNAME: immich-public-valkey
+              REDIS_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_USERNAME
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_PASSWORD
+            probes: &probes
+              startup:
+                enabled: true
+              readiness:
+                enabled: true
+              liveness:
+                enabled: true
+            resources:
+              limits:
+                memory: 2Gi
+              requests:
+                cpu: 50m
+                memory: 512Mi
+            securityContext: &sc
+              runAsNonRoot: true
+              runAsUser: 65534
+              runAsGroup: 65534
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: RuntimeDefault
+      microservices:
+        serviceAccount:
+          identifier: main
+        type: deployment
+        replicas: 2
+        strategy: RollingUpdate
+        annotations: *annotations
+        labels:
+          app.kubernetes.io/component: microservices
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v3.3.5
+            env:
+              IMMICH_WORKERS_EXCLUDE: api
+              IMMICH_MEDIA_LOCATION: *data-dir
+              IMMICH_MACHINE_LEARNING_URL: http://immich-public-machine-learning:3003
+              DB_VECTOR_EXTENSION: vectorchord
+              DB_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: DB_URL
+              REDIS_HOSTNAME: immich-public-valkey
+              REDIS_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_USERNAME
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *s
+                    key: REDIS_PASSWORD
+            probes:
+              startup:
+                enabled: false
+              readiness:
+                enabled: false
+              liveness:
+                enabled: false
+            resources:
+              limits:
+                memory: 2Gi
+              requests:
+                cpu: 100m
+                memory: 1Gi
+            securityContext: *sc
+      machine-learning:
+        serviceAccount:
+          identifier: main
+        type: deployment
+        replicas: 1
+        strategy: RollingUpdate
+        annotations: *annotations
+        labels:
+          app.kubernetes.io/component: machine-learning
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v3.3.5
+            env:
+              IMMICH_PORT: &p3 3003
+              MACHINE_LEARNING_CACHE_FOLDER: &cache-dir /cache
+              TRANSFORMERS_CACHE: *cache-dir
+            probes: *probes
+            resources:
+              limits:
+                memory: 2Gi
+              requests:
+                cpu: 100m
+                memory: 1Gi
+            securityContext:
+              <<: *sc
+              # some python libraries need /var and /tmp
+              readOnlyRootFilesystem: false
+
+    serviceAccount:
+      main:
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-immich-public
+          eks.amazonaws.com/audience: sts.amazonaws.com
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        existingClaim: immich-public-data
+        advancedMounts:
+          server:
+            main:
+              - path: *data-dir
+          microservices:
+            main:
+              - path: *data-dir
+      cache:
+        type: persistentVolumeClaim
+        storageClass: fs-fast-delete
+        accessMode: ReadWriteMany
+        forceRename: immich-public-cache
+        size: 5Gi
+        retain: false
+        advancedMounts:
+          machine-learning:
+            main:
+              - path: *cache-dir
+    service:
+      server:
+        forceRename: immich-public
+        controller: server
+        primary: true
+        ports:
+          http:
+            port: *p1
+            primary: true
+            protocol: HTTP
+      machine-learning:
+        controller: machine-learning
+        ports:
+          http:
+            port: *p3
+            primary: true
+            protocol: HTTP
+
+    route:
+      main:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: https
+        hostnames:
+          - photo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - kind: Service
+                name: immich-public
+                port: *p1
+      http-redirect:
+        enabled: true
+        kind: HTTPRoute
+        parentRefs:
+          - namespace: kube-system
+            name: cilium-default
+            sectionName: http
+        hostnames:
+          - photo.timtor.dev
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  scheme: https
+                  statusCode: 301

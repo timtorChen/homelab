@@ -29,6 +29,10 @@ includes:
     optional: true
     taskfile: immich/.taskfile.yaml
     dir: immich
+  immich-public:
+    optional: true
+    taskfile: immich-public/.taskfile.yaml
+    dir: immich-public
   vaultwarden:
     optional: true
     taskfile: vaultwarden/.taskfile.yaml
