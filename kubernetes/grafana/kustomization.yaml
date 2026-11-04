@@ -11,7 +11,5 @@ resources:
   - app/secret.yaml
   - app/netpol.yaml
   - deps/netpol.yaml
-  - deps/postgres-secret-holder-sa.yaml
-  - deps/postgres-secret-holder.yaml
   - deps/postgres-secret.yaml
   - deps/postgres.yaml

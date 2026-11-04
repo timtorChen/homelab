@@ -6,6 +6,11 @@ metadata:
   namespace: grafana
   name: grafana-postgres
 spec:
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        eks.amazonaws.com/audience: sts.amazonaws.com
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/grafana-postgres
   imageName: ghcr.io/cloudnative-pg/postgresql:15.6
   instances: 1
   enablePDB: false

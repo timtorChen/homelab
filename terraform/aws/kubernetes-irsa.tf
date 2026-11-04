@@ -214,7 +214,7 @@ resource "aws_iam_role_policy_attachment" "snmp-exporter-mikrotik" {
 }
 
 resource "aws_iam_role" "grafana" {
-  name = "${local.project}-grafana"
+  name = "grafana"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -236,12 +236,15 @@ resource "aws_iam_role" "grafana" {
 }
 
 resource "aws_iam_policy" "grafana" {
-  name = "${local.project}-grafana"
+  name = "grafana"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : [
+          "ssm:GetParameters",
+          "ssm:GetParameter"
+        ],
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/grafana"
@@ -256,8 +259,8 @@ resource "aws_iam_role_policy_attachment" "grafana" {
   policy_arn = aws_iam_policy.grafana.arn
 }
 
-resource "aws_iam_role" "grafana-postgres-secret-holder" {
-  name = "${local.project}-grafana-postgres-secret-holder"
+resource "aws_iam_role" "grafana-postgres" {
+  name = "grafana-postgres"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -269,7 +272,7 @@ resource "aws_iam_role" "grafana-postgres-secret-holder" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:grafana:grafana-postgres-secret-holder",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:grafana:grafana-postgres",
             "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
           }
         }
@@ -278,13 +281,16 @@ resource "aws_iam_role" "grafana-postgres-secret-holder" {
   })
 }
 
-resource "aws_iam_policy" "grafana-postgres-secret-holder" {
-  name = "${local.project}-grafana-postgres-secret-holder"
+resource "aws_iam_policy" "grafana-postgres" {
+  name = "grafana-postgres"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Action" : "ssm:GetParameters",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ],
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/amethyst/grafana-postgres"
@@ -294,9 +300,9 @@ resource "aws_iam_policy" "grafana-postgres-secret-holder" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "grafana-postgres-secret-holder" {
-  role       = aws_iam_role.grafana-postgres-secret-holder.name
-  policy_arn = aws_iam_policy.grafana-postgres-secret-holder.arn
+resource "aws_iam_role_policy_attachment" "grafana-postgres" {
+  role       = aws_iam_role.grafana-postgres.name
+  policy_arn = aws_iam_policy.grafana-postgres.arn
 }
 
 resource "aws_iam_role" "loki" {

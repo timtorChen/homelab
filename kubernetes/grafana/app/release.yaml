@@ -21,21 +21,12 @@ spec:
     serviceAccount:
       create: true
       annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/amethyst-grafana
+        eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/grafana
         eks.amazonaws.com/audience: sts.amazonaws.com
     podAnnotations:
       secret.reloader.stakater.com/reload: &s grafana-secret
     envFromSecrets:
       - name: *s
-    extraSecretMounts:
-      - name: *s
-        mountPath: /grafana-secret
-        readOnly: true
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: *s
 
     ## admin username and password cannot be declaratively change after creation
     admin:
