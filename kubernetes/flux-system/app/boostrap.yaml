@@ -558,3 +558,21 @@ spec:
   interval: 10m0s
   path: /kubernetes/miniflux
   prune: false
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## ntfy
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 6-ntfy
+spec:
+  dependsOn:
+    - name: 2-rook-ceph
+    - name: 4-cnpg
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/ntfy
+  prune: false
