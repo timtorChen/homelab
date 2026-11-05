@@ -78,7 +78,7 @@ specs:
                 port: "5432"
               - protocol: TCP
                 port: "6379"
-  # allow immich-public-server to jumpcloud endpoint
+  # allow immich-public-server to OAuth providers
   - endpointSelector:
       matchLabels:
         app.kubernetes.io/name: immich-public
@@ -95,6 +95,8 @@ specs:
             rules:
               dns: &sso
                 - matchPattern: "oauth.id.jumpcloud.com"
+                - matchPattern: "login.microsoftonline.com"
+                - matchPattern: "graph.microsoft.com"
       - toFQDNs: *sso
         toPorts:
           - ports:

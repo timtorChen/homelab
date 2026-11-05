@@ -34,8 +34,9 @@ spec:
         strategy: RollingUpdate
         annotations: &annotations
           secret.reloader.stakater.com/reload: &s immich-secret
-        labels:
-          app.kubernetes.io/component: server
+        pod:
+          labels:
+            app.kubernetes.io/component: server
         containers:
           main:
             image:
@@ -93,8 +94,9 @@ spec:
         replicas: 2
         strategy: RollingUpdate
         annotations: *annotations
-        labels:
-          app.kubernetes.io/component: microservices
+        pod:
+          labels:
+            app.kubernetes.io/component: microservices
         containers:
           main:
             image:
@@ -142,8 +144,9 @@ spec:
         replicas: 1
         strategy: RollingUpdate
         annotations: *annotations
-        labels:
-          app.kubernetes.io/component: machine-learning
+        pod:
+          labels:
+            app.kubernetes.io/component: machine-learning
         containers:
           main:
             image:
