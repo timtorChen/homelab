@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
       chart: prometheus-blackbox-exporter
-      version: 11.20.2
+      version: 11.21.1
   interval: 1h
   maxHistory: 1
   values:
