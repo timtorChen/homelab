@@ -18,6 +18,15 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s+version:\\s+(?<currentValue>v?[0-9]+\\.[0-9]+\\.[0-9]+)"
       ]
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^kubernetes/.*/postgres.*\\.yaml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s+imageName:\\s+\\S+:(?<currentValue>[0-9.-]+)"
+      ]
     }
   ]
 }

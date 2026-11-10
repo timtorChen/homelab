@@ -30,7 +30,7 @@
     },
     {
       // miniflux - automerge
-      "groupName": "kromgo",
+      "groupName": "miniflux",
       "automerge": true,
       "matchUpdateTypes": ["major", "minor", "patch"],
       "matchFileNames": ["kubernetes/**"],
@@ -96,7 +96,7 @@
       "groupName": "immich",
       "semanticCommitScope": "app",
       "addLabels": ["area/app"],
-      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchFileNames": ["kubernetes/immich/**"],
       "matchDatasources": "docker",
       "matchDepNames": ["ghcr.io/immich-app/immich-**"]
     },
@@ -105,9 +105,71 @@
       "groupName": "immich",
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
-      "matchFileNames": ["kubernetes/mydata/**"],
+      "matchFileNames": ["kubernetes/immich/**"],
       "matchDatasources": ["docker"],
       "matchDepNames": ["ghcr.io/immich-app/immich-**"]
+    },
+    // immich-postgres - group
+    {
+      "groupName": "immich-postgres",
+      "commitMessageTopic": "docker immich-postgres",
+      "separateMultipleMajor": true,
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/immich/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/tensorchord/cloudnative-vectorchord"]
+    },
+    // immich-valkey - group
+    {
+      "groupName": "immich-valkey",
+      "commitMessageTopic": "docker immich-valkey",
+      "separateMultipleMajor": true,
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/immich/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["valkey/valkey"]
+    },
+    {
+      // immich-public - group
+      "groupName": "immich-public",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/immich-public/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/immich-app/immich-**"]
+    },
+    {
+      // immich-public - automerge
+      "groupName": "immich-public",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/immich-public/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/immich-app/immich-**"]
+    },
+    // immich-public-postgres - group
+    {
+      "groupName": "immich-public-postgres",
+      "commitMessageTopic": "docker immich-public-postgres",
+      "separateMultipleMajor": true,
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/immich-public/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["ghcr.io/tensorchord/cloudnative-vectorchord"]
+    },
+    // immich-public-valkey - group
+    {
+      "groupName": "immich-public-valkey",
+      "commitMessageTopic": "docker immich-public-valkey",
+      "separateMultipleMajor": true,
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/immich-public/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["valkey/valkey"]
     },
     {
       // nextcloud - group

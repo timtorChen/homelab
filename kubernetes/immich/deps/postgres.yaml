@@ -11,6 +11,7 @@ spec:
       annotations:
         eks.amazonaws.com/audience: sts.amazonaws.com
         eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/immich-postgres
+  # renovate: datasource=docker depName=ghcr.io/tensorchord/cloudnative-vectorchord
   imageName: ghcr.io/tensorchord/cloudnative-vectorchord:15.19-1.1.1
   postgresql:
     shared_preload_libraries:
