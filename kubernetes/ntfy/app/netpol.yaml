@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: ntfy
+  name: ntfy-app-policy
+specs:
+  # allow traffic from the Cilium Gateway
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: ntfy
+    ingress:
+      - fromEntities:
+          - ingress
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"
+  # allow DNS, PostgreSQL, and HTTPS push/webhook traffic
+  - endpointSelector: *self
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchPattern: "*"
+      - toEndpoints:
+          - matchLabels:
+              cnpg.io/cluster: ntfy-postgres
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - toEntities:
+          - world
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
