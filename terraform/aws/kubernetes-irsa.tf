@@ -435,6 +435,49 @@ resource "aws_iam_role_policy_attachment" "unpoller" {
   policy_arn = aws_iam_policy.unpoller.arn
 }
 
+resource "aws_iam_role" "weather-exporter" {
+  name = "weather-exporter"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Federated" : "${aws_iam_openid_connect_provider.kubernetes-oidc.arn}"
+        },
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Condition" : {
+          "StringEquals" : {
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:sub" : "system:serviceaccount:weather-exporter:weather-exporter",
+            "${aws_iam_openid_connect_provider.kubernetes-oidc.url}:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "weather-exporter" {
+  name = "weather-exporter"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "ssm:GetParameter*",
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ssm:${data.aws_region.main.name}:${data.aws_caller_identity.main.account_id}:parameter/kubernetes/weather-exporter"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "weather-exporter" {
+  role       = aws_iam_role.weather-exporter.name
+  policy_arn = aws_iam_policy.weather-exporter.arn
+}
+
 resource "aws_iam_role" "unifi-controller-backup" {
   name = "unifi-controller-backup"
   assume_role_policy = jsonencode({

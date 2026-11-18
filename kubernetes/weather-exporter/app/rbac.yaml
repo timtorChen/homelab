@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/core/v1/serviceaccount.json
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: weather-exporter
+  name: weather-exporter
+  annotations:
+    eks.amazonaws.com/audience: sts.amazonaws.com
+    eks.amazonaws.com/role-arn: arn:aws:iam::262264826613:role/weather-exporter

@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: weather-exporter
+  name: weather-exporter-app-policy
+specs:
+  - endpointSelector: &self
+      matchLabels:
+        app.kubernetes.io/name: weather-exporter
+    egress:
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: api.openweathermap.org
+                - matchName: mimir-distributor.mimir.svc.cluster.local.
+      - toFQDNs:
+          - matchName: api.openweathermap.org
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: mimir
+              app.kubernetes.io/name: mimir
+              app.kubernetes.io/component: distributor
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8080"

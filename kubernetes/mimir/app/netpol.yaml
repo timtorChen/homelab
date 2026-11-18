@@ -60,6 +60,9 @@ specs:
           - matchLabels:
               k8s:io.kubernetes.pod.namespace: blackbox-exporter
               app.kubernetes.io/name: prometheus-blackbox-exporter
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: weather-exporter
+              app.kubernetes.io/name: weather-exporter
         toPorts:
           - ports:
               - protocol: TCP

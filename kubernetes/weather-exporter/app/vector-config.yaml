@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: weather-exporter
+  name: vector-config
+data:
+  weather.yaml: |
+    sources:
+      weather-exporter:
+        type: prometheus_scrape
+        endpoints:
+          - http://localhost:9091/metrics
+        scrape_interval_secs: 60
+        scrape_timeout_secs: 10
+
+    transforms:
+      weather-exporter-labels:
+        type: remap
+        inputs: [weather-exporter]
+        source: |
+          .tags.job = "weather-exporter"
+
+    sinks:
+      weather-exporter-mimir:
+        type: prometheus_remote_write
+        inputs: [weather-exporter-labels]
+        endpoint: http://mimir-distributor.mimir.svc:8080/api/v1/push
+        healthcheck:
+          enabled: false

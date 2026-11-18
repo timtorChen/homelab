@@ -409,6 +409,21 @@ spec:
   prune: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+## weather-exporter
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  namespace: flux-system
+  name: 5-weather-exporter
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  interval: 10m0s
+  path: /kubernetes/weather-exporter
+  prune: true
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 ## snmp-exporter-mikrotik
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

@@ -92,6 +92,30 @@
       "matchDepNames": ["ghcr.io/unpoller/unpoller"]
     },
     {
+      // weather-exporter - group
+      "groupName": "weather-exporter",
+      "semanticCommitScope": "app",
+      "addLabels": ["area/app"],
+      "matchFileNames": ["kubernetes/weather-exporter/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "billykwooten/openweather-exporter",
+        "timberio/vector"
+      ]
+    },
+    {
+      // weather-exporter - automerge
+      "groupName": "weather-exporter",
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchFileNames": ["kubernetes/weather-exporter/**"],
+      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "billykwooten/openweather-exporter",
+        "timberio/vector"
+      ]
+    },
+    {
       // immich - group
       "groupName": "immich",
       "semanticCommitScope": "app",
