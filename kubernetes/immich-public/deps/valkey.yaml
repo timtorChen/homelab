@@ -42,7 +42,7 @@ spec:
           main:
             image:
               repository: valkey/valkey
-              tag: 9.2.0-alpine
+              tag: 9.2.1-alpine
             args:
               - /config/valkey.conf
             resources:
