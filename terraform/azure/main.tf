@@ -54,6 +54,16 @@ locals {
     "User.Read",
     "GroupMember.Read.All"
   ]
+  entra_app_grafana_app_roles = {
+    grafana_admin = {
+      value                = "GrafanaAdmin"
+      display_name         = "Grafana Admin"
+      description          = "Allows Grafana administrator access"
+      id                   = "83ea7295-0431-49c1-bf8d-3459d0823cc1"
+      allowed_member_types = ["User"]
+      enabled              = true
+    }
+  }
 
   # miniflux
   entra_app_miniflux_web_redirect_uris = ["https://rss.timtor.dev/oauth2/oidc/callback"]
@@ -98,4 +108,14 @@ locals {
     "openid",
     "profile"
   ]
+  entra_app_argo_workflows_app_roles = {
+    argo_system_admin = {
+      value                = "argo-system-admin"
+      display_name         = "Argo System Admin"
+      description          = "Allows administration of Argo Workflows"
+      id                   = "accfa60e-5213-4a91-98c5-6f722d56f803"
+      allowed_member_types = ["User"]
+      enabled              = true
+    }
+  }
 }

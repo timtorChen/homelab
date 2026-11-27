@@ -35,7 +35,8 @@ specs:
                 - matchName: grafana.com
                 - matchName: grafana.net
                 - matchName: storage.googleapis.com
-                - matchName: oauth.id.jumpcloud.com
+                - matchName: login.microsoftonline.com
+                - matchName: graph.microsoft.com
                 - matchName: "mimir-query-frontend.mimir.svc.cluster.local."
                 - matchName: "loki-read.loki.svc.cluster.local."
                 - matchName: "grafana-postgres-rw.svc.cluster.local."
@@ -46,7 +47,8 @@ specs:
           - matchName: grafana.com
           - matchName: grafana.net
           - matchName: storage.googleapis.com
-          - matchName: oauth.id.jumpcloud.com
+          - matchName: login.microsoftonline.com
+          - matchName: graph.microsoft.com
         toPorts:
           - ports:
               - protocol: TCP

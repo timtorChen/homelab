@@ -33,15 +33,16 @@ spec:
       authModes: ["sso"]
       sso:
         enabled: true
-        issuer: https://oauth.id.jumpcloud.com/
+        issuer: https://login.microsoftonline.com/a5ccdd11-d4cc-424b-ab4a-6bef963f831c/v2.0
         clientId:
           name: *secret
-          key: CLIENT_ID
+          key: ENTRA_APP_ARGO_WORKFLOWS_APPLICATION_ID
         clientSecret:
           name: *secret
-          key: CLIENT_SECRET
+          key: ENTRA_APP_ARGO_WORKFLOWS_APPLICATION_SECRET
         redirectUrl: https://workflows.timtor.dev/oauth2/callback
-        scopes: ["group"]
+        scopes: ["email", "openid", "profile"]
+        customGroupClaimName: roles
         sessionExpiry: 168h # 7 days
       securityContext: &sc
         runAsNonRoot: true
@@ -52,6 +53,9 @@ spec:
         seccompProfile:
           type: RuntimeDefault
     controller:
+      logging:
+        ## Debug, change to level: debug
+        level: info
       serviceAccount:
         name: argo-workflows-controller
       securityContext: *sc

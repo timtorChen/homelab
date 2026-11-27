@@ -87,6 +87,19 @@ resource "azuread_application" "grafana" {
       }
     }
   }
+
+  dynamic "app_role" {
+    for_each = local.entra_app_grafana_app_roles
+
+    content {
+      value                = app_role.value.value
+      display_name         = app_role.value.display_name
+      description          = app_role.value.description
+      id                   = app_role.value.id
+      allowed_member_types = app_role.value.allowed_member_types
+      enabled              = app_role.value.enabled
+    }
+  }
 }
 
 resource "time_rotating" "grafana" {
@@ -192,6 +205,19 @@ resource "azuread_application" "argo_workflows" {
       }
     }
   }
+
+  dynamic "app_role" {
+    for_each = local.entra_app_argo_workflows_app_roles
+
+    content {
+      value                = app_role.value.value
+      display_name         = app_role.value.display_name
+      description          = app_role.value.description
+      id                   = app_role.value.id
+      allowed_member_types = app_role.value.allowed_member_types
+      enabled              = app_role.value.enabled
+    }
+  }
 }
 
 resource "time_rotating" "argo_workflows" {
@@ -267,4 +293,3 @@ output "entra_app_argo_workflows_application_id" {
 output "entra_app_argo_workflows_application_secret" {
   value = nonsensitive(azuread_application_password.argo_workflows.value)
 }
-
