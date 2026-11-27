@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/refs/heads/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: ntfy
+  name: ntfy-postgres-policy
+specs:
+  # allow ntfy to connect to PostgreSQL
+  - endpointSelector: &self
+      matchLabels:
+        cnpg.io/cluster: ntfy-postgres
+    ingress:
+      - fromEndpoints:
+          - matchLabels:
+              app.kubernetes.io/name: ntfy
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+  # allow CNPG internal replication, operator health checks, and API access
+  - endpointSelector: *self
+    ingress:
+      - fromEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - fromEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: cnpg
+              app.kubernetes.io/instance: cnpg
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "8000"
+    egress:
+      - toEndpoints:
+          - *self
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "5432"
+      - toEntities:
+          - kube-apiserver
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "6443"
+      - toEndpoints:
+          - matchLabels:
+              k8s:io.kubernetes.pod.namespace: kube-system
+              k8s-app: kube-dns
+        toPorts:
+          - ports:
+              - protocol: ANY
+                port: "53"
+            rules:
+              dns:
+                - matchName: "ntfy-postgres-rw.ntfy.svc.cluster.local."
+                - matchName: "s3.us-east-005.backblazeb2.com"
+  # allow scheduled backups to reach Backblaze B2
+  - endpointSelector: *self
+    egress:
+      - toFQDNs:
+          - matchName: "s3.us-east-005.backblazeb2.com"
+        toPorts:
+          - ports:
+              - protocol: TCP
+                port: "443"

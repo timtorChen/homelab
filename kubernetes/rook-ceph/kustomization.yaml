@@ -24,3 +24,4 @@ resources:
   - storage/object/httproute.yaml
   - storage/object/cephobject.yaml
   - storage/object/objectuser.yaml
+  - storage/object/storageclass.yaml
